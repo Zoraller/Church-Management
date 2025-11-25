@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Expenses</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    body { 
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
+      font-family: 'Arial', sans-serif; 
+    }
+
+    /* Sidebar */
+    .sidebar { 
+      height: 100vh; 
+      background: linear-gradient(180deg, #4b4f53ff 0%, #343a40 100%); 
+      color: white; 
+      position: fixed; 
+      width: 220px; 
+      padding-top: 20px; 
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    .sidebar a { 
+      color: white; 
+      display: block; 
+      padding: 10px 20px; 
+      text-decoration: none; 
+      transition: all 0.3s ease;
+    }
+    .sidebar a:hover { background: #495057; transform: translateX(5px); }
+    .sidebar a.active { background: #6c757d; font-weight: bold; border-left: 4px solid #ffc107; }
+    .sidebar-logo {
+      max-width: 120px;
+      border-radius: 50%;
+      padding: 5px;
+      background: #343a40;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Main content */
+    .main-content { 
+      margin-left: 220px; 
+      padding: 20px; 
+    }
+
+    /* Profile dropdown */
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .profile-icon:hover { transform: scale(1.1); }
+
+    /* Clock style */
+    .time-card {
+      display: inline-block;
+      padding: 8px 16px;
+      font-size: 0.8rem;    
+      font-weight: bold;
+      color: #ffffff;          
+      background: linear-gradient(45deg, #616d79ff, #495057);    
+      border-radius: 20px;      
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* Cards and containers */
+    .container-box {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .container-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #007bff, #28a745);
+      border-radius: 15px 15px 0 0;
+    }
+
+    /* Table */
+    .table th, .table td {
+      vertical-align: middle;
+    }
+    .table thead th {
+      background: #343a40;
+      color: white;
+    }
+    .table tbody tr:hover {
+      background: #f8f9fa;
+    }
+
+    /* Filter section */
+    .filter-section {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-section input, .filter-section select {
+      flex: 1;
+      min-width: 150px;
+      border-radius: 8px;
+      border: 1px solid #ced4da;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .filter-section input:focus, .filter-section select:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(45deg, #007bff, #0056b3);
+      border: none;
+      border-radius: 25px;
+      padding: 10px 20px;
+      font-weight: bold;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3); }
+    .btn-secondary {
+      border-radius: 25px;
+      padding: 10px 20px;
+    }
+    .btn-success {
+      background: linear-gradient(45deg, #28a745, #20c997);
+      border: none;
+      border-radius: 25px;
+      padding: 10px 20px;
+      font-weight: bold;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3); }
+
+    /* Total display */
+    .total-box {
+      background: #e9ecef;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: bold;
+      color: #495057;
+    }
+
+    /* No results */
+    .no-results {
+      text-align: center;
+      color: #888;
+      font-style: italic;
+      padding: 20px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; height: auto; position: relative; }
+      .main-content { margin-left: 0; }
+      .filter-section { flex-direction: column; align-items: stretch; }
+      .table-responsive { overflow-x: auto; }
+      .d-flex.justify-content-between { flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="text-center">
+    <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
+  </div>
+  <hr>
+  <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a>
+
+  <a class="collapsed" data-bs-toggle="collapse"
+  href="#membersDropdown" role="button" aria-expanded="false" aria-controls="membersDropdown">
+      <i class="fa-solid fa-users"></i> Members
+      <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="membersDropdown">
+      <a href="{{ url_for('add_members') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add Member</a>
+      <a href="{{ url_for('view_members') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Members</a>
+  </div>
+
+  <a class="collapsed" data-bs-toggle="collapse"
+  href="#ministriesDropdown" role="button" aria-expanded="false" aria-controls="ministriesDropdown">
+      <i class="fa-solid fa-church"></i> Ministries
+      <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="ministriesDropdown">
+      <a href="{{ url_for('add_ministry') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Ministry</a>
+      <a href="{{ url_for('admin_ministries') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Ministries</a>
+  </div>
+
+  <a class="collapsed" data-bs-toggle="collapse"
+  href="#lifegroupsDropdown" role="button" aria-expanded="false" aria-controls="lifegroupsDropdown">
+      <i class="fa-solid fa-people-group"></i> Life Groups
+      <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="lifegroupsDropdown">
+     <a href="{{ url_for('add_lifegroup') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add LifeGroup</a>
+      <a href="{{ url_for('admin_lifegroups') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Life Groups</a>
+  </div>
+
+  <a class="collapsed" data-bs-toggle="collapse"
+  href="#tithesDropdown" role="button" aria-expanded="false" aria-controls="tithesDropdown">
+      <i class="fa-solid fa-hand-holding-dollar"></i> Tithes & Expenses
+      <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="tithesDropdown">
+      <a href="{{ url_for('add_tithe') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Tithe</a>
+      <a href="{{ url_for('view_tithes') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Tithes</a>
+      <a href="{{ url_for('add_expense') }}" class="ps-4 d-block"><i class="fa-solid fa-circle-plus me-2"></i> Add Expense</a>
+      <a href="{{ url_for('view_expenses') }}" class="ps-4 d-block active"><i class="fa-solid fa-list me-2"></i> View Expenses</a>
+  </div>
+
+  <a class="collapsed" data-bs-toggle="collapse"
+   href="#eventsDropdown" role="button" aria-expanded="false" aria-controls="eventsDropdown">
+  <i class="fa-solid fa-calendar-days"></i> Events
+  <i class="fa-solid fa-chevron-down float-end"></i>
+</a>
+<div class="collapse" id="eventsDropdown">
+  <a href="{{ url_for('add_event') }}" class="ps-4 d-block">
+    <i class="fa-solid fa-plus me-2"></i> Add Event
+  </a>
+  <a href="{{ url_for('view_events') }}" class="ps-4 d-block">
+    <i class="fa-solid fa-list me-2"></i> View Events
+  </a>
+</div>
+
+  <a class="collapsed" data-bs-toggle="collapse"
+  href="#usersDropdown" role="button" aria-expanded="false">
+      <i class="fa-solid fa-user"></i> Users
+      <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="usersDropdown">
+      <a href="{{ url_for('add_user') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add User</a>
+      <a href="{{ url_for('view_users') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> All Users</a>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div id="datetime" class="time-card"></div>
+    <div class="dropdown"> 
+      <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon dropdown-toggle" data-bs-toggle="dropdown" alt="User">
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-primary"><i class="fa-solid fa-money-bill-wave me-2"></i>Expenses</h4>
+    <div class="d-flex gap-2">
+      <div class="dropdown">
+        <button class="btn btn-success dropdown-toggle" type="button" id="reportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-solid fa-file-export me-2"></i>Generate Report
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="reportDropdown">
+          <li><a class="dropdown-item" href="#" onclick="printReport()"><i class="fa-solid fa-print me-2"></i>Print Report</a></li>
+          <li><a class="dropdown-item" href="#" onclick="exportToCSV()"><i class="fa-solid fa-file-csv me-2"></i>Export to CSV</a></li>
+          <li><a class="dropdown-item" href="#" onclick="exportToPDF()"><i class="fa-solid fa-file-pdf me-2"></i>Export to PDF</a></li>
+        </ul>
+      </div>
+      <a href="{{ url_for('add_expense') }}" class="btn btn-primary"><i class="fa-solid fa-plus me-2"></i>Add Expense</a>
+    </div>
+  </div>
+
+  <div class="container-box">
+    <div class="filter-section">
+      <input type="text" id="searchInput" class="form-control" placeholder="Search by category, description, or amount..." aria-label="Search expenses">
+      <input type="date" id="startDate" class="form-control" aria-label="Start date">
+      <input type="date" id="endDate" class="form-control" aria-label="End date">
+      <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+    </div>
+  </div>
+
+  <div class="container-box">
+    <div class="table-responsive">
+      <table class="table table-striped" id="expensesTable">
+        <thead>
+          <tr>
+            <th><i class="fa-solid fa-dollar-sign me-1"></i>Amount</th>
+            <th><i class="fa-solid fa-tag me-1"></i>Category</th>
+            <th><i class="fa-solid fa-file-alt me-1"></i>Description</th>
+            <th><i class="fa-solid fa-calendar me-1"></i>Date Spent</th>
+            <th><i class="fa-solid fa-clock me-1"></i>Created At</th>
+            <th class="text-center"><i class="fa-solid fa-cogs me-1"></i>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in expenses %}
+          <tr>
+            <td>₱{{ '%.2f'|format(e.amount) }}</td>
+            <td>{{ e.category }}</td>
+            <td>{{ e.description or '—' }}</td>
+            <td>{{ e.date_spent }}</td>
+            <td>{{ e.created_at }}</td>
+            <td class="text-center">
+              <a href="{{ url_for('edit_expense', id=e.expense_id) }}" class="btn btn-warning btn-sm me-2" title="Edit">
+                <i class="fa-solid fa-pen"></i> Edit
+              </a>
+              <a href="{{ url_for('delete_expense', id=e.expense_id) }}" class="btn btn-danger btn-sm" title="Delete"
+                 onclick="return confirm('Are you sure you want to delete this expense?');">
+                <i class="fa-solid fa-trash"></i> Delete
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr id="noResultsRow">
+            <td colspan="6" class="no-results">No expenses recorded yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="total-box">
+    <h5><strong>Total Expenses:</strong> ₱{{ '%.2f'|format(total_expenses) }}</h5>
+  </div>
+</div>
+
+<script>
+function updateDateTime() {
+    const now = new Date();
+    const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+    document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+// Elements
+const searchInput = document.getElementById('searchInput');
+const startDate = document.getElementById('startDate');
+const endDate = document.getElementById('endDate');
+const table = document.getElementById('expensesTable');
+const rows = table.getElementsByTagName('tr');
+const totalDisplay = document.querySelector('.total-box h5');
+const noResultsRow = document.getElementById('noResultsRow');
+
+// Filter function
+function filterTable() {
+    const searchValue = searchInput.value.toLowerCase();
+    const start = startDate.value ? new Date(startDate.value) : null;
+    const end = endDate.value ? new Date(endDate.value) : null;
+    let total = 0;
+    let visibleCount = 0;
+
+    for (let i = 1; i < rows.length; i++) {
+        const cols = rows[i].getElementsByTagName('td');
+        if (cols.length === 0) continue;
+
+        const amountText = cols[0].textContent.replace(/[₱,]/g, '').trim();
+        const amount = parseFloat(amountText) || 0;
+        const category = cols[1].textContent.toLowerCase();
+        const desc = cols[2].textContent.toLowerCase();
+        const dateSpent = new Date(cols[3].textContent);
+
+        let matchSearch = category.includes(searchValue) || desc.includes(searchValue) || amountText.includes(searchValue);
+        let matchDate = true;
+        if (start && dateSpent < start) matchDate = false;
+        if (end && dateSpent > end) matchDate = false;
+
+        if (matchSearch && matchDate) {
+            rows[i].style.display = '';
+            total += amount;
+            visibleCount++;
+        } else {
+            rows[i].style.display = 'none';
+        }
+    }
+
+    totalDisplay.innerHTML = `<strong>Total Expenses:</strong> ₱${total.toFixed(2)}`;
+    noResultsRow.style.display = visibleCount === 0 ? '' : 'none';
+}
+
+// Reset filters
+function resetFilters() {
+    searchInput.value = '';
+    startDate.value = '';
+    endDate.value = '';
+    filterTable();
+}
+
+// Event listeners
+searchInput.addEventListener('input', filterTable);
+startDate.addEventListener('change', filterTable);
+endDate.addEventListener('change', filterTable);
+
+// Get visible rows
+function getVisibleRows() {
+    const data = [];
+    for (let i = 1; i < rows.length; i++) {
+        if (rows[i].style.display !== 'none') {
+            const cols = rows[i].getElementsByTagName('td');
+            data.push([
+                cols[0].textContent,
+                cols[1].textContent,
+                cols[2].textContent,
+                cols[3].textContent,
+                cols[4].textContent
+            ]);
+        }
+    }
+    return data;
+}
+</script>
+
+<!-- jsPDF AutoTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+// Export to PDF
+function exportToPDF() {
+    const data = getVisibleRows();
+    if (data.length === 0) { 
+        alert("No data to export!"); 
+        return; 
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(14);
+    doc.text("Expenses Report", 14, 15);
+
+    doc.autoTable({
+        startY: 25,
+        head: [['Amount', 'Category', 'Description', 'Date Spent', 'Created At']],
+        body: data,
+        styles: { fontSize: 10, cellPadding: 3 },
+        headStyles: { fillColor: [52, 58, 64], textColor: 255, fontStyle: 'bold' }
+    });
+
+    const today = new Date().toISOString().slice(0,10);
+    doc.save(`expenses_report_${today}.pdf`);
+}
+
+// Print report
+function printReport() {
+    const data = getVisibleRows();
+    if (data.length === 0) { 
+        alert("No data to print!"); 
+        return; 
+    }
+
+    let printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Expenses Report</title>');
+    printWindow.document.write('<style>table{border-collapse:collapse;width:100%}table,th,td{border:1px solid #000;padding:5px;text-align:left;}th{background:#343a40;color:#fff}</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write('<h3>Expenses Report</h3>');
+    printWindow.document.write('<table><thead><tr><th>Amount</th><th>Category</th><th>Description</th><th>Date Spent</th><th>Created At</th></tr></thead><tbody>');
+
+    data.forEach(row => {
+        printWindow.document.write('<tr>');
+        row.forEach(cell => printWindow.document.write(`<td>${cell}</td>`));
+        printWindow.document.write('</tr>');
+    });
+
+    printWindow.document.write('</tbody></table></body></html>');
+    printWindow.document.close();
+    printWindow.print();
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

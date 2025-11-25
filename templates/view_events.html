@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>View Events</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body { 
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
+      font-family: 'Arial', sans-serif; 
+    }
+
+    /* Sidebar */
+    .sidebar { 
+      height: 100vh; 
+      background: linear-gradient(180deg, #4b4f53ff 0%, #343a40 100%); 
+      color: white; 
+      position: fixed; 
+      width: 220px; 
+      padding-top: 20px; 
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    .sidebar a { 
+      color: white; 
+      display: block; 
+      padding: 10px 20px; 
+      text-decoration: none; 
+      transition: all 0.3s ease;
+    }
+    .sidebar a:hover { background: #495057; transform: translateX(5px); }
+    .sidebar a.active { background: #6c757d; font-weight: bold; border-left: 4px solid #ffc107; }
+    .sidebar-logo {
+      max-width: 120px;
+      border-radius: 50%;
+      padding: 5px;
+      background: #343a40;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+.main-content { 
+      margin-left: 220px; 
+      padding: 20px; 
+    }
+
+.page-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(45deg, #ffffff, #f8f9fa);
+  border-radius: 15px;
+  padding: 20px 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 25px;
+  border: 1px solid #dee2e6;
+}
+
+.page-header h4 {
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.table-container {
+  background: linear-gradient(135deg, #ffffff, #f9f9f9);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+  position: relative;
+}
+.table-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #007bff, #28a745);
+  border-radius: 15px 15px 0 0;
+}
+
+.table th {
+  background: linear-gradient(45deg, #3a3f44, #495057);
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
+}
+.table td {
+  vertical-align: middle;
+  padding: 15px;
+}
+
+.table tr:hover {
+  background: linear-gradient(45deg, #f1f3f6, #e3f2fd);
+  transform: scale(1.01);
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+
+.btn-outline-warning:hover, .btn-outline-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.time-card {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(45deg, #6c757d, #495057);
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.profile-icon:hover {
+  transform: scale(1.1);
+}
+
+.dropdown-menu {
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Top-right for profile */
+.top-right {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1050;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .sidebar { 
+    width: 100%; 
+    height: auto; 
+    position: relative; 
+  }
+  .main-content { 
+    margin-left: 0; 
+  }
+  .page-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .table-container { 
+    margin: 20px; 
+    padding: 20px; 
+  }
+  .top-right {
+    top: 5px;
+    right: 5px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="text-center mb-3">
+    <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Logo">
+  </div>
+  <hr>
+  <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
+
+  <a data-bs-toggle="collapse" href="#membersDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-users me-2"></i> Members <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="membersDropdown">
+    <a href="{{ url_for('add_members') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add Member</a>
+    <a href="{{ url_for('view_members') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Members</a>
+  </div>
+
+  <a data-bs-toggle="collapse" href="#ministriesDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-church me-2"></i> Ministries <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="ministriesDropdown">
+    <a href="{{ url_for('add_ministry') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Ministry</a>
+    <a href="{{ url_for('admin_ministries') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Ministries</a>
+  </div>
+
+  <a data-bs-toggle="collapse" href="#lifegroupsDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-people-group me-2"></i> Life Groups <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="lifegroupsDropdown">
+    <a href="{{ url_for('add_lifegroup') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Lifegroup</a>
+    <a href="{{ url_for('admin_lifegroups') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Life Groups</a>
+  </div>
+
+  <a data-bs-toggle="collapse" href="#tithesDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-hand-holding-dollar me-2"></i> Tithes & Expenses <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="tithesDropdown">
+    <a href="{{ url_for('add_tithe') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Tithe</a>
+    <a href="{{ url_for('view_tithes') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Tithes</a>
+    <a href="{{ url_for('add_expense') }}" class="ps-4 d-block"><i class="fa-solid fa-circle-plus me-2"></i> Add Expense</a>
+    <a href="{{ url_for('view_expenses') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Expenses</a>
+  </div>
+
+  <a data-bs-toggle="collapse" href="#eventsDropdown" role="button" aria-expanded="true">
+    <i class="fa-solid fa-calendar-days me-2"></i> Events <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse show" id="eventsDropdown">
+    <a href="{{ url_for('add_event') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Event</a>
+    <a href="{{ url_for('view_events') }}" class="ps-4 d-block active"><i class="fa-solid fa-list me-2"></i> View Events</a>
+  </div>
+
+  <a data-bs-toggle="collapse" href="#usersDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-user me-2"></i> Users <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="usersDropdown">
+    <a href="{{ url_for('add_user') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add User</a>
+    <a href="{{ url_for('view_users') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> All Users</a>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div id="datetime" class="time-card"></div>
+    <div class="dropdown"> 
+      <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon dropdown-toggle" data-bs-toggle="dropdown" alt="User">
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <h4><i class="fa-solid fa-calendar-days me-2 text-success"></i> Church Events</h4>
+  </div>
+
+  <div class="table-container">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle text-center">
+        <thead>
+          <tr>
+            <th><i class="fa-solid fa-calendar-check me-1"></i>Event Name</th>
+            <th><i class="fa-solid fa-calendar me-1"></i>Date</th>
+            <th><i class="fa-solid fa-clock me-1"></i>Time</th>
+            <th><i class="fa-solid fa-file-alt me-1"></i>Description</th>
+            <th><i class="fa-solid fa-location-dot me-1"></i>Location</th>
+            <th><i class="fa-solid fa-cogs me-1"></i>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+  {% for event in events %}
+  <tr>
+    <td>
+      <a href="{{ url_for('event_detail', event_id=event.event_id) }}" class="text-decoration-none">
+        <strong>{{ event.event_name }}</strong>
+      </a>
+    </td>
+    <td>{{ event.event_date.strftime('%Y-%m-%d') }}</td>
+    <td>{{ event.event_time_formatted }}</td>
+    <td>{{ event.description|truncate(50) }}</td> <!-- optional short preview -->
+    <td><span class="badge bg-primary">{{ event.location }}</span></td>
+    <td>
+      <a href="{{ url_for('edit_event', event_id=event.event_id) }}" class="btn btn-sm btn-outline-warning me-1" title="Edit">
+        <i class="fa-solid fa-pen"></i>
+      </a>
+      <a href="{{ url_for('delete_event', event_id=event.event_id) }}" class="btn btn-sm btn-outline-danger" title="Delete"
+         onclick="return confirm('Are you sure you want to delete this event?');">
+        <i class="fa-solid fa-trash"></i>
+      </a>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6" class="text-muted">No events available.</td></tr>
+  {% endfor %}
+</tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateDateTime() {
+  const now = new Date();
+  const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+  document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+function showEventModal(element) {
+  const name = element.getAttribute('data-name');
+  const date = element.getAttribute('data-date');
+  const time = element.getAttribute('data-time');
+  const description = element.getAttribute('data-description');
+  const location = element.getAttribute('data-location');
+
+  document.getElementById('modalEventName').textContent = name;
+  document.getElementById('modalEventDate').textContent = date;
+  document.getElementById('modalEventTime').textContent = time;
+  document.getElementById('modalEventDescription').textContent = description;
+  document.getElementById('modalEventLocation').textContent = location;
+
+  const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+  modal.show();
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
