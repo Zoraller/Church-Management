@@ -125,8 +125,73 @@
         <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
     </div>
     <hr>
-    <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a>
-    <!-- Add other sidebar links as needed -->
+   <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+    href="#membersDropdown" role="button" aria-expanded="false" aria-controls="membersDropdown">
+        <i class="fa-solid fa-users"></i> Members
+        <i class="fa-solid fa-chevron-down float-end"></i>
+    </a>
+    <div class="collapse" id="membersDropdown">
+        <a href="{{ url_for('add_members') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add Member</a>
+        <a href="{{ url_for('view_members') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Members</a>
+    </div>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+    href="#ministriesDropdown" role="button" aria-expanded="false" aria-controls="ministriesDropdown">
+        <i class="fa-solid fa-church"></i> Ministries
+        <i class="fa-solid fa-chevron-down float-end"></i>
+    </a>
+    <div class="collapse" id="ministriesDropdown">
+        <a href="{{ url_for('add_ministry') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Ministry</a>
+        <a href="{{ url_for('admin_ministries') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Ministries</a>
+    </div>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+    href="#lifegroupsDropdown" role="button" aria-expanded="false" aria-controls="lifegroupsDropdown">
+        <i class="fa-solid fa-people-group"></i> Life Groups
+        <i class="fa-solid fa-chevron-down float-end"></i>
+    </a>
+    <div class="collapse" id="lifegroupsDropdown">
+       <a href="{{ url_for('add_lifegroup') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add LifeGroup</a>
+        <a href="{{ url_for('admin_lifegroups') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Life Groups</a>
+    </div>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+    href="#tithesDropdown" role="button" aria-expanded="false" aria-controls="tithesDropdown">
+        <i class="fa-solid fa-hand-holding-dollar"></i> Tithes & Expenses
+        <i class="fa-solid fa-chevron-down float-end"></i>
+    </a>
+    <div class="collapse" id="tithesDropdown">
+        <a href="{{ url_for('add_tithe') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Tithe</a>
+        <a href="{{ url_for('view_tithes') }}" class="ps-4 d-block active"><i class="fa-solid fa-table me-2"></i> View Tithes</a>
+        <a href="{{ url_for('add_expense') }}" class="ps-4 d-block"><i class="fa-solid fa-circle-plus me-2"></i> Add Expense</a>
+        <a href="{{ url_for('view_expenses') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Expenses</a>
+    </div>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+     href="#eventsDropdown" role="button" aria-expanded="false" aria-controls="eventsDropdown">
+    <i class="fa-solid fa-calendar-days"></i> Events
+    <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="eventsDropdown">
+    <a href="{{ url_for('add_event') }}" class="ps-4 d-block">
+      <i class="fa-solid fa-plus me-2"></i> Add Event
+    </a>
+    <a href="{{ url_for('view_events') }}" class="ps-4 d-block">
+      <i class="fa-solid fa-list me-2"></i> View Events
+    </a>
+  </div>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+    href="#usersDropdown" role="button" aria-expanded="false">
+        <i class="fa-solid fa-user"></i> Users
+        <i class="fa-solid fa-chevron-down float-end"></i>
+    </a>
+    <div class="collapse" id="usersDropdown">
+        <a href="{{ url_for('add_user') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add User</a>
+        <a href="{{ url_for('view_users') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> All Users</a>
+    </div>
 </div>
 
 <div class="main-content">

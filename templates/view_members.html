@@ -44,6 +44,17 @@ body { background: #f0f2f5; font-family: Arial, sans-serif; }
 }
 .badge-lg { font-size: 0.75rem; margin-right: 3px; margin-bottom: 3px; }
 .btn-action { margin-right: 5px; }
+
+/* Custom link styling for member names */
+.member-name-link {
+  color: #007bff; /* Bootstrap primary color */
+  text-decoration: none;
+  font-weight: 500;
+}
+.member-name-link:hover {
+  color: #0056b3; /* Darker blue on hover */
+  text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -156,7 +167,7 @@ body { background: #f0f2f5; font-family: Arial, sans-serif; }
         {% for member in members %}
         <tr>
           <td><img src="{{ url_for('static', filename='uploads/' + (member.profile_pic or 'default.jpg')) }}" alt="Profile"></td>
-          <td>{{ member.first_name }} {{ member.last_name }}</td>
+          <td><a href="{{ url_for('member_profile', member_id=member.member_id) }}" class="member-name-link">{{ member.first_name }} {{ member.last_name }}</a></td>
           <td>{{ member.gender }}</td>
           <td>{{ member.contact_number }}</td>
           <td>{{ member.email }}</td>

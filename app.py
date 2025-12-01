@@ -229,6 +229,8 @@ def logout():
     return redirect(url_for('login'))
 
 
+from datetime import datetime, timedelta, time  # Make sure these are imported
+
 @app.route("/view_user_event/<int:event_id>")
 def view_user_event(event_id):
     if 'email' not in session:
@@ -246,12 +248,26 @@ def view_user_event(event_id):
         return redirect(url_for("user_dashboard"))
 
     # Format event_time safely
-    if event.get('event_time'):
-        event['event_time_formatted'] = (datetime.min + event['event_time']).strftime("%I:%M %p")
+    ev_time = event.get('event_time')
+    if ev_time:
+        # MySQL TIME is often returned as timedelta
+        if isinstance(ev_time, timedelta):
+            total_seconds = ev_time.total_seconds()
+            hours = int(total_seconds // 3600)
+            minutes = int((total_seconds % 3600) // 60)
+            seconds = int(total_seconds % 60)
+            event_time_obj = time(hour=hours, minute=minutes, second=seconds)
+        else:
+            event_time_obj = ev_time  # already a time object
+        event['event_time_formatted'] = event_time_obj.strftime("%I:%M %p")
     else:
         event['event_time_formatted'] = None
 
+    # Make sure the template can show the correct image
+    event['image_url'] = event['image_url'] if event['image_url'] else None
+
     return render_template("view_user_event.html", event=event)
+
 
 
 from flask import Flask, render_template, session, redirect, url_for, flash
@@ -346,24 +362,24 @@ def user_dashboard():
 
 @app.route('/all_ministries')
 def all_ministries():
-    if 'email' not in session:
-        return redirect('/login')
-    
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("""
-        SELECT ministry_id, ministry_name, description
-        FROM ministries
-        ORDER BY ministry_name
-    """)
     
+    cursor.execute("SELECT * FROM ministries")
     ministries = cursor.fetchall()
 
     cursor.close()
     conn.close()
-    
-    return render_template('all_ministries.html', ministries=ministries)
 
+    # Pass profile_pic from session (or default if not set)
+    profile_pic = session.get('profile_pic', 'default-profile.png')
+    
+    return render_template('all_ministries.html', ministries=ministries, profile_pic=profile_pic)
+
+
+@app.context_processor
+def inject_profile_pic():
+    return dict(profile_pic=session.get('profile_pic', 'default-profile.png'))
 
 
 @app.route('/ministry/<int:ministry_id>')
@@ -411,7 +427,10 @@ def all_lifegroups():
     cursor.close()
     conn.close()
     
-    return render_template('all_lifegroups.html', lifegroups=lifegroups)
+    # Get profile picture from session, fallback to default
+    profile_pic = session.get('profile_pic', 'default-profile.png')
+    
+    return render_template('all_lifegroups.html', lifegroups=lifegroups, profile_pic=profile_pic)
 
 
 @app.route('/view_lifegroup/<int:lifegroup_id>')
@@ -430,7 +449,10 @@ def view_lifegroup(lifegroup_id):
         flash("Life Group not found", "danger")
         return redirect('/all_lifegroups')
     
-    return render_template('user_view_lifegroup.html', lifegroup=lifegroup)
+    # Pass profile_pic to template
+    profile_pic = session.get('profile_pic', 'default-profile.png')
+    return render_template('user_view_lifegroup.html', lifegroup=lifegroup, profile_pic=profile_pic)
+
 
 
 @app.route('/update_profile', methods=['GET', 'POST'])
@@ -719,15 +741,24 @@ def edit_member(member_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    # Fetch member details
     cursor.execute("SELECT * FROM members WHERE member_id = %s", (member_id,))
     member = cursor.fetchone()
 
+    if not member:
+        cursor.close()
+        conn.close()
+        flash("Member not found.", "danger")
+        return redirect(url_for("view_members"))
+
+    # Fetch ministries and lifegroups
     cursor.execute("SELECT * FROM ministries ORDER BY ministry_name")
     ministries = cursor.fetchall()
 
     cursor.execute("SELECT * FROM lifegroups ORDER BY lifegroup_name")
     lifegroups = cursor.fetchall()
 
+    # Get current selections
     cursor.execute("SELECT ministry_id FROM member_ministries WHERE member_id = %s", (member_id,))
     member_ministries = [row["ministry_id"] for row in cursor.fetchall()]
 
@@ -735,10 +766,11 @@ def edit_member(member_id):
     member_lifegroups = [row["lifegroup_id"] for row in cursor.fetchall()]
 
     if request.method == "POST":
+        # Basic member info
         first_name = request.form["first_name"]
         last_name = request.form["last_name"]
         gender = request.form["gender"]
-        birth_date = request.form.get("birth_date")  
+        birth_date = request.form.get("birth_date")
         marital_status = request.form.get("marital_status")
         contact_number = request.form["contact_number"]
         email = request.form["email"]
@@ -746,6 +778,7 @@ def edit_member(member_id):
         status = request.form["status"]
         notes = request.form.get("notes")
 
+        # Update member info
         cursor.execute("""
             UPDATE members 
             SET first_name=%s, last_name=%s, gender=%s, birth_date=%s, marital_status=%s,
@@ -754,10 +787,22 @@ def edit_member(member_id):
         """, (first_name, last_name, gender, birth_date, marital_status,
               contact_number, email, address, status, notes, member_id))
 
+        # Handle profile picture
+        if "profile_pic" in request.files:
+            file = request.files["profile_pic"]
+            if file and file.filename:
+                filename = secure_filename(file.filename)
+                filepath = os.path.join("static/uploads", filename)
+                file.save(filepath)
+                # Update profile_pic in DB
+                cursor.execute("UPDATE members SET profile_pic=%s WHERE member_id=%s", (filename, member_id))
+
+        # Update ministries
         cursor.execute("DELETE FROM member_ministries WHERE member_id=%s", (member_id,))
         for mid in request.form.getlist("ministries"):
             cursor.execute("INSERT INTO member_ministries (member_id, ministry_id) VALUES (%s, %s)", (member_id, mid))
 
+        # Update lifegroups
         cursor.execute("DELETE FROM member_lifegroups WHERE member_id=%s", (member_id,))
         for lid in request.form.getlist("lifegroups"):
             cursor.execute("INSERT INTO member_lifegroups (member_id, lifegroup_id) VALUES (%s, %s)", (member_id, lid))
@@ -1577,13 +1622,12 @@ def delete_expense(id):
 
     flash("Expense deleted successfully!", "success")
     return redirect(url_for('view_expenses'))
-
 @app.route('/admin/add_event', methods=['GET', 'POST'])
 def add_event():
     if request.method == 'POST':
         event_name = request.form['event_name']
         event_date = request.form['event_date']
-        event_time = request.form["event_time"] 
+        event_time = request.form['event_time']
         description = request.form['description']
         location = request.form['location']
 
@@ -1595,7 +1639,7 @@ def add_event():
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
-                image_url = filename  # Store relative path (e.g., 'uploads/image.jpg')
+                image_url = filename
             else:
                 flash('Invalid file type. Only PNG, JPG, JPEG, GIF allowed.', 'danger')
                 return redirect(request.url)
@@ -1615,6 +1659,8 @@ def add_event():
 
     return render_template('add_event.html')
 
+
+# ===================== View Events =====================
 @app.route('/admin/view_events')
 def view_events():
     conn = get_db_connection()
@@ -1625,39 +1671,48 @@ def view_events():
     conn.close()
 
     for ev in events:
-        if ev['event_time']:
-            t = datetime.strptime(str(ev['event_time']), "%H:%M:%S")
+        ev_time = ev.get('event_time')
+        if isinstance(ev_time, time):
+            ev['event_time_formatted'] = ev_time.strftime("%I:%M %p")
+        elif isinstance(ev_time, timedelta):
+            total_seconds = ev_time.total_seconds()
+            hours = int(total_seconds // 3600)
+            minutes = int((total_seconds % 3600) // 60)
+            seconds = int(total_seconds % 60)
+            t = time(hour=hours, minute=minutes, second=seconds)
             ev['event_time_formatted'] = t.strftime("%I:%M %p")
         else:
             ev['event_time_formatted'] = ""
 
     return render_template('view_events.html', events=events)
 
+
+# ===================== Edit Event =====================
 @app.route('/admin/edit_event/<int:event_id>', methods=['GET', 'POST'])
 def edit_event(event_id):
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True) 
-    
+    cursor = conn.cursor(dictionary=True)
+
     if request.method == 'POST':
         event_name = request.form['event_name']
         event_date = request.form['event_date']
+        event_time = request.form['event_time']
         description = request.form['description']
-        event_time = request.form["event_time"] 
         location = request.form['location']
 
-        # Handle image upload (optional update)
+        # Handle image upload
         image_url = None
         if 'image' in request.files:
             file = request.files['image']
             if file and allowed_file(file.filename):
-                # Delete old image if exists
+                # Delete old image
                 cursor.execute("SELECT image_url FROM events WHERE event_id=%s", (event_id,))
                 old_image = cursor.fetchone()
                 if old_image and old_image['image_url']:
                     old_path = os.path.join(app.config['UPLOAD_FOLDER'], old_image['image_url'])
                     if os.path.exists(old_path):
                         os.remove(old_path)
-                
+
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
@@ -1670,41 +1725,44 @@ def edit_event(event_id):
         if image_url:
             cursor.execute("""
                 UPDATE events
-                SET event_name=%s, event_date=%s, description=%s, event_time=%s, location=%s, image_url=%s
+                SET event_name=%s, event_date=%s, event_time=%s, description=%s, location=%s, image_url=%s
                 WHERE event_id=%s
-            """, (event_name, event_date, description, event_time, location, image_url, event_id))
+            """, (event_name, event_date, event_time, description, location, image_url, event_id))
         else:
             cursor.execute("""
                 UPDATE events
-                SET event_name=%s, event_date=%s, description=%s, event_time=%s, location=%s
+                SET event_name=%s, event_date=%s, event_time=%s, description=%s, location=%s
                 WHERE event_id=%s
-            """, (event_name, event_date, description, event_time, location, event_id))
-        
+            """, (event_name, event_date, event_time, description, location, event_id))
+
         conn.commit()
         cursor.close()
         conn.close()
         flash("Event updated successfully!", "success")
         return redirect(url_for('view_events'))
 
+    # GET method: fetch event
     cursor.execute("SELECT * FROM events WHERE event_id=%s", (event_id,))
     event = cursor.fetchone()
     cursor.close()
     conn.close()
     return render_template('edit_event.html', event=event)
 
+
+# ===================== Delete Event =====================
 @app.route('/admin/delete_event/<int:event_id>')
 def delete_event(event_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     # Delete associated image file
     cursor.execute("SELECT image_url FROM events WHERE event_id=%s", (event_id,))
     event = cursor.fetchone()
-    if event and event[0]:  # event[0] is image_url
+    if event and event[0]:
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], event[0])
         if os.path.exists(image_path):
             os.remove(image_path)
-    
+
     cursor.execute("DELETE FROM events WHERE event_id=%s", (event_id,))
     conn.commit()
     cursor.close()
@@ -1712,6 +1770,8 @@ def delete_event(event_id):
     flash("Event deleted successfully!", "danger")
     return redirect(url_for('view_events'))
 
+from datetime import datetime, timedelta, time 
+# ===================== Event Detail =====================
 @app.route('/event/<int:event_id>')
 def event_detail(event_id):
     conn = get_db_connection()
@@ -1724,11 +1784,21 @@ def event_detail(event_id):
     if event is None:
         return "Event not found", 404
 
-    # Format time if you need
-    event['event_time_formatted'] = event['event_time'].strftime('%I:%M %p') if event['event_time'] else ""
+    if event['event_time']:
+        # Convert MySQL TIME (timedelta) to proper time object
+        if isinstance(event['event_time'], timedelta):
+            total_seconds = event['event_time'].total_seconds()
+            hours = int(total_seconds // 3600)
+            minutes = int((total_seconds % 3600) // 60)
+            seconds = int(total_seconds % 60)
+            time_obj = time(hour=hours, minute=minutes, second=seconds)
+        else:
+            time_obj = event['event_time']  # already a time object
+        event['event_time_formatted'] = time_obj.strftime('%I:%M %p')
+    else:
+        event['event_time_formatted'] = ""
 
     return render_template('event_detail.html', event=event)
-
 
 
 if __name__ == "__main__":

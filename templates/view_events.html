@@ -295,23 +295,6 @@ function updateDateTime() {
 }
 setInterval(updateDateTime, 1000);
 updateDateTime();
-
-function showEventModal(element) {
-  const name = element.getAttribute('data-name');
-  const date = element.getAttribute('data-date');
-  const time = element.getAttribute('data-time');
-  const description = element.getAttribute('data-description');
-  const location = element.getAttribute('data-location');
-
-  document.getElementById('modalEventName').textContent = name;
-  document.getElementById('modalEventDate').textContent = date;
-  document.getElementById('modalEventTime').textContent = time;
-  document.getElementById('modalEventDescription').textContent = description;
-  document.getElementById('modalEventLocation').textContent = location;
-
-  const modal = new bootstrap.Modal(document.getElementById('eventModal'));
-  modal.show();
-}
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

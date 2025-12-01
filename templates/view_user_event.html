@@ -84,9 +84,13 @@
         <p><strong><i class="fa-solid fa-file-alt me-2"></i>Description:</strong></p>
         <p class="ms-3">{{ event.description or 'No description available.' }}</p>
       </div>
-      <div class="col-md-4 text-center">
-        <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" alt="Event Image" class="img-fluid rounded mb-3" style="max-height: 200px;">
-      </div>
+     <div class="col-md-4 text-center">
+    <img 
+        src="{% if event.image_url %}{{ url_for('static', filename='uploads/' ~ event.image_url) }}{% else %}{{ url_for('static', filename='images/cross-background.jpg') }}{% endif %}" 
+        class="img-fluid rounded mb-3" 
+        style="max-height: 200px;" 
+        alt="{{ event.event_name }}">
+</div>
     </div>
     <div class="text-center mt-4">
       <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Back to Dashboard</a>
