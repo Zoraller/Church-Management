@@ -195,6 +195,7 @@
   {% if past_events %}
     {% for event in past_events %}
       <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
+        <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
         <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
         <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
         <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
