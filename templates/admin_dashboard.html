@@ -10,276 +10,134 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body { background: #f8f9fa; font-family: Arial, sans-serif; }
+body { background: #f8f9fa; font-family: Arial, sans-serif; margin: 0; }
 .sidebar { 
-  height: 100vh; 
-  background: #4b4f53ff; 
-  color: white; 
-  position: fixed; 
-  width: 220px; 
-  padding-top: 20px; 
-  left: -220px; /* Hidden by default on mobile */
-  transition: left 0.3s ease; 
-  z-index: 1001; 
+  height: 100vh; background: #4b4f53ff; color: white; 
+  position: fixed; width: 220px; padding-top: 20px; 
+  left: -220px; transition: left 0.3s ease; z-index: 1001; 
 }
-.sidebar.show { left: 0; } /* Show on toggle */
+.sidebar.show { left: 0; }
 .sidebar a { color: white; display: block; padding: 10px 20px; text-decoration: none; }
 .sidebar a:hover { background: #495057; }
-.main-content { 
-  margin-left: 0; /* No margin on mobile */
-  margin-right: 0; 
-  padding: 20px; 
-  padding-bottom: 80px; /* Space for bottom nav */
-}
-.right-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 300px;
-  height: 100vh;
-  background: #f8f9fa;
-  z-index: 1000;
-  overflow-y: auto;
-  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-  display: block;
-  padding-top: 60px; /* Added padding to lower the events panel */
-}
-@media (max-width: 768px) {
-  .right-panel {
-    display: none;
-  }
-  .main-content {
-    margin-right: 0;
-  }
-}
-.time-card {
-  display: inline-block;
-  padding: 6px 12px;
-  font-size: 0.7rem;    
-  font-weight: bold;
-  color: #ffffff;          
-  background: #616d79ff;    
-  border-radius: 8px;      
-  box-shadow: 0 2px 6px rgba(202, 190, 190, 0.2);
-  font-family: 'Arial', sans-serif;
-}
-
-.profile-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-.sidebar-logo {
-  max-width: 120px;
-  border-radius: 50%;
-  padding: 5px;
-  background: #343a40;
-}
+.main-content { margin-left: 0; margin-right: 0; padding: 20px; padding-bottom: 80px; }
+.right-panel { position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background: #f8f9fa; z-index: 1000; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.1); padding-top: 60px; }
+@media (max-width: 768px) { .right-panel { display: none; } .main-content { margin-right: 0; } }
+.time-card { display: inline-block; padding: 6px 12px; font-size: 0.7rem; font-weight: bold; color: #fff; background: #616d79ff; border-radius: 8px; box-shadow: 0 2px 6px rgba(202,190,190,0.2); }
+.profile-icon { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
+.sidebar-logo { max-width: 120px; border-radius: 50%; padding: 5px; background: #343a40; }
 .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(-2px); transition: all 0.2s ease-in-out; }
-.box-card {
-  background: #ffffff;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
-  height: 100%;
-}
-.box-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-}
+.box-card { background: #fff; border-radius: 15px; padding: 20px; box-shadow: 0 6px 15px rgba(0,0,0,0.1); transition: all 0.3s ease; height: 100%; }
+.box-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
 .box-card h5 { font-weight: bold; }
-.box-card p { margin: 0; font-size: 0.95rem; }
+.box-card p { margin: 0; font-size: 0.95rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
 .box-card i { color: #007bff; }
 .box-card:hover i { color: #0056b3; }
-.event-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    text-decoration: none;
-    color: inherit;
-  }
-  .event-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    text-decoration: none;
-    color: inherit;
-  }
-  .card-body::-webkit-scrollbar {
-    width: 6px;
-  }
-  .card-body::-webkit-scrollbar-thumb {
-    background-color: rgba(0,0,0,0.2);
-    border-radius: 10px;
-  }
-  .text-success { color: #28a745 !important; }
-  .text-danger { color: #dc3545 !important; }
-
-  /* Bottom Navigation */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #4b4f53ff;
-    color: white;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    z-index: 1000;
-  }
-  .bottom-nav a {
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    flex: 1;
-  }
-  .bottom-nav i { font-size: 1.2rem; }
-  .bottom-nav span { display: block; font-size: 0.8rem; }
-
-  /* Hamburger Menu */
-  .hamburger {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1002;
-    background: #4b4f53ff;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  .overlay { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(0,0,0,0.5); 
-    z-index: 1000; 
-    display: none; 
-  }
-  .overlay.show { display: block; }
-
-  /* Mobile Adjustments */
-  @media (min-width: 769px) {
-    .sidebar { left: 0; } /* Show sidebar on desktop */
-    .main-content { margin-left: 220px; margin-right: 300px; }
-    .right-panel { display: block; }
-    .bottom-nav { display: none; }
-    .hamburger { display: none; }
-  }
+.event-card { transition: transform 0.2s ease, box-shadow 0.2s ease; padding: 10px; border-bottom: 1px solid #ddd; text-decoration: none; color: inherit; }
+.event-card:hover { transform: translateY(-2px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-decoration: none; color: inherit; }
+.card-body::-webkit-scrollbar { width: 6px; }
+.card-body::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); border-radius: 10px; }
+.text-success { color: #28a745 !important; }
+.text-danger { color: #dc3545 !important; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #4b4f53ff; color: white; display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
+.bottom-nav a { color: white; text-decoration: none; text-align: center; flex: 1; }
+.bottom-nav i { font-size: 1.2rem; }
+.bottom-nav span { display: block; font-size: 0.8rem; }
+.hamburger { position: fixed; top: 10px; left: 10px; z-index: 1002; background: #4b4f53ff; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+.overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; }
+.overlay.show { display: block; }
+@media (min-width: 769px) { .sidebar { left: 0; } .main-content { margin-left: 220px; margin-right: 300px; } .right-panel { display: block; } .bottom-nav { display: none; } .hamburger { display: none; } }
 </style>
 </head>
 <body>
 
-<div class="sidebar">
-<div class="text-center">
-<img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
-</div>
-<hr>
-   <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a>
+<!-- Hamburger & Overlay -->
+<button id="hamburgerBtn" class="hamburger"><i class="fa-solid fa-bars"></i></button>
+<div id="overlay" class="overlay"></div>
 
-    <a class="collapsed" data-bs-toggle="collapse"
-    href="#membersDropdown" role="button" aria-expanded="false" aria-controls="membersDropdown">
-        <i class="fa-solid fa-users"></i> Members
-        <i class="fa-solid fa-chevron-down float-end"></i>
-    </a>
-    <div class="collapse" id="membersDropdown">
-        <a href="{{ url_for('add_members') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add Member</a>
-        <a href="{{ url_for('view_members') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Members</a>
-    </div>
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+  <div class="text-center"><img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo"></div>
+  <hr>
+  <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a>
 
-    <a class="collapsed" data-bs-toggle="collapse"
-    href="#ministriesDropdown" role="button" aria-expanded="false" aria-controls="ministriesDropdown">
-        <i class="fa-solid fa-church"></i> Ministries
-        <i class="fa-solid fa-chevron-down float-end"></i>
-    </a>
-    <div class="collapse" id="ministriesDropdown">
-        <a href="{{ url_for('add_ministry') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Ministry</a>
-        <a href="{{ url_for('admin_ministries') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Ministries</a>
-    </div>
-
-    <a class="collapsed" data-bs-toggle="collapse"
-    href="#lifegroupsDropdown" role="button" aria-expanded="false" aria-controls="lifegroupsDropdown">
-        <i class="fa-solid fa-people-group"></i> Life Groups
-        <i class="fa-solid fa-chevron-down float-end"></i>
-    </a>
-    <div class="collapse" id="lifegroupsDropdown">
-       <a href="{{ url_for('add_lifegroup') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add LifeGroup</a>
-        <a href="{{ url_for('admin_lifegroups') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Life Groups</a>
-    </div>
-
-    <a class="collapsed" data-bs-toggle="collapse"
-    href="#tithesDropdown" role="button" aria-expanded="false" aria-controls="tithesDropdown">
-        <i class="fa-solid fa-hand-holding-dollar"></i> Tithes & Expenses
-        <i class="fa-solid fa-chevron-down float-end"></i>
-    </a>
-    <div class="collapse" id="tithesDropdown">
-        <a href="{{ url_for('add_tithe') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Tithe</a>
-        <a href="{{ url_for('view_tithes') }}" class="ps-4 d-block active"><i class="fa-solid fa-table me-2"></i> View Tithes</a>
-        <a href="{{ url_for('add_expense') }}" class="ps-4 d-block"><i class="fa-solid fa-circle-plus me-2"></i> Add Expense</a>
-        <a href="{{ url_for('view_expenses') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Expenses</a>
-    </div>
-
-    <a class="collapsed" data-bs-toggle="collapse"
-     href="#eventsDropdown" role="button" aria-expanded="false" aria-controls="eventsDropdown">
-    <i class="fa-solid fa-calendar-days"></i> Events
-    <i class="fa-solid fa-chevron-down float-end"></i>
+  <!-- Members Dropdown -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#membersDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-users"></i> Members <i class="fa-solid fa-chevron-down float-end"></i>
   </a>
-  <div class="collapse" id="eventsDropdown">
-    <a href="{{ url_for('add_event') }}" class="ps-4 d-block">
-      <i class="fa-solid fa-plus me-2"></i> Add Event
-    </a>
-    <a href="{{ url_for('view_events') }}" class="ps-4 d-block">
-      <i class="fa-solid fa-list me-2"></i> View Events
-    </a>
+  <div class="collapse" id="membersDropdown">
+    <a href="{{ url_for('add_members') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add Member</a>
+    <a href="{{ url_for('view_members') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Members</a>
   </div>
 
-    <a class="collapsed" data-bs-toggle="collapse"
-    href="#usersDropdown" role="button" aria-expanded="false">
-        <i class="fa-solid fa-user"></i> Users
-        <i class="fa-solid fa-chevron-down float-end"></i>
-    </a>
-    <div class="collapse" id="usersDropdown">
-        <a href="{{ url_for('add_user') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add User</a>
-        <a href="{{ url_for('view_users') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> All Users</a>
-    </div>
+  <!-- Ministries Dropdown -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#ministriesDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-church"></i> Ministries <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="ministriesDropdown">
+    <a href="{{ url_for('add_ministry') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Ministry</a>
+    <a href="{{ url_for('admin_ministries') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Ministries</a>
+  </div>
+
+  <!-- Life Groups Dropdown -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#lifegroupsDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-people-group"></i> Life Groups <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="lifegroupsDropdown">
+    <a href="{{ url_for('add_lifegroup') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add LifeGroup</a>
+    <a href="{{ url_for('admin_lifegroups') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Life Groups</a>
+  </div>
+
+  <!-- Tithes & Expenses Dropdown -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#tithesDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-hand-holding-dollar"></i> Tithes & Expenses <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="tithesDropdown">
+    <a href="{{ url_for('add_tithe') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Tithe</a>
+    <a href="{{ url_for('view_tithes') }}" class="ps-4 d-block active"><i class="fa-solid fa-table me-2"></i> View Tithes</a>
+    <a href="{{ url_for('add_expense') }}" class="ps-4 d-block"><i class="fa-solid fa-circle-plus me-2"></i> Add Expense</a>
+    <a href="{{ url_for('view_expenses') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Expenses</a>
+  </div>
+
+  <!-- Events Dropdown -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#eventsDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-calendar-days"></i> Events <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="eventsDropdown">
+    <a href="{{ url_for('add_event') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Event</a>
+    <a href="{{ url_for('view_events') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Events</a>
+  </div>
+
+  <!-- Users Dropdown -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#usersDropdown" role="button" aria-expanded="false">
+    <i class="fa-solid fa-user"></i> Users <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="usersDropdown">
+    <a href="{{ url_for('add_user') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add User</a>
+    <a href="{{ url_for('view_users') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> All Users</a>
+  </div>
 </div>
 
-<div class="right-panel" id="rightPanel">
-  <div class="card shadow-sm mb-4" style="max-width: 500px;">
+<!-- Right Panel -->
+<div class="right-panel">
+  <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white fw-bold">
       <span><i class="fa-solid fa-calendar-days me-2"></i> Events</span>
     </div>
-
-    <!-- Search box -->
     <div class="p-1">
       <input type="text" id="eventSearch" class="form-control form-control-sm" placeholder="Search events...">
     </div>
-
-    <!-- Tabs moved below search -->
     <ul class="nav nav-tabs nav-fill small" id="eventTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="true">
-          Upcoming
-        </button>
+      <li class="nav-item">
+        <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button">Upcoming</button>
       </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button" role="tab" aria-controls="past" aria-selected="false">
-          Past
-        </button>
+      <li class="nav-item">
+        <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button">Past</button>
       </li>
     </ul>
-
-    <div class="card-body p-1" style="max-height: 250px; overflow-y: auto;">
-      <div class="tab-content" id="eventTabsContent">
-          <!-- Upcoming Events -->
-    <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
-      {% if upcoming_events %}
-        {% for event in upcoming_events %}
+    <div class="card-body p-1" style="max-height:250px; overflow-y:auto;">
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="upcoming">
+          {% for event in upcoming_events %}
           <a href="{{ url_for('event_detail', event_id=event.event_id) }}" class="event-card">
             <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
             <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date }}</p>
@@ -287,16 +145,12 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
             <p class="small text-muted mb-1">{{ event.description }}</p>
             <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
           </a>
-        {% endfor %}
-      {% else %}
-        <p class="text-muted text-center mb-0 small">No upcoming events.</p>
-      {% endif %}
-    </div>
-
-    <!-- Past Events -->
-    <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
-      {% if past_events %}
-        {% for event in past_events %}
+          {% else %}
+          <p class="text-muted text-center mb-0 small">No upcoming events.</p>
+          {% endfor %}
+        </div>
+        <div class="tab-pane fade" id="past">
+          {% for event in past_events %}
           <a href="{{ url_for('event_detail', event_id=event.event_id) }}" class="event-card">
             <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
             <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date }}</p>
@@ -304,238 +158,113 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
             <p class="small text-muted mb-1">{{ event.description }}</p>
             <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
           </a>
-        {% endfor %}
-      {% else %}
-        <p class="text-muted text-center mb-0 small">No past events.</p>
-      {% endif %}
-    </div>
+          {% else %}
+          <p class="text-muted text-center mb-0 small">No past events.</p>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-
+<!-- Main Content -->
 <div class="main-content">
-<div id="datetime" class="time-card mb-2"></div>
+  <div id="datetime" class="time-card mb-2"></div>
 
-<div class="row text-center mb-4">
-  <div class="col-md-4 mb-3">
-    <a href="{{ url_for('view_members') }}" class="text-decoration-none">
-      <div class="card box-card p-3 shadow-sm">
-        <h5 class="fw-bold text-primary"><i class="fa-solid fa-users me-2"></i>Members</h5>
-        <p class="mb-0">Total: {{ total_members }}</p>
-      </div>
-    </a>
-  </div>
-  <div class="col-md-4 mb-3">
-    <a href="{{ url_for('admin_ministries') }}" class="text-decoration-none">
-      <div class="card box-card p-3 shadow-sm">
-        <h5 class="fw-bold text-primary"><i class="fa-solid fa-church me-2"></i>Ministries</h5>
-        <p class="mb-0">Total: {{ total_ministries }}</p>
-      </div>
-    </a>
-  </div>
-  <div class="col-md-4 mb-3">
-    <a href="{{ url_for('admin_lifegroups') }}" class="text-decoration-none">
-      <div class="card box-card p-3 shadow-sm">
-        <h5 class="fw-bold text-primary"><i class="fa-solid fa-people-group me-2"></i>Life Groups</h5>
-        <p class="mb-0">Total: {{ total_lifegroups }}</p>
-      </div>
-    </a>
-  </div>
-</div>
-
-
-<div id="calendar" class="mb-4"></div>
-
-<div class="row mb-4 justify-content-center">
-  <div class="col-md-5">
-    <div class="card p-3 text-center shadow-sm">
-      <h5 class="fw-bold text-success"><i class="fa-solid fa-hand-holding-dollar me-2"></i>Tithes</h5>
-
-      <form method="get" action="{{ url_for('view_tithes') }}">
-        <div class="mb-2">
-          <select id="filterTypeTithes" name="filter_type"
-                  class="form-select form-select-sm w-auto mx-auto"
-                  onchange="toggleInput('tithes')">
-            <option value="day_month" selected>By Day / Month</option>
-            <option value="year">By Year</option>
-          </select>
+  <div class="row text-center mb-4">
+    <div class="col-md-4 mb-3">
+      <a href="{{ url_for('view_members') }}" class="text-decoration-none">
+        <div class="card box-card p-3 shadow-sm">
+          <h5 class="fw-bold text-primary"><i class="fa-solid fa-users me-2"></i>Members</h5>
+          <p class="mb-0">Total: {{ total_members }}</p>
         </div>
-
-        <input type="date" id="dateInputTithes" name="date"
-               class="form-control form-control-sm w-auto mx-auto">
-        <input type="month" id="monthInputTithes" name="month"
-               class="form-control form-control-sm w-auto mx-auto d-none">
-        <input type="number" id="yearInputTithes" name="year" min="2000" max="2100"
-               placeholder="Enter year"
-               class="form-control form-control-sm w-auto mx-auto d-none">
-
-        <button class="btn btn-primary btn-sm mt-2">View</button>
-      </form>
-
-      <p class="mt-3 mb-0">Total: ₱{{ total_tithes }}</p>
+      </a>
     </div>
-  </div>
-
-  <div class="col-md-5">
-    <div class="card p-3 text-center shadow-sm">
-      <h5 class="fw-bold text-danger"><i class="fa-solid fa-money-bill-wave me-2"></i>Expenses</h5>
-
-      <form method="get" action="{{ url_for('view_expenses') }}">
-        <div class="mb-2">
-          <select id="filterTypeExpenses" name="filter_type"
-                  class="form-select form-select-sm w-auto mx-auto"
-                  onchange="toggleInput('expenses')">
-            <option value="day_month" selected>By Day / Month</option>
-            <option value="year">By Year</option>
-          </select>
+    <div class="col-md-4 mb-3">
+      <a href="{{ url_for('admin_ministries') }}" class="text-decoration-none">
+        <div class="card box-card p-3 shadow-sm">
+          <h5 class="fw-bold text-primary"><i class="fa-solid fa-church me-2"></i>Ministries</h5>
+          <p class="mb-0">Total: {{ total_ministries }}</p>
         </div>
-
-        <input type="date" id="dateInputExpenses" name="date"
-               class="form-control form-control-sm w-auto mx-auto">
-        <input type="month" id="monthInputExpenses" name="month"
-               class="form-control form-control-sm w-auto mx-auto d-none">
-        <input type="number" id="yearInputExpenses" name="year" min="2000" max="2100"
-               placeholder="Enter year"
-               class="form-control form-control-sm w-auto mx-auto d-none">
-
-        <button class="btn btn-primary btn-sm mt-2">View</button>
-      </form>
-
-      <p class="mt-3 mb-0">Total: ₱{{ total_expenses }}</p>
+      </a>
+    </div>
+    <div class="col-md-4 mb-3">
+      <a href="{{ url_for('admin_lifegroups') }}" class="text-decoration-none">
+        <div class="card box-card p-3 shadow-sm">
+          <h5 class="fw-bold text-primary"><i class="fa-solid fa-people-group me-2"></i>Life Groups</h5>
+          <p class="mb-0">Total: {{ total_lifegroups }}</p>
+        </div>
+      </a>
     </div>
   </div>
-</div>
-</div>
 
-<!-- Bottom Navigation for Mobile -->
-<div class="bottom-nav">
-  <a href="{{ url_for('admin_dashboard') }}">
-    <i class="fa-solid fa-house"></i>
-    <span>Dashboard</span>
-  </a>
-  <a href="{{ url_for('view_members') }}">
-    <i class="fa-solid fa-users"></i>
-    <span>Members</span>
-  </a>
-  <a href="{{ url_for('view_events') }}">
-    <i class="fa-solid fa-calendar-days"></i>
-    <span>Events</span>
-  </a>
-  <a href="#profile" data-bs-toggle="modal" data-bs-target="#profileModal">
-    <i class="fa-solid fa-user"></i>
-    <span>Profile</span>
-  </a>
-</div>
+  <div id="calendar" class="mb-4"></div>
 
-<!-- Profile Modal for Mobile -->
-<div class="modal fade" id="profileModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Profile</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon mb-3">
-        <a href="/logout" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+  <!-- Bottom nav for mobile -->
+  <div class="bottom-nav">
+    <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+    <a href="{{ url_for('view_members') }}"><i class="fa-solid fa-users"></i><span>Members</span></a>
+    <a href="{{ url_for('view_events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
+    <a href="#profile" data-bs-toggle="modal" data-bs-target="#profileModal"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="modal fade" id="profileModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Profile</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body text-center">
+          <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon mb-3">
+          <a href="/logout" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
 <script>
+// FullCalendar
 document.addEventListener('DOMContentLoaded', function() {
-  const calendarEl = document.getElementById('calendar');
-
-  const calendar = new FullCalendar.Calendar(calendarEl, {
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    },
+    headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
     events: [
       {% for ev in events %}
-      {
-        title: "{{ ev.event_name }}",
-        start: "{{ ev.event_date }}",
-        url: "{{ ev.link if 'link' in ev else '#' }}",
-        description: "{{ ev.description }}"
-      },
+      { title: "{{ ev.event_name }}", start: "{{ ev.event_date }}", url: "{{ ev.link if 'link' in ev else '#' }}", description: "{{ ev.description }}" },
       {% endfor %}
     ],
-    eventClick: function(info) {
-      if (info.event.url && info.event.url != "#") {
-        window.open(info.event.url, "_blank");
-        info.jsEvent.preventDefault(); 
-      }
-    }
+    eventClick: function(info) { if(info.event.url && info.event.url!="#"){window.open(info.event.url,"_blank"); info.jsEvent.preventDefault();} }
   });
-
   calendar.render();
 });
-</script>
 
-<script>
-function toggleInput(type) {
-  const filterType = document.getElementById(`filterType${type.charAt(0).toUpperCase() + type.slice(1)}`).value;
-  const dateInput = document.getElementById(`dateInput${type.charAt(0).toUpperCase() + type.slice(1)}`);
-  const monthInput = document.getElementById(`monthInput${type.charAt(0).toUpperCase() + type.slice(1)}`);
-  const yearInput = document.getElementById(`yearInput${type.charAt(0).toUpperCase() + type.slice(1)}`);
+// Toggle sidebar
+const hamburger = document.getElementById('hamburgerBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+hamburger.addEventListener('click', () => { sidebar.classList.toggle('show'); overlay.classList.toggle('show'); });
+overlay.addEventListener('click', () => { sidebar.classList.remove('show'); overlay.classList.remove('show'); });
 
-  dateInput.classList.add('d-none');
-  monthInput.classList.add('d-none');
-  yearInput.classList.add('d-none');
-
-  if (filterType === 'day_month') {
-    dateInput.classList.remove('d-none');
-    monthInput.classList.remove('d-none');
-  }
-  if (filterType === 'year') {
-    yearInput.classList.remove('d-none');
-  }
-}
-</script>
-<script>
-  // Event search filter
-  document.getElementById('eventSearch').addEventListener('input', function() {
-    const filter = this.value.toLowerCase();
-    const events = document.querySelectorAll('.event-card');
-    events.forEach(event => {
-      const text = event.textContent.toLowerCase();
-      event.style.display = text.includes(filter) ? '' : 'none';
-    });
-  });
-</script>
-
-<script>
-function updateDateTime() {
+// Clock
+function updateClock() {
   const now = new Date();
-  const date = now.toLocaleDateString('en-US', { month:'2-digit', day:'2-digit', year:'numeric' });
-  const time = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute:'2-digit', second:'2-digit' });
-  document.getElementById('datetime').innerText = `${date} ${time}`;
+  document.getElementById('datetime').innerText = now.toLocaleString();
 }
+setInterval(updateClock, 1000);
+updateClock();
 
-
-setInterval(updateDateTime, 1000);
-updateDateTime();
+// Event search
+document.getElementById('eventSearch').addEventListener('input', function() {
+  let query = this.value.toLowerCase();
+  document.querySelectorAll('.event-card').forEach(card => {
+    card.style.display = card.innerText.toLowerCase().includes(query) ? '' : 'none';
+  });
+});
 </script>
-  // Hamburger Menu Toggle
-document.getElementById('hamburgerBtn').addEventListener('click', function() {
-  document.getElementById('sidebar').classList.toggle('show');
-  document.getElementById('overlay').classList.toggle('show');
-});
-document.getElementById('overlay').addEventListener('click', function() {
-  document.getElementById('sidebar').classList.remove('show');
-  document.getElementById('overlay').classList.remove('show');
-});
+
 </body>
 </html>
-
-
-
-
