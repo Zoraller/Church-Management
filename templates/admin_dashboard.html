@@ -180,9 +180,9 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
 
 <!-- Overlay for Mobile Sidebar -->
 <div class="overlay" id="overlay"></div>
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
 <div class="text-center">
-<img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
+<img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="logo">
 </div>
 <hr>
    <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a>
@@ -472,7 +472,7 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon mb-3">
+        <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon mb-3" alt="User">
         <a href="/logout" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
       </div>
     </div>
@@ -485,6 +485,16 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
 document.addEventListener('DOMContentLoaded', function() {
   const calendarEl = document.getElementById('calendar');
 
+  // Use Jinja's tojson to safely pass events to JS (Flask/Jinja)
+  // In your Flask view return events as a list of dicts with keys: title, start, url (optional), description (optional)
+  let eventsData = [];
+  try {
+    eventsData = {{ events|tojson|safe }};
+  } catch (e) {
+    // fallback if template variable not present
+    eventsData = [];
+  }
+
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
     headerToolbar: {
@@ -492,82 +502,83 @@ document.addEventListener('DOMContentLoaded', function() {
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
-    events: [
-      {% for ev in events %}
-      {
-        title: "{{ ev.event_name }}",
-        start: "{{ ev.event_date }}",
-        url: "{{ ev.link if 'link' in ev else '#' }}",
-        description: "{{ ev.description }}"
-      },
-      {% endfor %}
-    ],
+    events: eventsData,
     eventClick: function(info) {
-      if (info.event.url && info.event.url != "#") {
-        window.open(info.event.url, "_blank");
-        info.jsEvent.preventDefault(); 
+      // if the event has a URL, open it in a new tab
+      if (info.event.url && info.event.url !== '#') {
+        window.open(info.event.url, '_blank');
+        info.jsEvent.preventDefault();
+      }
+    },
+    eventDidMount: function(info) {
+      // attach description as tooltip if available
+      if (info.event.extendedProps && info.event.extendedProps.description) {
+        info.el.setAttribute('title', info.event.extendedProps.description);
       }
     }
   });
 
   calendar.render();
+
+  // Event search filter (works on right-panel card list)
+  const searchInput = document.getElementById('eventSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const filter = this.value.toLowerCase();
+      const events = document.querySelectorAll('.event-card');
+      events.forEach(event => {
+        const text = event.textContent.toLowerCase();
+        event.style.display = text.includes(filter) ? '' : 'none';
+      });
+    });
+  }
+
+  // Hamburger / sidebar behaviour
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const overlay = document.getElementById('overlay');
+  const sidebarEl = document.getElementById('sidebar');
+  if (hamburgerBtn && sidebarEl && overlay) {
+    hamburgerBtn.addEventListener('click', function() {
+      sidebarEl.classList.toggle('show');
+      overlay.classList.toggle('show');
+    });
+    overlay.addEventListener('click', function() {
+      sidebarEl.classList.remove('show');
+      overlay.classList.remove('show');
+    });
+  }
 });
-</script>
 
-<script>
+// Toggle inputs for filters (tithes/expenses)
 function toggleInput(type) {
-  const filterType = document.getElementById(`filterType${type.charAt(0).toUpperCase() + type.slice(1)}`).value;
-  const dateInput = document.getElementById(`dateInput${type.charAt(0).toUpperCase() + type.slice(1)}`);
-  const monthInput = document.getElementById(`monthInput${type.charAt(0).toUpperCase() + type.slice(1)}`);
-  const yearInput = document.getElementById(`yearInput${type.charAt(0).toUpperCase() + type.slice(1)}`);
+  const idBase = type.charAt(0).toUpperCase() + type.slice(1);
+  const filterEl = document.getElementById(`filterType${idBase}`);
+  if (!filterEl) return;
+  const filterType = filterEl.value;
+  const dateInput = document.getElementById(`dateInput${idBase}`);
+  const monthInput = document.getElementById(`monthInput${idBase}`);
+  const yearInput = document.getElementById(`yearInput${idBase}`);
 
-  dateInput.classList.add('d-none');
-  monthInput.classList.add('d-none');
-  yearInput.classList.add('d-none');
+  [dateInput, monthInput, yearInput].forEach(el => { if (el) el.classList.add('d-none'); });
 
   if (filterType === 'day_month') {
-    dateInput.classList.remove('d-none');
-    monthInput.classList.remove('d-none');
-  }
-  if (filterType === 'year') {
-    yearInput.classList.remove('d-none');
+    if (dateInput) dateInput.classList.remove('d-none');
+    if (monthInput) monthInput.classList.remove('d-none');
+  } else if (filterType === 'year') {
+    if (yearInput) yearInput.classList.remove('d-none');
   }
 }
-</script>
-<script>
-  // Event search filter
-  document.getElementById('eventSearch').addEventListener('input', function() {
-    const filter = this.value.toLowerCase();
-    const events = document.querySelectorAll('.event-card');
-    events.forEach(event => {
-      const text = event.textContent.toLowerCase();
-      event.style.display = text.includes(filter) ? '' : 'none';
-    });
-  });
-  // Hamburger Menu Toggle
-document.getElementById('hamburgerBtn').addEventListener('click', function() {
-  document.getElementById('sidebar').classList.toggle('show');
-  document.getElementById('overlay').classList.toggle('show');
-});
-document.getElementById('overlay').addEventListener('click', function() {
-  document.getElementById('sidebar').classList.remove('show');
-  document.getElementById('overlay').classList.remove('show');
-});
-</script>
 
-<script>
+// Live date/time badge
 function updateDateTime() {
   const now = new Date();
   const date = now.toLocaleDateString('en-US', { month:'2-digit', day:'2-digit', year:'numeric' });
   const time = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute:'2-digit', second:'2-digit' });
-  document.getElementById('datetime').innerText = `${date} ${time}`;
+  const el = document.getElementById('datetime');
+  if (el) el.innerText = `${date} ${time}`;
 }
-
-
 setInterval(updateDateTime, 1000);
 updateDateTime();
 </script>
-  
 </body>
 </html>
-
