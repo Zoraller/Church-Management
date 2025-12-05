@@ -580,22 +580,26 @@ function updateDateTime() {
 setInterval(updateDateTime, 1000);
 updateDateTime();
 </script>
-  <script>
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-const hamburger = document.getElementById("hamburgerBtn");
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const hamburger = document.getElementById("hamburgerBtn");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
 
-hamburger.addEventListener("click", () => {
-  sidebar.classList.toggle("show");
-  overlay.classList.toggle("show");
-});
+  // Open Sidebar
+  hamburger.addEventListener("click", function () {
+    sidebar.classList.toggle("show");
+    overlay.classList.toggle("show");
+  });
 
-overlay.addEventListener("click", () => {
-  sidebar.classList.remove("show");
-  overlay.classList.remove("show");
+  // Close Sidebar when overlay is clicked
+  overlay.addEventListener("click", function () {
+    sidebar.classList.remove("show");
+    overlay.classList.remove("show");
+  });
 });
 </script>
-
 </body>
 </html>
+
 
