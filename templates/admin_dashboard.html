@@ -175,6 +175,11 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
 </head>
 <body>
 
+<!-- Hamburger Menu Button -->
+<button class="hamburger" id="hamburgerBtn"><i class="fa-solid fa-bars"></i></button>
+
+<!-- Overlay for Mobile Sidebar -->
+<div class="overlay" id="overlay"></div>
 <div class="sidebar">
 <div class="text-center">
 <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
@@ -438,6 +443,42 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
   </ul>
 </div>
 
+  <!-- Bottom Navigation for Mobile -->
+<div class="bottom-nav">
+  <a href="{{ url_for('admin_dashboard') }}">
+    <i class="fa-solid fa-house"></i>
+    <span>Dashboard</span>
+  </a>
+  <a href="{{ url_for('view_members') }}">
+    <i class="fa-solid fa-users"></i>
+    <span>Members</span>
+  </a>
+  <a href="{{ url_for('view_events') }}">
+    <i class="fa-solid fa-calendar-days"></i>
+    <span>Events</span>
+  </a>
+  <a href="#profile" data-bs-toggle="modal" data-bs-target="#profileModal">
+    <i class="fa-solid fa-user"></i>
+    <span>Profile</span>
+  </a>
+</div>
+
+<!-- Profile Modal for Mobile -->
+<div class="modal fade" id="profileModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon mb-3">
+        <a href="/logout" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
 <script>
@@ -503,6 +544,15 @@ function toggleInput(type) {
       event.style.display = text.includes(filter) ? '' : 'none';
     });
   });
+  // Hamburger Menu Toggle
+document.getElementById('hamburgerBtn').addEventListener('click', function() {
+  document.getElementById('sidebar').classList.toggle('show');
+  document.getElementById('overlay').classList.toggle('show');
+});
+document.getElementById('overlay').addEventListener('click', function() {
+  document.getElementById('sidebar').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+});
 </script>
 
 <script>
@@ -517,5 +567,7 @@ function updateDateTime() {
 setInterval(updateDateTime, 1000);
 updateDateTime();
 </script>
+  
 </body>
 </html>
+
