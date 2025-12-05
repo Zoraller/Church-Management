@@ -4,141 +4,136 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard</title>
-
-<!-- Bootstrap & FontAwesome -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
-/* ---------- General ---------- */
-body { background: #f8f9fa; font-family: Arial, sans-serif; }
-.card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: 0.2s; }
-
-/* ---------- Sidebar ---------- */
-.sidebar {
-  position: fixed; top:0; left: -220px; width: 220px; height: 100vh;
-  background: #4b4f53; color:white; padding-top:20px; transition:left 0.3s; z-index:1001;
+/* --------------------- Base --------------------- */
+body { background: #f8f9fa; font-family: Arial, sans-serif; margin:0; padding:0; }
+.sidebar { 
+  height: 100vh; background: #4b4f53; color: white; position: fixed; width: 220px; padding-top: 20px;
+  left: -220px; transition: left 0.3s ease; z-index: 1001; overflow-y:auto;
 }
-.sidebar.show { left:0; }
-.sidebar a { color:white; display:block; padding:10px 20px; text-decoration:none; }
-.sidebar a:hover { background:#495057; }
-.sidebar .sidebar-logo { max-width:120px; border-radius:50%; padding:5px; background:#343a40; display:block; margin:auto; }
-
-/* ---------- Main Content ---------- */
-.main-content { margin-left:0; margin-right:0; padding:20px; padding-bottom:80px; }
-.time-card { display:inline-block; padding:6px 12px; font-size:0.7rem; font-weight:bold; color:#fff; background:#616d79; border-radius:8px; }
-
-/* ---------- Right Panel (Events) ---------- */
-.right-panel {
-  position: fixed; top:0; right:0; width:300px; height:100vh; background:#f8f9fa; z-index:1000;
-  overflow-y:auto; box-shadow:-2px 0 5px rgba(0,0,0,0.1); padding-top:60px;
-}
-.event-card { padding:10px; border-bottom:1px solid #ddd; transition:0.2s; }
-.event-card:hover { transform:translateY(-2px); box-shadow:0 2px 8px rgba(0,0,0,0.1); text-decoration:none; color:inherit; }
+.sidebar.show { left: 0; }
+.sidebar a { color: white; display: block; padding: 10px 20px; text-decoration: none; }
+.sidebar a:hover { background: #495057; }
+.main-content { margin-left: 0; padding: 20px; padding-bottom: 80px; transition: margin-left 0.3s ease; }
+.right-panel { position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background: #f8f9fa; z-index: 1000; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.1); padding-top: 60px; transition: right 0.3s ease; }
+.time-card { display:inline-block; padding:6px 12px; font-size:0.7rem; font-weight:bold; color:#fff; background:#616d79; border-radius:8px; font-family:'Arial',sans-serif; }
+.profile-icon { width:40px; height:40px; border-radius:50%; cursor:pointer; }
+.sidebar-logo { max-width:120px; border-radius:50%; padding:5px; background:#343a40; }
+.card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.15); transform:translateY(-2px); transition: all 0.2s ease-in-out; }
+.box-card { background:#fff; border-radius:15px; padding:20px; box-shadow:0 6px 15px rgba(0,0,0,0.1); transition: all 0.3s ease; height:100%; text-align:center; }
+.box-card:hover { transform:translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.15); }
+.box-card h5 { font-weight:bold; margin-bottom:10px; }
+.event-card { transition: transform 0.2s ease, box-shadow 0.2s ease; padding:10px; border-bottom:1px solid #ddd; text-decoration:none; color:inherit; }
+.event-card:hover { transform:translateY(-2px); box-shadow:0 2px 8px rgba(0,0,0,0.1); }
 .card-body::-webkit-scrollbar { width:6px; }
-.card-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius:10px; }
+.card-body::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); border-radius:10px; }
+.text-success { color:#28a745 !important; }
+.text-danger { color:#dc3545 !important; }
 
-/* ---------- Bottom Navigation ---------- */
-.bottom-nav {
-  position: fixed; bottom:0; left:0; right:0; background:#4b4f53; color:white; display:flex; justify-content:space-around; padding:10px 0; z-index:1000;
-}
+/* Bottom Navigation */
+.bottom-nav { position: fixed; bottom:0; left:0; right:0; background:#4b4f53; color:white; display:flex; justify-content:space-around; padding:10px 0; z-index:1000; }
 .bottom-nav a { color:white; text-decoration:none; text-align:center; flex:1; }
-.bottom-nav i { font-size:1.2rem; } .bottom-nav span { display:block; font-size:0.8rem; }
+.bottom-nav i { font-size:1.2rem; }
+.bottom-nav span { display:block; font-size:0.8rem; }
 
-/* ---------- Hamburger ---------- */
+/* Hamburger */
 .hamburger { position:fixed; top:10px; left:10px; z-index:1002; background:#4b4f53; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; }
-
-/* ---------- Overlay ---------- */
 .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; }
 .overlay.show { display:block; }
 
-/* ---------- Responsive ---------- */
-@media (min-width:769px) {
-  .sidebar { left:0; } 
+/* --------------------- Responsive --------------------- */
+@media(min-width:769px) {
+  .sidebar { left:0; }
   .main-content { margin-left:220px; margin-right:300px; }
   .right-panel { display:block; }
-  .bottom-nav, .hamburger { display:none; }
+  .bottom-nav { display:none; }
+  .hamburger { display:none; }
 }
-@media (max-width:768px) {
+@media(max-width:768px){
   .right-panel { display:none; }
 }
 </style>
 </head>
 <body>
 
-<!-- Hamburger & Overlay -->
-<button class="hamburger" id="hamburgerBtn"><i class="fa-solid fa-bars"></i></button>
-<div class="overlay" id="overlay"></div>
-
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
-  <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo mb-2" alt="logo">
+  <div class="text-center mb-3"><img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo"></div>
   <hr>
-  <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house me-2"></i>Dashboard</a>
-
-  <!-- Sidebar Dropdown Example -->
-  {% macro sidebar_dropdown(icon, label, links, collapse_id) %}
-    <a class="collapsed" data-bs-toggle="collapse" href="#{{ collapse_id }}" role="button" aria-expanded="false">
-      <i class="fa-solid {{ icon }}"></i> {{ label }}
-      <i class="fa-solid fa-chevron-down float-end"></i>
-    </a>
-    <div class="collapse" id="{{ collapse_id }}">
-      {% for link in links %}
-        <a href="{{ url_for(link.endpoint) }}" class="ps-4 d-block">
-          <i class="fa-solid {{ link.icon }} me-2"></i> {{ link.label }}
-        </a>
-      {% endfor %}
-    </div>
-  {% endmacro %}
-
-  {{ sidebar_dropdown('fa-users', 'Members', [{'endpoint':'add_members','icon':'fa-user-plus','label':'Add Member'}, {'endpoint':'view_members','icon':'fa-table','label':'View Members'}], 'membersDropdown') }}
-  {{ sidebar_dropdown('fa-church', 'Ministries', [{'endpoint':'add_ministry','icon':'fa-plus','label':'Add Ministry'}, {'endpoint':'admin_ministries','icon':'fa-list','label':'View Ministries'}], 'ministriesDropdown') }}
-  {{ sidebar_dropdown('fa-people-group', 'Life Groups', [{'endpoint':'add_lifegroup','icon':'fa-plus','label':'Add LifeGroup'}, {'endpoint':'admin_lifegroups','icon':'fa-list','label':'View Life Groups'}], 'lifegroupsDropdown') }}
-  {{ sidebar_dropdown('fa-hand-holding-dollar', 'Tithes & Expenses', [
-      {'endpoint':'add_tithe','icon':'fa-plus','label':'Add Tithe'},
-      {'endpoint':'view_tithes','icon':'fa-table','label':'View Tithes'},
-      {'endpoint':'add_expense','icon':'fa-circle-plus','label':'Add Expense'},
-      {'endpoint':'view_expenses','icon':'fa-list','label':'View Expenses'}
-  ], 'tithesDropdown') }}
-  {{ sidebar_dropdown('fa-calendar-days', 'Events', [{'endpoint':'add_event','icon':'fa-plus','label':'Add Event'}, {'endpoint':'view_events','icon':'fa-list','label':'View Events'}], 'eventsDropdown') }}
-  {{ sidebar_dropdown('fa-user', 'Users', [{'endpoint':'add_user','icon':'fa-user-plus','label':'Add User'}, {'endpoint':'view_users','icon':'fa-table','label':'All Users'}], 'usersDropdown') }}
+  <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
+  <!-- Members -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#membersDropdown" role="button"><i class="fa-solid fa-users me-2"></i> Members <i class="fa-solid fa-chevron-down float-end"></i></a>
+  <div class="collapse" id="membersDropdown">
+    <a href="{{ url_for('add_members') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add Member</a>
+    <a href="{{ url_for('view_members') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Members</a>
+  </div>
+  <!-- Ministries -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#ministriesDropdown"><i class="fa-solid fa-church me-2"></i> Ministries <i class="fa-solid fa-chevron-down float-end"></i></a>
+  <div class="collapse" id="ministriesDropdown">
+    <a href="{{ url_for('add_ministry') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Ministry</a>
+    <a href="{{ url_for('admin_ministries') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Ministries</a>
+  </div>
+  <!-- Life Groups -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#lifegroupsDropdown"><i class="fa-solid fa-people-group me-2"></i> Life Groups <i class="fa-solid fa-chevron-down float-end"></i></a>
+  <div class="collapse" id="lifegroupsDropdown">
+    <a href="{{ url_for('add_lifegroup') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add LifeGroup</a>
+    <a href="{{ url_for('admin_lifegroups') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Life Groups</a>
+  </div>
+  <!-- Tithes & Expenses -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#tithesDropdown"><i class="fa-solid fa-hand-holding-dollar me-2"></i> Tithes & Expenses <i class="fa-solid fa-chevron-down float-end"></i></a>
+  <div class="collapse" id="tithesDropdown">
+    <a href="{{ url_for('add_tithe') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Tithe</a>
+    <a href="{{ url_for('view_tithes') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Tithes</a>
+    <a href="{{ url_for('add_expense') }}" class="ps-4 d-block"><i class="fa-solid fa-circle-plus me-2"></i> Add Expense</a>
+    <a href="{{ url_for('view_expenses') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Expenses</a>
+  </div>
+  <!-- Events -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#eventsDropdown"><i class="fa-solid fa-calendar-days me-2"></i> Events <i class="fa-solid fa-chevron-down float-end"></i></a>
+  <div class="collapse" id="eventsDropdown">
+    <a href="{{ url_for('add_event') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Event</a>
+    <a href="{{ url_for('view_events') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Events</a>
+  </div>
+  <!-- Users -->
+  <a class="collapsed" data-bs-toggle="collapse" href="#usersDropdown"><i class="fa-solid fa-user me-2"></i> Users <i class="fa-solid fa-chevron-down float-end"></i></a>
+  <div class="collapse" id="usersDropdown">
+    <a href="{{ url_for('add_user') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add User</a>
+    <a href="{{ url_for('view_users') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> All Users</a>
+  </div>
 </div>
 
-<!-- Right Panel -->
-<div class="right-panel">
+<!-- Overlay for mobile -->
+<div class="overlay" id="overlay"></div>
+<button class="hamburger" id="hamburger"><i class="fa fa-bars"></i></button>
+
+<!-- Right panel (events) -->
+<div class="right-panel" id="rightPanel">
   <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white fw-bold">
-      <i class="fa-solid fa-calendar-days me-2"></i>Events
+      <span><i class="fa-solid fa-calendar-days me-2"></i> Events</span>
     </div>
-    <div class="p-1">
+    <div class="p-2">
       <input type="text" id="eventSearch" class="form-control form-control-sm" placeholder="Search events...">
     </div>
     <ul class="nav nav-tabs nav-fill small" id="eventTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button">Upcoming</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button">Past</button>
-      </li>
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#upcoming">Upcoming</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#past">Past</button></li>
     </ul>
-    <div class="card-body p-1" style="max-height:250px; overflow-y:auto;">
-      <div class="tab-content" id="eventTabsContent">
-        <!-- Upcoming -->
+    <div class="card-body p-1" style="max-height: 300px; overflow-y:auto;">
+      <div class="tab-content">
         <div class="tab-pane fade show active" id="upcoming">
           {% if upcoming_events %}
             {% for event in upcoming_events %}
-              <a href="{{ url_for('event_detail', event_id=event.event_id) }}" class="text-decoration-none">
-                <div class="card event-card mb-1 border-0 border-top border-primary border-1 shadow-sm small">
-                  <div class="card-body p-1">
-                    <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
-                    <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date }}</p>
-                    <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted }}</p>
-                    <p class="small text-muted mb-1">{{ event.description }}</p>
-                    <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
-                  </div>
+              <a href="{{ url_for('event_detail', event_id=event.event_id) }}" class="event-card text-decoration-none">
+                <div class="card mb-1 p-1 shadow-sm">
+                  <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name | default('No Title') }}</h6>
+                  <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date or 'Date not set' }}</p>
+                  <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
+                  <p class="small text-muted mb-1">{{ event.description or 'No description' }}</p>
+                  <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location or 'No location' }}</p>
                 </div>
               </a>
             {% endfor %}
@@ -146,19 +141,16 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
             <p class="text-muted text-center mb-0 small">No upcoming events.</p>
           {% endif %}
         </div>
-        <!-- Past -->
         <div class="tab-pane fade" id="past">
           {% if past_events %}
             {% for event in past_events %}
-              <a href="{{ url_for('event_detail', event_id=event.event_id) }}" class="text-decoration-none">
-                <div class="card event-card mb-1 border-0 border-top border-secondary border-1 shadow-sm small">
-                  <div class="card-body p-1">
-                    <h6 class="fw-bold text-secondary mb-1 small">{{ event.event_name }}</h6>
-                    <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date }}</p>
-                    <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted }}</p>
-                    <p class="small text-muted mb-1">{{ event.description }}</p>
-                    <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
-                  </div>
+              <a href="{{ url_for('event_detail', event_id=event.event_id) }}" class="event-card text-decoration-none">
+                <div class="card mb-1 p-1 shadow-sm border-secondary">
+                  <h6 class="fw-bold text-secondary mb-1 small">{{ event.event_name | default('No Title') }}</h6>
+                  <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date or 'Date not set' }}</p>
+                  <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
+                  <p class="small text-muted mb-1">{{ event.description or 'No description' }}</p>
+                  <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location or 'No location' }}</p>
                 </div>
               </a>
             {% endfor %}
@@ -176,164 +168,96 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
   <div id="datetime" class="time-card mb-2"></div>
 
   <div class="row text-center mb-4">
-    {% macro dashboard_card(title, icon, total, url) %}
-      <div class="col-md-4 mb-3">
-        <a href="{{ url_for(url) }}" class="text-decoration-none">
-          <div class="card p-3 shadow-sm">
-            <h5 class="fw-bold text-primary"><i class="fa-solid {{ icon }} me-2"></i>{{ title }}</h5>
-            <p class="mb-0">Total: {{ total }}</p>
-          </div>
-        </a>
+    <div class="col-md-4 mb-3">
+      <div class="box-card">
+        <h5><i class="fa-solid fa-users me-2"></i> Members</h5>
+        <p>Total: {{ total_members or 0 }}</p>
       </div>
-    {% endmacro %}
-
-    {{ dashboard_card('Members','fa-users', total_members,'view_members') }}
-    {{ dashboard_card('Ministries','fa-church', total_ministries,'admin_ministries') }}
-    {{ dashboard_card('Life Groups','fa-people-group', total_lifegroups,'admin_lifegroups') }}
-  </div>
-
-  <div id="calendar" class="mb-4"></div>
-
-  <!-- Tithes & Expenses Cards -->
-  <div class="row mb-4 justify-content-center">
-    {% macro finance_card(title, icon, total, type) %}
-      <div class="col-md-5 mb-3">
-        <div class="card p-3 text-center shadow-sm">
-          <h5 class="fw-bold text-{{ 'success' if type=='tithes' else 'danger' }}"><i class="fa-solid {{ icon }} me-2"></i>{{ title }}</h5>
-          <form method="get" action="{{ url_for('view_'+type) }}">
-            <div class="mb-2">
-              <select id="filterType{{ type|capitalize }}" name="filter_type" class="form-select form-select-sm w-auto mx-auto" onchange="toggleInput('{{ type }}')">
-                <option value="day_month" selected>By Day / Month</option>
-                <option value="year">By Year</option>
-              </select>
-            </div>
-            <input type="date" id="dateInput{{ type|capitalize }}" name="date" class="form-control form-control-sm w-auto mx-auto">
-            <input type="month" id="monthInput{{ type|capitalize }}" name="month" class="form-control form-control-sm w-auto mx-auto d-none">
-            <input type="number" id="yearInput{{ type|capitalize }}" name="year" min="2000" max="2100" placeholder="Enter year" class="form-control form-control-sm w-auto mx-auto d-none">
-            <button class="btn btn-primary btn-sm mt-2">View</button>
-          </form>
-          <p class="mt-3 mb-0">Total: ₱{{ total }}</p>
-        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="box-card">
+        <h5><i class="fa-solid fa-church me-2"></i> Ministries</h5>
+        <p>Total: {{ total_ministries or 0 }}</p>
       </div>
-    {% endmacro %}
-
-    {{ finance_card('Tithes','fa-hand-holding-dollar', total_tithes,'tithes') }}
-    {{ finance_card('Expenses','fa-money-bill-wave', total_expenses,'expenses') }}
-  </div>
-</div>
-
-<!-- Profile Dropdown -->
-<div class="dropdown position-fixed top-0 end-0 p-2" style="z-index:1050;">
-  <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon dropdown-toggle" data-bs-toggle="dropdown" alt="User">
-  <ul class="dropdown-menu dropdown-menu-end">
-    <li><a class="dropdown-item" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
-  </ul>
-</div>
-
-<!-- Bottom Nav -->
-<div class="bottom-nav">
-  <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
-  <a href="{{ url_for('view_members') }}"><i class="fa-solid fa-users"></i><span>Members</span></a>
-  <a href="{{ url_for('view_events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
-  <a href="#profile" data-bs-toggle="modal" data-bs-target="#profileModal"><i class="fa-solid fa-user"></i><span>Profile</span></a>
-</div>
-
-<!-- Profile Modal -->
-<div class="modal fade" id="profileModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Profile</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body text-center">
-        <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon mb-3" alt="User">
-        <a href="/logout" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="box-card">
+        <h5><i class="fa-solid fa-people-group me-2"></i> Life Groups</h5>
+        <p>Total: {{ total_lifegroups or 0 }}</p>
       </div>
     </div>
   </div>
+
+  <div id="calendar" class="mb-4"></div>
 </div>
 
-<!-- JS -->
+<!-- Profile -->
+<div class="dropdown position-fixed top-0 end-0 p-2" style="z-index:1050;">
+  <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon dropdown-toggle" data-bs-toggle="dropdown">
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+  </ul>
+</div>
+
+<!-- Bottom Nav for mobile -->
+<div class="bottom-nav d-md-none">
+  <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+  <a href="{{ url_for('view_members') }}"><i class="fa-solid fa-users"></i><span>Members</span></a>
+  <a href="{{ url_for('admin_ministries') }}"><i class="fa-solid fa-church"></i><span>Ministries</span></a>
+  <a href="{{ url_for('admin_lifegroups') }}"><i class="fa-solid fa-people-group"></i><span>Groups</span></a>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
-<script>
-// ---------- Sidebar Toggle ----------
-const hamburgerBtn = document.getElementById('hamburgerBtn');
-const overlay = document.getElementById('overlay');
-const sidebar = document.getElementById('sidebar');
-hamburgerBtn?.addEventListener('click', ()=>{sidebar.classList.toggle('show'); overlay.classList.toggle('show');});
-overlay?.addEventListener('click', ()=>{sidebar.classList.remove('show'); overlay.classList.remove('show');});
 
 <script>
+// FullCalendar safe events
 document.addEventListener('DOMContentLoaded', function() {
   const calendarEl = document.getElementById('calendar');
-
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    },
+    headerToolbar: { left:'prev,next today', center:'title', right:'dayGridMonth,timeGridWeek,timeGridDay' },
     events: [
       {% if events %}
         {% for ev in events %}
-          {
-            title: "{{ ev.event_name | default('No Title') | e }}",
-            start: "{{ ev.event_date.strftime('%Y-%m-%d') if ev.event_date else '' }}",
-            url: "{{ ev.link | default('#') }}",
-            description: "{{ ev.description | default('No description') | e }}"
-          }{% if not loop.last %},{% endif %}
+        {
+          title: "{{ ev.event_name | default('No Title') | e }}",
+          start: "{{ ev.event_date.strftime('%Y-%m-%d') if ev.event_date else '' }}",
+          url: "{{ ev.link | default('#') }}",
+          description: "{{ ev.description | default('No description') | e }}"
+        }{% if not loop.last %},{% endif %}
         {% endfor %}
-      {% else %}
-        // No events
       {% endif %}
     ],
-    eventClick: function(info) {
-      if (info.event.url && info.event.url !== "#") {
-        window.open(info.event.url, "_blank");
-        info.jsEvent.preventDefault(); 
-      }
+    eventClick: function(info){
+      if(info.event.url && info.event.url!="#"){ window.open(info.event.url,"_blank"); info.jsEvent.preventDefault(); }
     }
   });
-
   calendar.render();
 });
-</script>
 
+// Hamburger toggle
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+hamburger.addEventListener('click', ()=>{ sidebar.classList.add('show'); overlay.classList.add('show'); });
+overlay.addEventListener('click', ()=>{ sidebar.classList.remove('show'); overlay.classList.remove('show'); });
 
-  // Event Search
-  const searchInput = document.getElementById('eventSearch');
-  searchInput?.addEventListener('input', function(){
-    const filter = this.value.toLowerCase();
-    document.querySelectorAll('.event-card').forEach(e=>{
-      const text = e.textContent.toLowerCase();
-      e.style.display = text.includes(filter)?'':'none';
-    });
+// Event search
+document.getElementById('eventSearch').addEventListener('input', function(){
+  const filter = this.value.toLowerCase();
+  document.querySelectorAll('.event-card').forEach(e=>{
+    e.style.display = e.textContent.toLowerCase().includes(filter)?'':'none';
   });
 });
 
-// ---------- Filter Toggle ----------
-function toggleInput(type){
-  const filterEl = document.getElementById(`filterType${type.charAt(0).toUpperCase()+type.slice(1)}`);
-  if(!filterEl) return;
-  const filter = filterEl.value;
-  const dateInput = document.getElementById(`dateInput${type.charAt(0).toUpperCase()+type.slice(1)}`);
-  const monthInput = document.getElementById(`monthInput${type.charAt(0).toUpperCase()+type.slice(1)}`);
-  const yearInput = document.getElementById(`yearInput${type.charAt(0).toUpperCase()+type.slice(1)}`);
-  if(filter==='day_month'){ dateInput.classList.remove('d-none'); monthInput.classList.remove('d-none'); yearInput.classList.add('d-none'); }
-  else{ dateInput.classList.add('d-none'); monthInput.classList.add('d-none'); yearInput.classList.remove('d-none'); }
-}
-
-// ---------- Live DateTime ----------
+// Date & time
 function updateDateTime(){
-  const now = new Date();
-  document.getElementById('datetime').innerText = now.toLocaleString();
+  const now=new Date();
+  document.getElementById('datetime').innerText = now.toLocaleDateString('en-US')+' '+now.toLocaleTimeString('en-US');
 }
 setInterval(updateDateTime,1000);
 updateDateTime();
 </script>
 </body>
 </html>
-
