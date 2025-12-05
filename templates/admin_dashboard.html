@@ -8,6 +8,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- PWA Meta Tags (Optional for App-Like Feel) -->
+<meta name="theme-color" content="#4b4f53">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Admin Dashboard">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/cross-background.jpg') }}">
+<link rel="manifest" href="/manifest.json"> <!-- Create this file for PWA -->
+
 <style>
 /* --------------------- Base --------------------- */
 body { background: #f8f9fa; font-family: Arial, sans-serif; margin:0; padding:0; }
@@ -55,6 +64,11 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; margin:0; padding:0;
 }
 @media(max-width:768px){
   .right-panel { display:none; }
+  .box-card { padding:15px; }
+  .time-card { font-size:0.6rem; padding:4px 8px; }
+  #calendar { height:300px; }
+  .form-control { font-size:0.9rem; }
+  .btn { font-size:0.9rem; padding:8px 16px; }
 }
 </style>
 </head>
@@ -190,135 +204,133 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; margin:0; padding:0;
 
   <div id="calendar" class="mb-4"></div>
 
-<div class="row mb-4 justify-content-center">
-  <div class="col-md-5">
-    <div class="card p-3 text-center shadow-sm">
-      <h5 class="fw-bold text-success"><i class="fa-solid fa-hand-holding-dollar me-2"></i>Tithes</h5>
-
-      <form method="get" action="{{ url_for('view_tithes') }}">
-        <div class="mb-2">
-          <select id="filterTypeTithes" name="filter_type"
-                  class="form-select form-select-sm w-auto mx-auto"
-                  onchange="toggleInput('tithes')">
-            <option value="day_month" selected>By Day / Month</option>
-            <option value="year">By Year</option>
-          </select>
-        </div>
-
-        <input type="date" id="dateInputTithes" name="date"
-               class="form-control form-control-sm w-auto mx-auto">
-        <input type="month" id="monthInputTithes" name="month"
-               class="form-control form-control-sm w-auto mx-auto d-none">
-        <input type="number" id="yearInputTithes" name="year" min="2000" max="2100"
-               placeholder="Enter year"
-               class="form-control form-control-sm w-auto mx-auto d-none">
-
-        <button class="btn btn-primary btn-sm mt-2">View</button>
-      </form>
-
-      <p class="mt-3 mb-0">Total: ₱{{ total_tithes }}</p>
+  <div class="row mb-4 justify-content-center">
+    <div class="col-md-5">
+      <div class="card p-3 text-center shadow-sm">
+        <h5 class="fw-bold text-success"><i class="fa-solid fa-hand-holding-dollar me-2"></i>Tithes</h5>
+        <form method="get" action="{{ url_for('view_tithes') }}">
+          <div class="mb-2">
+            <select id="filterTypeTithes" name="filter_type" class="form-select form-select-sm w-auto mx-auto" onchange="toggleInput('tithes')">
+              <option value="day_month" selected>By Day / Month</option>
+              <option value="year">By Year</option>
+            </select>
+          </div>
+          <input type="date" id="dateInputTithes" name="date" class="form-control form-control-sm w-auto mx-auto">
+          <input type="month" id="monthInputTithes" name="month" class="form-control form-control-sm w-auto mx-auto d-none">
+          <input type="number" id="yearInputTithes" name="year" min="2000" max="2100" placeholder="Enter year" class="form-control form-control-sm w-auto mx-auto d-none">
+          <button class="btn btn-primary btn-sm mt-2">View</button>
+        </form>
+        <p class="mt-3 mb-0">Total: ₱{{ total_tithes }}</p>
+      </div>
     </div>
-  </div>
-
-  <div class="col-md-5">
-    <div class="card p-3 text-center shadow-sm">
-      <h5 class="fw-bold text-danger"><i class="fa-solid fa-money-bill-wave me-2"></i>Expenses</h5>
-
-      <form method="get" action="{{ url_for('view_expenses') }}">
-        <div class="mb-2">
-          <select id="filterTypeExpenses" name="filter_type"
-                  class="form-select form-select-sm w-auto mx-auto"
-                  onchange="toggleInput('expenses')">
-            <option value="day_month" selected>By Day / Month</option>
-            <option value="year">By Year</option>
-          </select>
-        </div>
-
-        <input type="date" id="dateInputExpenses" name="date"
-               class="form-control form-control-sm w-auto mx-auto">
-        <input type="month" id="monthInputExpenses" name="month"
-               class="form-control form-control-sm w-auto mx-auto d-none">
-        <input type="number" id="yearInputExpenses" name="year" min="2000" max="2100"
-               placeholder="Enter year"
-               class="form-control form-control-sm w-auto mx-auto d-none">
-
-        <button class="btn btn-primary btn-sm mt-2">View</button>
-      </form>
-
-      <p class="mt-3 mb-0">Total: ₱{{ total_expenses }}</p>
+    <div class="col-md-5">
+      <div class="card p-3 text-center shadow-sm">
+        <h5 class="fw-bold text-danger"><i class="fa-solid fa-money-bill-wave me-2"></i>Expenses</h5>
+        <form method="get" action="{{ url_for('view_expenses') }}">
+          <div class="mb-2">
+            <select id="filterTypeExpenses" name="filter_type" class="form-select form-select-sm w-auto mx-auto" onchange="toggleInput('expenses')">
+              <option value="day_month" selected>By Day / Month</option>
+              <option value="year">By Year</option>
+            </select>
+          </div>
+          <input type="date" id="dateInputExpenses" name="date" class="form-control form-control-sm w-auto mx-auto">
+          <input type="month" id="monthInputExpenses" name="month" class="form-control form-control-sm w-auto mx-auto d-none">
+          <input type="number" id="yearInputExpenses" name="year" min="2000" max="2100" placeholder="Enter year" class="form-control form-control-sm w-auto mx-auto d-none">
+          <button class="btn btn-primary btn-sm mt-2">View</button>
+        </form>
+      <!-- Continue after last line -->
+<p class="mt-3 mb-0">Total: ₱{{ total_expenses }}</p>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- Bottom Navigation for Mobile -->
+<div class="bottom-nav d-md-none">
+  <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="{{ url_for('view_members') }}"><i class="fa-solid fa-users"></i><span>Members</span></a>
+  <a href="{{ url_for('admin_ministries') }}"><i class="fa-solid fa-church"></i><span>Ministries</span></a>
+  <a href="{{ url_for('view_events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
 </div>
 
-<!-- Profile -->
+<!-- Profile Dropdown -->
 <div class="dropdown position-fixed top-0 end-0 p-2" style="z-index:1050;">
-  <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon dropdown-toggle" data-bs-toggle="dropdown">
+  <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon dropdown-toggle" data-bs-toggle="dropdown" alt="User">
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+    <li><a class="dropdown-item" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
   </ul>
 </div>
 
-<!-- Bottom Nav for mobile -->
-<div class="bottom-nav d-md-none">
-  <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
-  <a href="{{ url_for('view_members') }}"><i class="fa-solid fa-users"></i><span>Members</span></a>
-  <a href="{{ url_for('admin_ministries') }}"><i class="fa-solid fa-church"></i><span>Ministries</span></a>
-  <a href="{{ url_for('admin_lifegroups') }}"><i class="fa-solid fa-people-group"></i><span>Groups</span></a>
-</div>
-
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
 
 <script>
-// FullCalendar safe events
+// Sidebar Toggle for Mobile
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('show');
+  overlay.classList.toggle('show');
+});
+
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('show');
+  overlay.classList.remove('show');
+});
+
+// Event search filter
+document.getElementById('eventSearch').addEventListener('input', function() {
+  const filter = this.value.toLowerCase();
+  const events = document.querySelectorAll('.event-card');
+  events.forEach(event => {
+    const text = event.textContent.toLowerCase();
+    event.style.display = text.includes(filter) ? '' : 'none';
+  });
+});
+
+// Tithes/Expenses Filter Toggle
+function toggleInput(type) {
+  const filterType = document.getElementById(`filterType${type.charAt(0).toUpperCase() + type.slice(1)}`).value;
+  const dateInput = document.getElementById(`dateInput${type.charAt(0).toUpperCase() + type.slice(1)}`);
+  const monthInput = document.getElementById(`monthInput${type.charAt(0).toUpperCase() + type.slice(1)}`);
+  const yearInput = document.getElementById(`yearInput${type.charAt(0).toUpperCase() + type.slice(1)}`);
+  dateInput.classList.add('d-none');
+  monthInput.classList.add('d-none');
+  yearInput.classList.add('d-none');
+  if(filterType==='day_month'){ dateInput.classList.remove('d-none'); monthInput.classList.remove('d-none'); }
+  if(filterType==='year'){ yearInput.classList.remove('d-none'); }
+}
+
+// FullCalendar Initialization
 document.addEventListener('DOMContentLoaded', function() {
   const calendarEl = document.getElementById('calendar');
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
     headerToolbar: { left:'prev,next today', center:'title', right:'dayGridMonth,timeGridWeek,timeGridDay' },
     events: [
-      {% if events %}
-        {% for ev in events %}
-        {
-          title: "{{ ev.event_name | default('No Title') | e }}",
-          start: "{{ ev.event_date.strftime('%Y-%m-%d') if ev.event_date else '' }}",
-          url: "{{ ev.link | default('#') }}",
-          description: "{{ ev.description | default('No description') | e }}"
-        }{% if not loop.last %},{% endif %}
-        {% endfor %}
-      {% endif %}
+      {% for ev in events %}
+      { title:"{{ ev.event_name }}", start:"{{ ev.event_date }}", url:"{{ ev.link if 'link' in ev else '#' }}", description:"{{ ev.description }}" },
+      {% endfor %}
     ],
-    eventClick: function(info){
+    eventClick: function(info) {
       if(info.event.url && info.event.url!="#"){ window.open(info.event.url,"_blank"); info.jsEvent.preventDefault(); }
     }
   });
   calendar.render();
 });
 
-// Hamburger toggle
-const hamburger = document.getElementById('hamburger');
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-hamburger.addEventListener('click', ()=>{ sidebar.classList.add('show'); overlay.classList.add('show'); });
-overlay.addEventListener('click', ()=>{ sidebar.classList.remove('show'); overlay.classList.remove('show'); });
-
-// Event search
-document.getElementById('eventSearch').addEventListener('input', function(){
-  const filter = this.value.toLowerCase();
-  document.querySelectorAll('.event-card').forEach(e=>{
-    e.style.display = e.textContent.toLowerCase().includes(filter)?'':'none';
-  });
-});
-
-// Date & time
-function updateDateTime(){
-  const now=new Date();
-  document.getElementById('datetime').innerText = now.toLocaleDateString('en-US')+' '+now.toLocaleTimeString('en-US');
+// DateTime Update
+function updateDateTime() {
+  const now = new Date();
+  const date = now.toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'});
+  const time = now.toLocaleTimeString('en-US',{hour12:true,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('datetime').innerText = `${date} ${time}`;
 }
-setInterval(updateDateTime,1000);
+setInterval(updateDateTime, 1000);
 updateDateTime();
 </script>
 </body>
 </html>
-
