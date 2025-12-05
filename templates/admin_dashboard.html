@@ -265,18 +265,43 @@ const sidebar = document.getElementById('sidebar');
 hamburgerBtn?.addEventListener('click', ()=>{sidebar.classList.toggle('show'); overlay.classList.toggle('show');});
 overlay?.addEventListener('click', ()=>{sidebar.classList.remove('show'); overlay.classList.remove('show');});
 
-// ---------- FullCalendar ----------
+<script>
 document.addEventListener('DOMContentLoaded', function() {
   const calendarEl = document.getElementById('calendar');
-  let eventsData = {{ events|tojson|safe }} || [];
+
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
-    headerToolbar: { left:'prev,next today', center:'title', right:'dayGridMonth,timeGridWeek,timeGridDay' },
-    events: eventsData,
-    eventClick: info => { if(info.event.url && info.event.url!=='#'){window.open(info.event.url,'_blank'); info.jsEvent.preventDefault();} },
-    eventDidMount: info => { if(info.event.extendedProps?.description){info.el.setAttribute('title', info.event.extendedProps.description);} }
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    events: [
+      {% if events %}
+        {% for ev in events %}
+          {
+            title: "{{ ev.event_name | default('No Title') | e }}",
+            start: "{{ ev.event_date.strftime('%Y-%m-%d') if ev.event_date else '' }}",
+            url: "{{ ev.link | default('#') }}",
+            description: "{{ ev.description | default('No description') | e }}"
+          }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      {% else %}
+        // No events
+      {% endif %}
+    ],
+    eventClick: function(info) {
+      if (info.event.url && info.event.url !== "#") {
+        window.open(info.event.url, "_blank");
+        info.jsEvent.preventDefault(); 
+      }
+    }
   });
+
   calendar.render();
+});
+</script>
+
 
   // Event Search
   const searchInput = document.getElementById('eventSearch');
@@ -311,3 +336,4 @@ updateDateTime();
 </script>
 </body>
 </html>
+
