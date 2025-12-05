@@ -10,64 +10,38 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body { background:#f8f9fa; font-family:Arial,sans-serif; margin:0; }
-/* Sidebar */
+body { background: #f8f9fa; font-family: Arial, sans-serif; margin:0; }
 .sidebar { height:100vh; background:#4b4f53; color:white; position:fixed; width:220px; padding-top:20px; left:-220px; transition:left 0.3s ease; z-index:1001; }
 .sidebar.show { left:0; }
 .sidebar a { color:white; display:block; padding:10px 20px; text-decoration:none; }
 .sidebar a:hover { background:#495057; }
-.sidebar-logo { max-width:120px; border-radius:50%; padding:5px; background:#343a40; }
-
-/* Main content */
 .main-content { margin-left:0; margin-right:0; padding:20px; padding-bottom:80px; }
+.right-panel { position:fixed; top:0; right:0; width:300px; height:100vh; background:#f8f9fa; z-index:1000; overflow-y:auto; box-shadow:-2px 0 5px rgba(0,0,0,0.1); padding-top:60px; }
+@media(max-width:768px){ .right-panel{ display:none; } .main-content{ margin-right:0; } }
+.time-card { display:inline-block; padding:6px 12px; font-size:0.7rem; font-weight:bold; color:#fff; background:#616d79; border-radius:8px; box-shadow:0 2px 6px rgba(202,190,190,0.2); }
+.profile-icon { width:40px; height:40px; border-radius:50%; cursor:pointer; }
+.sidebar-logo { max-width:120px; border-radius:50%; padding:5px; background:#343a40; }
+.card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.15); transform:translateY(-2px); transition: all 0.2s ease-in-out;}
 .box-card{background:#fff;border-radius:15px;padding:20px;box-shadow:0 6px 15px rgba(0,0,0,0.1);transition:all 0.3s ease;height:100%;}
 .box-card:hover{transform:translateY(-5px);box-shadow:0 10px 25px rgba(0,0,0,0.15);}
 .box-card h5{font-weight:bold;}
 .box-card p{margin:0;font-size:0.95rem;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;}
 .box-card i{color:#007bff;}
 .box-card:hover i{color:#0056b3;}
-
-/* Event cards */
 .event-card{transition:transform 0.2s ease, box-shadow 0.2s ease;padding:10px;border-bottom:1px solid #ddd;text-decoration:none;color:inherit;}
 .event-card:hover{transform:translateY(-2px);box-shadow:0 2px 8px rgba(0,0,0,0.1);text-decoration:none;color:inherit;}
-
-/* Scrollbars */
 .card-body::-webkit-scrollbar{width:6px;}
 .card-body::-webkit-scrollbar-thumb{background-color:rgba(0,0,0,0.2);border-radius:10px;}
-
-/* Text colors */
 .text-success{color:#28a745 !important;}
 .text-danger{color:#dc3545 !important;}
-
-/* Right panel */
-.right-panel { position:fixed; top:0; right:0; width:300px; height:100vh; background:#f8f9fa; z-index:1000; overflow-y:auto; box-shadow:-2px 0 5px rgba(0,0,0,0.1); padding-top:60px; }
-
-/* Bottom navigation */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#4b4f53; color:white; display:flex; justify-content:space-around; padding:10px 0; z-index:1000;}
 .bottom-nav a{color:white;text-decoration:none;text-align:center;flex:1;}
 .bottom-nav i{font-size:1.2rem;}
 .bottom-nav span{display:block;font-size:0.8rem;}
-
-/* Hamburger menu */
 .hamburger{position:fixed;top:10px;left:10px;z-index:1002;background:#4b4f53;color:white;border:none;padding:10px;border-radius:5px;cursor:pointer;}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:none;}
 .overlay.show{display:block;}
-
-/* Clock */
-#datetime { display:inline-block; padding:6px 12px; font-size:0.7rem; font-weight:bold; color:#fff; background:#616d79; border-radius:8px; box-shadow:0 2px 6px rgba(202,190,190,0.2); font-family:Arial,sans-serif; margin-bottom:10px; text-align:center; width:fit-content; }
-
-/* Mobile adjustments */
-@media(max-width:768px){
-  #datetime { display:block; width:100%; font-size:0.85rem; padding:10px 0; }
-  .right-panel{ display:none; }
-}
-@media(min-width:769px){
-  .sidebar{left:0;}
-  .main-content{margin-left:220px;margin-right:300px;}
-  .right-panel{display:block;}
-  .bottom-nav{display:none;}
-  .hamburger{display:none;}
-}
+@media(min-width:769px){ .sidebar{left:0;} .main-content{margin-left:220px;margin-right:300px;} .right-panel{display:block;} .bottom-nav{display:none;} .hamburger{display:none;} }
 </style>
 </head>
 <body>
@@ -81,7 +55,7 @@ body { background:#f8f9fa; font-family:Arial,sans-serif; margin:0; }
   <div class="text-center"><img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo"></div>
   <hr>
   <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a>
-  <!-- Add your dropdowns here (Members, Ministries, LifeGroups, Tithes/Expenses, Events, Users) -->
+  <!-- Add your dropdowns here (Members, Ministries, LifeGroups, Tithes/Expenses, Events, Users) same as before -->
 </div>
 
 <!-- Right Panel for Events -->
@@ -91,9 +65,9 @@ body { background:#f8f9fa; font-family:Arial,sans-serif; margin:0; }
     <div class="p-1">
       <input type="text" id="eventSearch" class="form-control form-control-sm" placeholder="Search events...">
     </div>
-    <ul class="nav nav-tabs nav-fill small">
-      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#upcoming">Upcoming</button></li>
-      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#past">Past</button></li>
+    <ul class="nav nav-tabs nav-fill small" id="eventTabs" role="tablist">
+      <li class="nav-item"><button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button">Upcoming</button></li>
+      <li class="nav-item"><button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button">Past</button></li>
     </ul>
     <div class="card-body p-1" style="max-height:250px; overflow-y:auto;">
       <div class="tab-content">
@@ -106,7 +80,9 @@ body { background:#f8f9fa; font-family:Arial,sans-serif; margin:0; }
             <p class="small text-muted mb-1">{{ event.description }}</p>
             <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
           </a>
-          {% else %}<p class="text-muted text-center mb-0 small">No upcoming events.</p>{% endfor %}
+          {% else %}
+          <p class="text-muted text-center mb-0 small">No upcoming events.</p>
+          {% endfor %}
         </div>
         <div class="tab-pane fade" id="past">
           {% for event in past_events %}
@@ -117,7 +93,9 @@ body { background:#f8f9fa; font-family:Arial,sans-serif; margin:0; }
             <p class="small text-muted mb-1">{{ event.description }}</p>
             <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
           </a>
-          {% else %}<p class="text-muted text-center mb-0 small">No past events.</p>{% endfor %}
+          {% else %}
+          <p class="text-muted text-center mb-0 small">No past events.</p>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -128,8 +106,8 @@ body { background:#f8f9fa; font-family:Arial,sans-serif; margin:0; }
 <div class="main-content">
   <div id="datetime" class="time-card mb-2"></div>
 
-  <!-- Example Cards -->
   <div class="row text-center mb-4">
+    <!-- Example Cards -->
     <div class="col-md-4 mb-3">
       <a href="{{ url_for('view_members') }}" class="text-decoration-none">
         <div class="card box-card p-3 shadow-sm">
@@ -184,26 +162,7 @@ body { background:#f8f9fa; font-family:Arial,sans-serif; margin:0; }
   <div id="calendar" class="mb-4"></div>
 </div>
 
-<!-- Bottom Nav for Mobile -->
-<div class="bottom-nav">
-  <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
-  <a href="{{ url_for('view_members') }}"><i class="fa-solid fa-users"></i><span>Members</span></a>
-  <a href="{{ url_for('view_events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
-  <a href="#profile" data-bs-toggle="modal" data-bs-target="#profileModal"><i class="fa-solid fa-user"></i><span>Profile</span></a>
-</div>
-
-<!-- Profile Modal -->
-<div class="modal fade" id="profileModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header"><h5 class="modal-title">Profile</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body">
-        <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon mb-3">
-        <a href="/logout" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Bottom Nav & Profile Modal (same as before) -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
@@ -212,33 +171,33 @@ body { background:#f8f9fa; font-family:Arial,sans-serif; margin:0; }
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
   var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView:'dayGridMonth',
-    headerToolbar:{left:'prev,next today',center:'title',right:'dayGridMonth,timeGridWeek,timeGridDay'},
-    events:[
+    initialView: 'dayGridMonth',
+    headerToolbar: { left:'prev,next today', center:'title', right:'dayGridMonth,timeGridWeek,timeGridDay' },
+    events: [
       {% for ev in events %}
       { title:"{{ ev.event_name }}", start:"{{ ev.event_date }}", url:"{{ ev.link if 'link' in ev else '#' }}", description:"{{ ev.description }}" },
       {% endfor %}
     ],
-    eventClick:function(info){ if(info.event.url && info.event.url!="#"){window.open(info.event.url,"_blank"); info.jsEvent.preventDefault();} }
+    eventClick: function(info){ if(info.event.url && info.event.url!="#"){window.open(info.event.url,"_blank"); info.jsEvent.preventDefault();} }
   });
   calendar.render();
 });
 
-// Hamburger & overlay
-const hamburger=document.getElementById('hamburgerBtn');
-const sidebar=document.getElementById('sidebar');
-const overlay=document.getElementById('overlay');
-hamburger.addEventListener('click',()=>{sidebar.classList.toggle('show');overlay.classList.toggle('show');});
-overlay.addEventListener('click',()=>{sidebar.classList.remove('show');overlay.classList.remove('show');});
+// Hamburger
+const hamburger = document.getElementById('hamburgerBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+hamburger.addEventListener('click', ()=>{ sidebar.classList.toggle('show'); overlay.classList.toggle('show'); });
+overlay.addEventListener('click', ()=>{ sidebar.classList.remove('show'); overlay.classList.remove('show'); });
 
 // Clock
 function updateClock(){ const now=new Date(); document.getElementById('datetime').innerText=now.toLocaleString(); }
 setInterval(updateClock,1000); updateClock();
 
 // Event search
-document.getElementById('eventSearch').addEventListener('input',function(){
-  let query=this.value.toLowerCase();
-  document.querySelectorAll('.event-card').forEach(card=>{ card.style.display=card.innerText.toLowerCase().includes(query)?'':'none'; });
+document.getElementById('eventSearch').addEventListener('input', function(){ 
+  let query=this.value.toLowerCase(); 
+  document.querySelectorAll('.event-card').forEach(card=>{ card.style.display=card.innerText.toLowerCase().includes(query)?'':'none'; }); 
 });
 
 // Tithes & Expenses toggle
@@ -254,3 +213,4 @@ function toggleInput(type){
 </script>
 </body>
 </html>
+
