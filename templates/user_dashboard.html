@@ -30,9 +30,10 @@ body { background:#f8f9fa; font-family:'Roboto',sans-serif; margin:0; padding:0;
 .event-card { padding:10px; border-bottom:1px solid #ddd; transition:0.2s; text-decoration:none; color:inherit; }
 .event-card:hover { transform:translateY(-2px); box-shadow:0 2px 8px rgba(0,0,0,0.1); }
 .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:#4b4f53; color:white; display:flex; justify-content:space-around; padding:10px 0; z-index:1000; }
-.bottom-nav a { color:white; text-align:center; flex:1; text-decoration:none; }
+.bottom-nav a { color:white; text-align:center; flex:1; text-decoration:none; padding:7px; min-height:45px; }
 .bottom-nav a.active { background:#343a40; border-radius:6px; }
 .bottom-nav i { font-size:1.2rem; }
+.bottom-nav span { display:block; font-size:0.8rem; margin-top:2px; }
 .hamburger { position:fixed; top:10px; left:10px; z-index:1002; background:#4b4f53; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; }
 .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; }
 .overlay.show { display:block; }
@@ -72,7 +73,7 @@ body { background:#f8f9fa; font-family:'Roboto',sans-serif; margin:0; padding:0;
         <div class="tab-pane fade show active" id="upcoming">
           {% if upcoming_events %}
             {% for event in upcoming_events %}
-            <a href="{{ url_for('event_detail', event_id=event['event_id']) }}" class="event-card">
+            <a href="{{ url_for('event_detail', id=event['event_id']) }}" class="event-card">
               <h6 class="fw-bold text-primary small">{{ event['event_name'] or 'No Title' }}</h6>
               <p class="text-muted small"><i class="fa-solid fa-calendar"></i> {{ event['event_date'].strftime('%B %d, %Y') if event['event_date'] else 'No date' }}</p>
               {% if event.get('event_time_formatted') %}<p class="text-muted small"><i class="fa-solid fa-clock"></i> {{ event['event_time_formatted'] }}</p>{% endif %}
@@ -85,7 +86,7 @@ body { background:#f8f9fa; font-family:'Roboto',sans-serif; margin:0; padding:0;
         <div class="tab-pane fade" id="past">
           {% if past_events %}
             {% for event in past_events %}
-            <a href="{{ url_for('event_detail', event_id=event['event_id']) }}" class="event-card">
+            <a href="{{ url_for('event_detail', id=event['event_id']) }}" class="event-card">
               <h6 class="fw-bold text-secondary small">{{ event['event_name'] or 'No Title' }}</h6>
               <p class="text-muted small"><i class="fa-solid fa-calendar"></i> {{ event['event_date'].strftime('%B %d, %Y') if event['event_date'] else 'No date' }}</p>
             </a>
@@ -136,15 +137,15 @@ body { background:#f8f9fa; font-family:'Roboto',sans-serif; margin:0; padding:0;
 
 <!-- Bottom Navigation -->
 <div class="bottom-nav d-md-none">
-  <a href="{{ url_for('user_dashboard') }}" class="active"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
-  <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church"></i><span>Ministries</span></a>
-  <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart"></i><span>Groups</span></a>
-  <a href="{{ url_for('all_events') }}"><i class="fa-solid fa-calendar-days"></i><span>Events</span></a>
+  <a href="{{ url_for('user_dashboard') }}" class="active"><i class="fa-solid fa-house"></i><br><span>Dashboard</span></a>
+  <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church"></i><br><span>Ministries</span></a>
+  <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart"></i><br><span>Groups</span></a>
+  <a href="{{ url_for('all_events') }}"><i class="fa-solid fa-calendar-days"></i><br><span>Events</span></a>
 </div>
 
 <!-- Profile Dropdown -->
 <div class="dropdown position-fixed top-0 end-0 p-2">
-  <a href="#" data-bs-toggle="dropdown">
+  <a href="#" id="profileDropdown" data-bs-toggle="dropdown">
     <img src="{{ url_for('uploaded_file', filename=user.profile_pic) }}" class="profile-icon" onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
   </a>
   <ul class="dropdown-menu dropdown-menu-end shadow-sm">
