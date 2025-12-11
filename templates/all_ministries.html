@@ -97,7 +97,7 @@ h2 { color:#4b4f53; font-weight:700; margin-bottom:20px; }
 }
 @media(min-width:769px){
     .sidebar{ transform:translateX(0); }
-    .main-content{ margin-left:250px; padding:25px; }
+    .main-content{ margin-left:250px; }
 }
 </style>
 </head>
@@ -121,22 +121,18 @@ h2 { color:#4b4f53; font-weight:700; margin-bottom:20px; }
 
 <!-- Main Content -->
 <div class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="d-flex align-items-center">
-            <div class="hamburger d-md-none" id="hamburger"><i class="fa-solid fa-bars"></i></div>
-            <div id="datetime" class="time-card ms-2"></div>
-        </div>
-        <div class="dropdown">
-            <a class="d-block" href="#" id="profileDropdown" data-bs-toggle="dropdown">
-                <img src="{{ url_for('static', filename='uploads/' + (profile_pic if profile_pic else 'default-profile.png')) }}" 
-                     class="profile-icon">
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
-                <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
-            </ul>
-        </div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div id="datetime" class="time-card"></div>
+    <div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1050;">
+      <a class="d-block" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" class="profile-icon" onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+        <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
+        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+      </ul>
     </div>
+  </div>
 
     <h2>All Ministries</h2>
     <div class="row g-3">
