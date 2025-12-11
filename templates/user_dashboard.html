@@ -351,21 +351,29 @@ function updateDateTime() {
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
-/* Sidebar toggle */
-document.getElementById('hamburger').addEventListener('click', function() {
-  document.getElementById('sidebar').classList.toggle('show');
-});
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
 
-/* Event search */
-document.getElementById('eventSearch').addEventListener('input', function() {
-  const filter = this.value.toLowerCase();
-  document.querySelectorAll('.event-card').forEach(event => {
-    const text = event.textContent.toLowerCase();
-    event.style.display = text.includes(filter) ? '' : 'none';
-  });
+    if(hamburger) {
+        hamburger.addEventListener('click', () => sidebar.classList.toggle('show'));
+    }
+
+    // Event search
+    const eventSearch = document.getElementById('eventSearch');
+    if(eventSearch) {
+        eventSearch.addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('.event-card').forEach(event => {
+                const text = event.textContent.toLowerCase();
+                event.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+    }
 });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
