@@ -54,15 +54,16 @@
             margin-left: 250px;
             padding: 30px;
         }
-
-        .time-card {
-            display: inline-block;
-            padding: 10px 18px;
-            background: #6c757d;
-            color: white;
-            border-radius: 20px;
-            font-weight: 600;
-        }
+.time-card {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #fff;
+    background: #616d79;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(202,190,190,0.2);
+}
 
         .card {
             border-radius: 15px;
@@ -94,23 +95,6 @@
             color: #343a40;
         }
 
-        @media (max-width: 768px) {
-            .hamburger { display: inline-block; }
-
-            .sidebar {
-                transform: translateX(-100%);
-                position: fixed;
-                top: 0;
-                left: 0;
-            }
-            .sidebar.show { transform: translateX(0); }
-
-            .main-content {
-                margin-left: 0;
-            }
-        }
-
-        /* BACKDROP */
         .backdrop {
             position: fixed;
             top: 0; left: 0;
@@ -122,16 +106,34 @@
             transition: 0.3s ease;
         }
         .backdrop.show { opacity: 1; visibility: visible; }
+
+        @media (max-width: 768px) {
+            .hamburger { display: block; }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.show { transform: translateX(0); }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .sidebar { transform: translateX(0); }
+            .main-content { margin-left: 250px; }
+        }
     </style>
 </head>
 
 <body>
 
-<!-- Backdrop -->
+<!-- Backdrop for mobile -->
 <div class="backdrop" id="backdrop"></div>
 
-<!-- MOBILE HAMBURGER -->
-<div class="d-md-none p-3">
+<!-- Hamburger -->
+<div class="d-md-none p-2">
     <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
 </div>
 
@@ -149,7 +151,21 @@
 
 <!-- ================= MAIN CONTENT ================= -->
 <div class="main-content">
-    <div id="datetime" class="time-card mb-3"></div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div id="datetime" class="time-card"></div>
+        <div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1050;">
+            <a class="d-block" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" 
+                     class="profile-icon" 
+                     style="width:45px;height:45px;border-radius:50%;border:2px solid #fff;" 
+                     onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}">
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+                <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+            </ul>
+        </div>
+    </div>
 
     <div class="card">
         <h4 class="text-center">{{ lifegroup.lifegroup_name }}</h4>
@@ -166,20 +182,6 @@
             <i class="fa-solid fa-arrow-left me-2"></i> Back to Life Groups
         </a>
     </div>
-</div>
-
-<!-- PROFILE DROPDOWN -->
-<div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1500;">
-    <a href="#" id="profileDropdown" data-bs-toggle="dropdown">
-        <img src="{{ url_for('uploaded_file', filename=profile_pic) }}"
-             class="profile-icon"
-             style="width:45px;height:45px;border-radius:50%;border:2px solid #fff;"
-             onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-        <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
-        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
-    </ul>
 </div>
 
 <!-- ================= JS ================= -->
