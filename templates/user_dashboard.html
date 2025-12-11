@@ -388,15 +388,15 @@ document.querySelectorAll(".view-events-btn").forEach(btn => {
 });
 
 <script>
- <script>
-        function updateDateTime() {
-            const now = new Date();
-            const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
-            document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
-        }
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
-    </script>
+function updateDateTime() {
+    const now = new Date();
+    const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+    document.getElementById('datetime').innerText = now.toLocaleString('en-US', options);
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+</script>
+
 
 
 
@@ -420,6 +420,7 @@ function filterEvents(input, selector) {
 
 </body>
 </html>
+
 
 
 
