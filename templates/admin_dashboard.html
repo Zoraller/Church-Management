@@ -631,9 +631,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   calendar.render();
 });
-</script>
 
-<script>
 function toggleInput(type) {
   const filterType = document.getElementById(`filterType${type.charAt(0).toUpperCase() + type.slice(1)}`).value;
   const dateInput = document.getElementById(`dateInput${type.charAt(0).toUpperCase() + type.slice(1)}`);
@@ -652,8 +650,6 @@ function toggleInput(type) {
     yearInput.classList.remove('d-none');
   }
 }
-</script>
-<script>
   // Event search filter
   document.getElementById('eventSearch').addEventListener('input', function() {
     const filter = this.value.toLowerCase();
@@ -672,16 +668,9 @@ function updateDateTime() {
   const time = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute:'2-digit', second:'2-digit' });
   document.getElementById('datetime').innerText = `${date} ${time}`;
 }
-
-// Elements
-const sidebar = document.getElementById("sidebar");
-const backdrop = document.getElementById("backdrop");
-const hamburger = document.getElementById("hamburger");
-
 setInterval(updateDateTime, 1000);
 updateDateTime();
-</script>
-<script>
+
 // Elements
 const sidebar = document.getElementById("sidebar");
 const backdrop = document.getElementById("backdrop");
@@ -719,4 +708,5 @@ closeEventsPanel.addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
