@@ -218,6 +218,7 @@
         <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" class="profile-icon" onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
       </a>
       <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+        <li><a class="dropdown-item" href="{{ url_for('user_settings') }}"><i class="fa-solid fa-cog me-2"></i> Settings</a></li>  <!-- New Settings link -->
         <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
         <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
       </ul>
