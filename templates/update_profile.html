@@ -127,7 +127,8 @@
 
 <div class="backdrop" id="backdrop"></div>
 
-    <div class="d-md-none p-3">
+<!-- Mobile Hamburger -->
+<div class="d-md-none p-3">
     <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars fa-lg"></i></span>
 </div>
     
@@ -237,7 +238,16 @@ sidebar.querySelectorAll("a").forEach(link => {
         if(window.innerWidth <= 768) toggleSidebar();
     });
 });
+        function updateDateTime() {
+  const now = new Date();
+  const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+  document.getElementById('datetime').innerText = now.toLocaleString('en-US', options);
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
 </script>
 </body>
 </html>
+
 
