@@ -421,31 +421,7 @@ memberSearch.addEventListener('input', function() {
   });
 });
 
-
-  document.addEventListener("DOMContentLoaded", function() {
-  const sidebar = document.querySelector(".sidebar");
-  const hamburger = document.querySelector(".hamburger");
-  const backdrop = document.createElement("div");
-  backdrop.className = "backdrop";
-  document.body.appendChild(backdrop);
-
-  function toggleSidebar() {
-    sidebar.classList.toggle("show");
-    backdrop.classList.toggle("show");
-  }
-
-  hamburger.addEventListener("click", toggleSidebar);
-  backdrop.addEventListener("click", toggleSidebar);
-
-  // Close sidebar on link click (mobile)
-  sidebar.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", () => {
-      if (window.innerWidth <= 768) toggleSidebar();
-    });
-  });
-});
-
-  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     // Elements
     const sidebar = document.getElementById("sidebar");
     const backdrop = document.getElementById("backdrop");
@@ -480,6 +456,7 @@ memberSearch.addEventListener('input', function() {
 </body>
 
 </html>
+
 
 
 
