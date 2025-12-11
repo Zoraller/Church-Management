@@ -121,11 +121,10 @@ h2 { color:#4b4f53; font-weight:700; margin-bottom:30px; }
     <a href="{{ url_for('user_dashboard') }}"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
     <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church me-2"></i> Ministries</a>
     <a href="{{ url_for('all_lifegroups') }}" class="active"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
-    <a href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a>
 </div>
 
-<!-- Main Content -->
 <div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <div id="datetime" class="time-card"></div>
     <h2>All Life Groups</h2>
     <div class="row g-4">
@@ -189,4 +188,5 @@ updateDateTime();
 </script>
 </body>
 </html>
+
 
