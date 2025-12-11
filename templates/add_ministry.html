@@ -162,6 +162,52 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
   .main-content { margin-left: 0; }
   .container-box { margin: 20px; padding: 20px; }
 }
+  /* Hamburger button */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #fff;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1100;
+}
+
+/* Sidebar transform for mobile */
+@media (max-width: 768px) {
+  .hamburger { display: inline-block; }
+  .sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1050;
+    transition: transform 0.3s ease;
+  }
+  .sidebar.show { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+}
+
+/* Backdrop overlay */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1040;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.backdrop.show {
+  opacity: 1;
+  visibility: visible;
+}
+
 </style>
 </head>
 <body>
@@ -359,8 +405,33 @@ memberSearch.addEventListener('input', function() {
     item.style.display = label.includes(query) ? '' : 'none';
   });
 });
+
+
+  document.addEventListener("DOMContentLoaded", function() {
+  const sidebar = document.querySelector(".sidebar");
+  const hamburger = document.querySelector(".hamburger");
+  const backdrop = document.createElement("div");
+  backdrop.className = "backdrop";
+  document.body.appendChild(backdrop);
+
+  function toggleSidebar() {
+    sidebar.classList.toggle("show");
+    backdrop.classList.toggle("show");
+  }
+
+  hamburger.addEventListener("click", toggleSidebar);
+  backdrop.addEventListener("click", toggleSidebar);
+
+  // Close sidebar on link click (mobile)
+  sidebar.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      if (window.innerWidth <= 768) toggleSidebar();
+    });
+  });
+});
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
