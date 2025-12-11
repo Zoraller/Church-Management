@@ -33,6 +33,12 @@ a {
     padding-top: 20px;
     overflow-y: auto;
     z-index: 1001;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.sidebar.show {
+    transform: translateX(0);
 }
 
 .sidebar a {
@@ -57,9 +63,10 @@ a {
 
 /* --------------------- Main Content --------------------- */
 .main-content {
-    margin-left: 220px;
+    margin-left: 0;
     margin-right: 300px;
     padding: 20px;
+    transition: margin-left 0.3s ease;
 }
 
 /* --------------------- Right Panel (Events) --------------------- */
@@ -188,6 +195,24 @@ a {
     display: none;
 }
 
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.backdrop.show {
+    opacity: 1;
+    visibility: visible;
+}
+
 @media (max-width: 768px) {
     /* Sidebar */
     .sidebar {
@@ -258,6 +283,14 @@ a {
     }
 }
 
+@media (min-width: 769px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+    .main-content {
+        margin-left: 220px;
+    }
+}
 </style>
 </head>
 <body>
@@ -269,15 +302,14 @@ a {
     <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars fa-lg"></i></span>
 </div>
 
-  <!-- Mobile Events Toggle Button -->
+<!-- Mobile Events Toggle Button -->
 <div class="d-md-none position-fixed bottom-0 end-0 m-3" style="z-index:1102;">
     <button id="mobileEventsBtn" class="btn btn-primary shadow">
         <i class="fa-solid fa-calendar-days me-1"></i> Events
     </button>
 </div>
 
-  
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
 <div class="text-center">
 <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
 </div>
@@ -351,8 +383,7 @@ a {
     </div>
 </div>
 
-
-  <!-- Mobile Events Panel -->
+<!-- Mobile Events Panel -->
 <div class="events-mobile-panel" id="mobileEventsPanel">
   <span id="closeEventsPanel" style="position:absolute; top:10px; right:15px; font-size:1.5rem; cursor:pointer;">&times;</span>
 
@@ -374,9 +405,6 @@ a {
     {% endfor %}
   </div>
 </div>
-
-<button id="openEventsBtn" class="open-events-btn"><i class="fa-solid fa-calendar-days me-1"></i> Events</button>
-
 
 <div class="right-panel" id="rightPanel">
   <div class="card shadow-sm mb-4" style="max-width: 500px;">
@@ -403,8 +431,6 @@ a {
       </li>
     </ul>
 
-
-    
     <div class="card-body p-1" style="max-height: 250px; overflow-y: auto;">
       <div class="tab-content" id="eventTabsContent">
           <!-- Upcoming Events -->
@@ -654,6 +680,7 @@ const hamburger = document.getElementById("hamburger");
 
 setInterval(updateDateTime, 1000);
 updateDateTime();
+</script>
 <script>
 // Elements
 const sidebar = document.getElementById("sidebar");
@@ -690,6 +717,6 @@ closeEventsPanel.addEventListener('click', () => {
 });
 
 </script>
-</script>
 </body>
 </html>
+
