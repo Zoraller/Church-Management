@@ -1,217 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="User Dashboard - Welcome to your personalized church app view.">
-<title>User Dashboard</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-<link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
-<style>
-/* --------------------- General Body --------------------- */
-body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-}
-
-/* --------------------- Sidebar --------------------- */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 250px;
-    background: linear-gradient(180deg, #4b4f53 0%, #343a40 100%);
-    color: white;
-    padding-top: 20px;
-    box-shadow: 2px 0 15px rgba(0,0,0,0.1);
-    z-index: 1000;
-    transition: transform 0.3s ease;
-}
-
-/* Links inside sidebar */
-.sidebar a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    padding: 12px 20px;
-    margin: 5px 10px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-.sidebar a:hover {
-    background: rgba(255,255,255,0.2);
-    transform: translateX(5px);
-}
-.sidebar a.active {
-    background: #6c757d;
-    font-weight: bold;
-    border-left: 4px solid #ffc107;
-}
-
-/* Logo */
-.sidebar-logo {
-    display: block;
-    max-width: 120px;
-    margin: 0 auto 20px;
-    border-radius: 50%;
-    padding: 5px;
-    background: #343a40;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-/* --------------------- Main Content --------------------- */
-.main-content {
-    margin-left: 250px;
-    padding: 20px;
-    transition: margin-left 0.3s ease;
-}
-
-/* --------------------- Navbar --------------------- */
-.navbar {
-    background: linear-gradient(45deg, #ffffff, #f8f9fa);
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
-}
-.navbar-brand {
-    color: #4b4f53;
-    font-weight: 600;
-    font-size: 1.2rem;
-}
-
-/* --------------------- Clock --------------------- */
-.time-card {
-    display: inline-block;
-    padding: 6px 12px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: #fff;
-    background: #616d79;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(202,190,190,0.2);
-}
-
-/* --------------------- Profile Icon --------------------- */
-.profile-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid #fff;
-    transition: transform 0.3s ease;
-}
-.profile-icon:hover {
-    transform: scale(1.1);
-}
-
-/* --------------------- Cards --------------------- */
-.card {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    background: linear-gradient(135deg, #fff 0%, #f9f9f9 100%);
-    padding: 25px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-.card h5 {
-    color: #4b4f53;
-    font-weight: 600;
-    margin-bottom: 15px;
-}
-.card .btn {
-    background: linear-gradient(45deg, #28a745, #20c997);
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-.card .btn:hover {
-    background: linear-gradient(45deg, #218838, #17a2b8);
-    transform: translateY(-2px);
-}
-.card a:not(.btn) {
-    color: #28a745;
-    text-decoration: none;
-    font-weight: 500;
-    display: block;
-    margin-bottom: 8px;
-}
-.card a:not(.btn):hover {
-    color: #20c997;
-    text-decoration: underline;
-}
-
-/* --------------------- Event Cards --------------------- */
-.event-card {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    text-decoration: none;
-    color: inherit;
-}
-.event-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-/* --------------------- Mobile Responsive --------------------- */
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ event.event_name }} - Event Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { 
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
+      font-family: 'Arial', sans-serif; 
     }
-    .sidebar.show {
-        transform: translateX(0);
-    }
-    .main-content {
-        margin-left: 0;
-        padding: 20px;
-    }
-    .right-panel {
-        display: none;
-    }
-    .hamburger {
-        display: block;
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 1100;
-        cursor: pointer;
-        font-size: 1.5rem;
-        color: #343a40;
-    }
-}
-</style>
 
+    .sidebar { 
+      height: 100vh; 
+      background: linear-gradient(180deg, #4b4f53 0%, #343a40 100%); 
+      color: white; 
+      position: fixed; 
+      width: 220px; 
+      padding-top: 20px; 
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    .sidebar.show { transform: translateX(0); }
+    .sidebar a { 
+      color: white; 
+      display: block; 
+      padding: 10px 20px; 
+      text-decoration: none; 
+      transition: all 0.3s ease;
+    }
+    .sidebar a:hover { background: #495057; transform: translateX(5px); }
+    .sidebar a.active { background: #6c757d; font-weight: bold; border-left: 4px solid #ffc107; }
+    .sidebar-logo { max-width: 120px; border-radius: 50%; padding: 5px; background: #343a40; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+
+    .main-content { margin-left: 0; padding: 20px; transition: margin-left 0.3s ease; }
+
+    .right-panel { position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background: #f8f9fa; z-index: 1000; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.1); padding-top: 60px; }
+
+    .profile-icon { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: transform 0.3s ease; }
+    .profile-icon:hover { transform: scale(1.1); }
+
+    .time-card { display: inline-block; padding: 8px 16px; font-size: 0.8rem; font-weight: bold; color: #ffffff; background: linear-gradient(45deg, #616d79ff, #495057); border-radius: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+
+    .container-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 6px 12px rgba(0,0,0,0.15); margin-bottom: 20px; position: relative; }
+    .container-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #007bff, #28a745); border-radius: 15px 15px 0 0; }
+
+    .btn-primary { background: linear-gradient(45deg, #007bff, #0056b3); border: none; border-radius: 25px; padding: 10px 20px; font-weight: bold; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3); }
+    .btn-secondary { border-radius: 25px; padding: 10px 20px; }
+
+    .hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #4b4f53; margin-bottom: 10px; }
+    .backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+    .backdrop.show { opacity: 1; visibility: visible; }
+
+    @media (max-width: 768px) { 
+      .hamburger { display: block; }
+      .sidebar { width: 220px; height: 100vh; position: fixed; top: 0; left: 0; }
+      .main-content { margin-left: 0; padding: 20px; } 
+      .container-box { margin: 20px; padding: 20px; } 
+      .right-panel { display: none; }
+    }
+    @media (min-width: 769px) { 
+      .sidebar { transform: translateX(0); }
+      .main-content { margin-left: 220px; margin-right: 300px; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Hamburger -->
+<!-- Backdrop for mobile -->
+<div class="backdrop" id="backdrop"></div>
+
+<!-- Hamburger for mobile -->
 <div class="d-md-none p-2">
-    <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
+  <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
 </div>
 
-<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
-    <div class="text-center mb-4">
-        <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Church Logo">
-    </div>
-    <hr>
-    <a href="{{ url_for('user_dashboard') }}" class="active"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
-    <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church me-2"></i> Ministries</a>
-    <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
+  <div class="text-center">
+    <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
+  </div>
+  <hr>
+  <a href="{{ url_for('user_dashboard') }}" class="active"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
+  <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church me-2"></i> Ministries</a>
+  <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
 </div>
 
-<!-- Right Panel -->
+<!-- Right Panel (Events) -->
 <div class="right-panel">
   <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white fw-bold">
@@ -264,84 +142,73 @@ body {
   </div>
 </div>
 
-<!-- Main content -->
 <div class="main-content">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <div id="datetime" class="time-card"></div>
-    <div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1050;">
-      <a class="d-block" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" class="profile-icon" onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
-        <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
-        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+    <div class="dropdown"> 
+      <img src="{{ url_for('static', filename='images/iu.jpg') }}" class="profile-icon dropdown-toggle" data-bs-toggle="dropdown" alt="User">
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
       </ul>
     </div>
   </div>
 
-  <nav class="navbar navbar-expand-lg navbar-light">
-    <div class="container-fluid">
-      <span class="navbar-brand">Welcome, {{ username }}</span>
-    </div>
-  </nav>
+  <h4 class="fw-bold text-primary mb-4"><i class="fa-solid fa-calendar-check me-2"></i>{{ event.event_name }} - Details</h4>
 
-  <div class="container mt-3">
-    <h4>Your Dashboard</h4>
-    <div class="row g-4">
-      {% if ministry and ministry['ministry_ids'] %}
-      <div class="col-md-6">
-        <div class="card">
-          <h5><i class="fa-solid fa-church me-2"></i> Your Ministries</h5>
-          {% for id, name in zip(ministry['ministry_ids'], ministry['ministry_names']) %}
-            <a href="{{ url_for('user_view_ministry', ministry_id=id) }}">{{ name }}</a>
-          {% endfor %}
-        </div>
+  <div class="container-box">
+    <div class="row">
+      <div class="col-md-8">
+        <h5 class="mb-3"><i class="fa-solid fa-info-circle me-2 text-primary"></i>Event Information</h5>
+        <p><strong><i class="fa-solid fa-calendar me-2"></i>Date:</strong> {{ event.event_date.strftime('%B %d, %Y') }}</p>
+        <p><strong><i class="fa-solid fa-clock me-2"></i>Time:</strong> {{ event.event_time_formatted or 'Time not set' }}</p>
+        <p><strong><i class="fa-solid fa-location-dot me-2"></i>Location:</strong> {{ event.location }}</p>
+        <p><strong><i class="fa-solid fa-file-alt me-2"></i>Description:</strong></p>
+        <p class="ms-3">{{ event.description or 'No description available.' }}</p>
       </div>
-      {% endif %}
-      {% if lifegroup and lifegroup['lifegroup_ids'] %}
-      <div class="col-md-6">
-        <div class="card">
-          <h5><i class="fa-solid fa-heart me-2"></i> Your Life Groups</h5>
-          {% for id, name in zip(lifegroup['lifegroup_ids'], lifegroup['lifegroup_names']) %}
-            <a href="{{ url_for('view_lifegroup', lifegroup_id=id) }}">{{ name }}</a>
-          {% endfor %}
-        </div>
+      <div class="col-md-4 text-center">
+        <img 
+          src="{% if event.image_url %}{{ url_for('static', filename='uploads/' ~ event.image_url) }}{% else %}{{ url_for('static', filename='images/cross-background.jpg') }}{% endif %}" 
+          class="img-fluid rounded mb-3" 
+          style="max-height: 200px;" 
+          alt="{{ event.event_name }}">
       </div>
-      {% endif %}
-      <div class="col-md-6">
-        <div class="card">
-          <h5><i class="fa-solid fa-church me-2"></i> Browse Ministries</h5>
-          <p>Explore all ministries in the church.</p>
-          <a href="{{ url_for('all_ministries') }}" class="btn">View All Ministries</a>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card">
-          <h5><i class="fa-solid fa-heart me-2"></i> Browse Life Groups</h5>
-          <p>Explore all life groups in the church.</p>
-          <a href="{{ url_for('all_lifegroups') }}" class="btn">View All Life Groups</a>
-        </div>
-      </div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Back to Dashboard</a>
     </div>
   </div>
 </div>
 
 <script>
-/* Clock */
 function updateDateTime() {
   const now = new Date();
   const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
-  document.getElementById('datetime').innerText = now.toLocaleString('en-US', options);
+  document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
 }
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
-/* Sidebar toggle */
-document.getElementById('hamburger').addEventListener('click', function() {
-  document.getElementById('sidebar').classList.toggle('show');
+// Sidebar toggle for mobile
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('backdrop');
+const hamburger = document.getElementById('hamburger');
+
+function toggleSidebar() {
+  sidebar.classList.toggle('show');
+  backdrop.classList.toggle('show');
+}
+
+hamburger.addEventListener('click', toggleSidebar);
+backdrop.addEventListener('click', toggleSidebar);
+
+// Close sidebar on link click (for mobile)
+sidebar.addEventListener('click', function(e) {
+  if (e.target.tagName === 'A') {
+    toggleSidebar();
+  }
 });
 
-/* Event search */
+// Event search
 document.getElementById('eventSearch').addEventListener('input', function() {
   const filter = this.value.toLowerCase();
   document.querySelectorAll('.event-card').forEach(event => {
@@ -354,6 +221,3 @@ document.getElementById('eventSearch').addEventListener('input', function() {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
-
