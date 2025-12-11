@@ -4,57 +4,63 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ lifegroup.lifegroup_name }}</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
 <style>
 body {
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    margin:0; padding:0; color:#333;
+    margin: 0; padding: 0; color: #333;
 }
+
+/* Sidebar */
 .sidebar {
     height: 100vh;
     width: 250px;
     background: linear-gradient(180deg,#4b4f53,#343a40);
     position: fixed;
-    top:0; left:0;
-    padding-top:20px;
-    color:white;
-    z-index:1050;
+    top: 0; left: 0;
+    padding-top: 20px;
+    color: white;
+    z-index: 1050;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
-    overflow-y:auto;
+    overflow-y: auto;
 }
 .sidebar.show { transform: translateX(0); }
 .sidebar a {
-    display:block; color:white; padding:12px 20px; margin:5px 10px; border-radius:8px;
-    text-decoration:none; transition: all 0.3s ease;
+    display: block; color: white; padding: 12px 20px; margin: 5px 10px; border-radius: 8px;
+    text-decoration: none; transition: all 0.3s ease;
 }
 .sidebar a:hover { background: rgba(255,255,255,0.2); transform: translateX(5px); }
-.sidebar a.active { background:#6c757d; font-weight:bold; border-left:4px solid #ffc107; }
-.sidebar-logo { display:block; margin:0 auto 15px; max-width:120px; border-radius:50%; background:#343a40; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
+.sidebar a.active { background: #6c757d; font-weight: bold; border-left: 4px solid #ffc107; }
+.sidebar-logo { display: block; margin: 0 auto 15px; max-width: 120px; border-radius: 50%; background: #343a40; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
-.main-content { margin-left:0; padding:30px; transition: margin-left 0.3s ease; }
+/* Main Content */
+.main-content { margin-left: 0; padding: 30px; transition: margin-left 0.3s ease; }
 @media(min-width:769px){ .sidebar { transform: translateX(0); } .main-content { margin-left:250px; } }
 
 .time-card {
-    display:inline-block; padding:10px 18px; font-size:0.9rem; font-weight:600;
-    color:#fff; background: linear-gradient(45deg,#6c757d,#495057); border-radius:20px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:20px;
+    display: inline-block; padding: 10px 18px; font-size: 0.9rem; font-weight: 600;
+    color: #fff; background: linear-gradient(45deg,#6c757d,#495057); border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); margin-bottom: 20px;
 }
 
-.card { border:none; border-radius:15px; box-shadow:0 8px 25px rgba(0,0,0,0.1); background:#fff; padding:25px; transition: transform 0.3s ease; max-width:600px; margin:auto; }
+/* Card */
+.card { border: none; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); background: #fff; padding: 25px; transition: transform 0.3s ease; max-width: 600px; margin: auto; }
 .card:hover { transform: translateY(-5px); }
-.card img { border-radius:10px; max-height:300px; width:100%; object-fit:cover; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+.card img { border-radius: 10px; max-height: 300px; width: 100%; object-fit: cover; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-.btn-secondary { background: linear-gradient(45deg,#28a745,#20c997); border:none; color:white; padding:10px 20px; border-radius:8px; transition:all 0.3s ease; }
-.btn-secondary:hover { background: linear-gradient(45deg,#20c997,#17a2b8); transform:translateY(-2px); }
+.btn-secondary { background: linear-gradient(45deg,#28a745,#20c997); border: none; color: white; padding: 10px 20px; border-radius: 8px; transition: all 0.3s ease; }
+.btn-secondary:hover { background: linear-gradient(45deg,#20c997,#17a2b8); transform: translateY(-2px); }
 
-.profile-icon { width:45px; height:45px; border-radius:50%; cursor:pointer; border:2px solid #fff; transition: transform 0.3s ease; }
+.profile-icon { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; transition: transform 0.3s ease; }
 .profile-icon:hover { transform: scale(1.1); }
 
-.hamburger { display:none; font-size:1.5rem; cursor:pointer; color:#4b4f53; margin-bottom:20px; }
+.hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #4b4f53; margin-bottom: 20px; }
 @media(max-width:768px){ .hamburger { display:block; } }
 
 .backdrop {
@@ -67,8 +73,10 @@ body {
 </head>
 <body>
 
+<!-- Backdrop -->
 <div class="backdrop" id="backdrop"></div>
 
+<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="text-center mb-4">
         <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Logo">
@@ -79,6 +87,7 @@ body {
     <a href="{{ url_for('all_lifegroups') }}" class="active"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
 </div>
 
+<!-- Main Content -->
 <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></div>
@@ -90,7 +99,7 @@ body {
         <h4>{{ lifegroup.lifegroup_name }}</h4>
         <p>{{ lifegroup.description }}</p>
         {% if lifegroup.picture %}
-            <img src="{{ url_for('uploaded_file', filename=lifegroup.picture) }}" alt="Life Group Picture" onerror="this.src='{{ url_for('static', filename='images/default-lifegroup.png') }}'">
+            <img src="{{ url_for('static', filename='uploads/' + lifegroup.picture) }}" alt="Life Group Picture" onerror="this.src='{{ url_for('static', filename='images/default-lifegroup.png') }}'">
         {% else %}
             <i class="fa-solid fa-heart fa-4x text-primary" style="display:block; text-align:center; margin-bottom:20px;"></i>
         {% endif %}
@@ -103,7 +112,7 @@ body {
 <!-- Profile Dropdown -->
 <div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1050;">
     <a class="d-block" href="#" id="profileDropdown" data-bs-toggle="dropdown">
-        <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" class="profile-icon" onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
+        <img src="{{ url_for('static', filename='uploads/' + (profile_pic or 'default-profile.png')) }}" class="profile-icon">
     </a>
     <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
         <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
@@ -128,12 +137,10 @@ function toggleSidebar() {
 hamburger.addEventListener("click", toggleSidebar);
 backdrop.addEventListener("click", toggleSidebar);
 
-// Close sidebar on link click (for mobile)
+// Close sidebar on link click (mobile)
 sidebar.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
-        if(window.innerWidth <= 768){
-            toggleSidebar();
-        }
+        if(window.innerWidth <= 768) toggleSidebar();
     });
 });
 
