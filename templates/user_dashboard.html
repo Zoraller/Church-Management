@@ -206,6 +206,27 @@ body {
         color: #343a40;
     }
 }
+    /* Mobile events drawer */
+@media (max-width: 768px) {
+    .right-panel {
+        position: fixed;
+        bottom: -100%;
+        left: 0;
+        width: 100%;
+        height: 70%;
+        border-radius: 15px 15px 0 0;
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+        transition: bottom 0.3s ease;
+        z-index: 1200;
+        background: #f8f9fa;
+        padding: 10px;
+        overflow-y: auto;
+    }
+    .right-panel.show {
+        bottom: 0;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -213,6 +234,13 @@ body {
 <!-- Hamburger -->
 <div class="d-md-none p-2">
     <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
+</div>
+
+    <!-- Mobile Events Toggle Button -->
+<div class="d-md-none position-fixed bottom-0 end-0 m-3" style="z-index:1100;">
+    <button id="mobileEventsBtn" class="btn btn-primary shadow-sm">
+        <i class="fa-solid fa-calendar-days me-1"></i> Events
+    </button>
 </div>
 
 <!-- Sidebar -->
@@ -372,8 +400,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<script>
+// Mobile Events Drawer Toggle
+const mobileEventsBtn = document.getElementById('mobileEventsBtn');
+const rightPanel = document.querySelector('.right-panel');
+
+if(mobileEventsBtn){
+    mobileEventsBtn.addEventListener('click', () => {
+        rightPanel.classList.toggle('show');
+    });
+}
+
+// Optional: Close when clicking outside
+document.addEventListener('click', function(e){
+    if(window.innerWidth <= 768){
+        if(rightPanel.classList.contains('show') && !rightPanel.contains(e.target) && e.target !== mobileEventsBtn){
+            rightPanel.classList.remove('show');
+        }
+    }
+});
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
