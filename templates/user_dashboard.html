@@ -18,7 +18,8 @@ body {
     overflow-x: hidden;
 }
 
-/* Sidebar */
+/* --------------------- Sidebar --------------------- */
+/* Desktop: always visible */
 .sidebar {
     height: 100vh;
     background: linear-gradient(180deg, #4b4f53 0%, #343a40 100%);
@@ -28,10 +29,11 @@ body {
     padding-top: 20px;
     box-shadow: 2px 0 15px rgba(0,0,0,0.1);
     z-index: 1000;
-    transform: translateX(-100%);
+    transform: translateX(0); /* visible by default on desktop */
     transition: transform 0.3s ease;
 }
-.sidebar.show { transform: translateX(0); }
+
+/* Links inside sidebar */
 .sidebar a {
     color: white;
     display: block;
@@ -41,37 +43,52 @@ body {
     margin: 5px 10px;
     transition: all 0.3s ease;
 }
-.sidebar a:hover { background: rgba(255,255,255,0.2); transform: translateX(5px); }
-.sidebar a.active { background: #6c757d; font-weight: bold; border-left: 4px solid #ffc107; }
-.sidebar-logo { max-width: 120px; border-radius: 50%; padding: 5px; background: #343a40; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-
-/* Hamburger */
-.hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #4b4f53; margin-right: 10px; }
-
-/* Main content */
-.main-content {
-    margin-left: 250px;
-    margin-right: 300px;
-    padding: 30px;
-    background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-    transition: margin-left 0.3s ease;
+.sidebar a:hover { 
+    background: rgba(255,255,255,0.2); 
+    transform: translateX(5px); 
+}
+.sidebar a.active { 
+    background: #6c757d; 
+    font-weight: bold; 
+    border-left: 4px solid #ffc107; 
 }
 
-/* Right panel */
-.right-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 100vh;
-    background: #f8f9fa;
-    z-index: 1000;
-    overflow-y: auto;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-    padding-top: 60px;
+/* Logo */
+.sidebar-logo { 
+    max-width: 120px; 
+    border-radius: 50%; 
+    padding: 5px; 
+    background: #343a40; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
 }
 
+/* --------------------- Mobile --------------------- */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%); /* hide by default on mobile */
+        transition: transform 0.3s ease;
+    }
+    .sidebar.show {
+        transform: translateX(0); /* show when toggled */
+    }
+
+    /* Hamburger visible on mobile */
+    .hamburger {
+        display: block;
+    }
+    
+    /* Main content takes full width */
+    .main-content {
+        margin-left: 0;
+        margin-right: 0;
+        padding: 20px;
+    }
+    
+    /* Hide right panel on mobile */
+    .right-panel {
+        display: none;
+    }
+}
 /* Navbar */
 .navbar { background: linear-gradient(45deg, #ffffff, #f8f9fa); border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 30px; }
 .navbar-brand { color: #4b4f53; font-weight: 600; font-size: 1.2rem; }
@@ -299,3 +316,4 @@ document.getElementById('eventSearch').addEventListener('input', function() {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
