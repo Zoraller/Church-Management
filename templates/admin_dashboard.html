@@ -49,30 +49,34 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; margin:0; padding:0;
 .bottom-nav i { font-size:1.2rem; }
 .bottom-nav span { display:block; font-size:0.8rem; }
 
-/* Hamburger */
-.hamburger { position:fixed; top:10px; left:10px; z-index:1002; background:#4b4f53; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; }
-.overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; opacity:0; visibility:hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
-.overlay.show { opacity:1; visibility:visible; }
-
-/* --------------------- Responsive --------------------- */
-@media(min-width:769px) {
-  .sidebar { transform: translateX(0); }
-  .main-content { margin-left:220px; margin-right:300px; }
-  .right-panel { display:block; }
-  .bottom-nav { display:none; }
-  .hamburger { display:none; }
+.hamburger {
+    display: none;
+    cursor: pointer;
+    font-size: 1.5rem;
 }
-@media(max-width:768px){
-  .right-panel { display:none; }
-  .box-card { padding:15px; }
-  .time-card { font-size:0.6rem; padding:4px 8px; }
-  #calendar { height:300px; }
-  .form-control { font-size:0.9rem; }
-  .btn { font-size:0.9rem; padding:8px 16px; }
+@media (max-width:768px) {
+    .hamburger { display: inline-block; }
+    .sidebar { transform: translateX(-100%); position: fixed; top:0; left:0; height:100vh; z-index:1050; }
+    .sidebar.show { transform: translateX(0); }
+    .main-content { margin-left:0; }
+}
+/* Backdrop */
+.backdrop {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.5); z-index:1040;
+    opacity:0; visibility:hidden; transition:0.3s;
+}
+.backdrop.show { opacity:1; visibility:visible; }.btn { font-size:0.9rem; padding:8px 16px; }
 }
 </style>
 </head>
 <body>
+  <div class="backdrop" id="backdrop"></div>
+
+<!-- Mobile Hamburger -->
+<div class="d-md-none p-3">
+    <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars fa-lg"></i></span>
+</div>
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
@@ -119,9 +123,7 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; margin:0; padding:0;
   </div>
 </div>
 
-<!-- Overlay for mobile -->
-<div class="overlay" id="overlay"></div>
-<button class="hamburger" id="hamburger"><i class="fa fa-bars"></i></button>
+
 
 <!-- Right panel (events) -->
 <div class="right-panel" id="rightPanel">
@@ -257,27 +259,27 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; margin:0; padding:0;
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
 <script>
 // ------------------ Sidebar Toggle ------------------
+// Elements
 const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
+const backdrop = document.getElementById("backdrop");
 const hamburger = document.getElementById("hamburger");
 
+// Toggle sidebar
 function toggleSidebar() {
     sidebar.classList.toggle("show");
-    overlay.classList.toggle("show");
+    backdrop.classList.toggle("show");
 }
 
+// Event listeners
 hamburger.addEventListener("click", toggleSidebar);
-overlay.addEventListener("click", toggleSidebar);
+backdrop.addEventListener("click", toggleSidebar);
 
-// Close sidebar links on mobile
+// Close sidebar on link click (mobile)
 sidebar.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
-        if(window.innerWidth <= 768){
-            toggleSidebar();
-        }
+        if(window.innerWidth <= 768) toggleSidebar();
     });
 });
-
 // ------------------ Clock ------------------
 function updateDateTime(){
     const now = new Date();
@@ -335,4 +337,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
 
