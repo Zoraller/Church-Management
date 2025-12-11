@@ -163,27 +163,59 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
   .container-box { margin: 20px; padding: 20px; }
 }
 
-    .hamburger {
-        display: none;
-        cursor: pointer;
-        font-size: 1.5rem;
-    }
-    .backdrop {
-        position: fixed; top:0; left:0; width:100%; height:100%;
-        background: rgba(0,0,0,0.5); z-index:1040; /* Below sidebar */
-        opacity:0; visibility:hidden; transition:0.3s;
-    }
-    .backdrop.show { opacity:1; visibility:visible; }
+ /* Desktop */
+@media (min-width: 769px) {
+  .sidebar {
+    transform: translateX(0);
+    position: fixed;
+    width: 220px;
+  }
+  .main-content {
+    margin-left: 220px;
+  }
+  .hamburger { display: none; }
+  .backdrop { display: none; }
+}
 
-    @media (max-width:768px) {
-        .hamburger { display: inline-block; }
-        .sidebar { width: 250px; height: 100vh; position: fixed; top:0; left:0; }
-        .main-content { margin-left:0; }
-    }
-    @media (min-width:769px) {
-        .sidebar { transform: translateX(0); }
-        .main-content { margin-left:250px; }
-    }
+/* Mobile */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1100;
+    cursor: pointer;
+    font-size: 1.7rem;
+    color: #343a40;
+  }
+  .sidebar {
+    width: 250px;
+    height: 100vh;
+    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    transition: transform 0.3s ease;
+  }
+  .sidebar.show { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .backdrop.show { opacity: 1; visibility: visible; }
+}
+
 </style>
 </head>
 <body>
@@ -448,5 +480,6 @@ memberSearch.addEventListener('input', function() {
 </body>
 
 </html>
+
 
 
