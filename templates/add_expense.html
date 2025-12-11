@@ -111,52 +111,18 @@
       .main-content { margin-left: 0; }
       .container-box { margin: 20px; padding: 20px; }
     }
-/* --------------------- Mobile Responsive --------------------- */
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
-    }
-    .sidebar.show {
-        transform: translateX(0);
-    }
-    .main-content {
-        margin-left: 0;
-        margin-right: 0;
-        padding: 20px;
-    }
-    .right-panel {
-        display: none;
-    }
-    .hamburger {
-        display: block;
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 1100;
-        cursor: pointer;
-        font-size: 1.5rem;
-        color: #343a40;
-    }
+.hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #4b4f53; margin-bottom: 10px; }
+.backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+.backdrop.show { opacity: 1; visibility: visible; }
+@media (max-width: 768px) { 
+  .hamburger { display: block; }
+  .sidebar { width: 250px; height: 100vh; position: fixed; top: 0; left: 0; transform: translateX(-100%); transition: transform 0.3s ease; }
+  .sidebar.show { transform: translateX(0); }
+  .main-content { margin-left: 0; padding: 20px; } 
 }
-    /* Mobile events drawer */
-@media (max-width: 768px) {
-    .right-panel {
-        position: fixed;
-        bottom: -100%;
-        left: 0;
-        width: 100%;
-        height: 70%;
-        border-radius: 15px 15px 0 0;
-        box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
-        transition: bottom 0.3s ease;
-        z-index: 1200;
-        background: #f8f9fa;
-        padding: 10px;
-        overflow-y: auto;
-    }
-    .right-panel.show {
-        bottom: 0;
-    }
+@media (min-width: 769px) { 
+  .sidebar { transform: translateX(0); }
+  .main-content { margin-left: 250px; margin-right: 300px; }
 }
   </style>
 </head>
@@ -321,32 +287,27 @@ categorySelect.addEventListener('change', function() {
   }
 });
   document.addEventListener('DOMContentLoaded', function() {
-  // Sidebar toggle
-  const sidebar = document.getElementById('sidebar');
-  const backdrop = document.getElementById('backdrop');
-  const hamburger = document.getElementById('hamburger');
-
-  function toggleSidebar() {
-    sidebar.classList.toggle('show');
-    backdrop.classList.toggle('show');
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('backdrop');
+const hamburger = document.getElementById('hamburger');
+function toggleSidebar() {
+  sidebar.classList.toggle('show');
+  backdrop.classList.toggle('show');
+}
+hamburger.addEventListener('click', toggleSidebar);
+backdrop.addEventListener('click', toggleSidebar);
+// Close sidebar on link click (for mobile)
+sidebar.addEventListener('click', function(e) {
+  if (e.target.tagName === 'A') {
+    toggleSidebar();
   }
-
-  hamburger.addEventListener('click', toggleSidebar);
-  backdrop.addEventListener('click', toggleSidebar);
-
-  // Close sidebar on link click (for mobile)
-  sidebar.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      if (window.innerWidth < 769) {
-        toggleSidebar();
-      }
-    });
-  });
+});
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 
