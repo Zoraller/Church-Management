@@ -93,83 +93,24 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
   }
   .text-success { color: #28a745 !important; }
   .text-danger { color: #dc3545 !important; }
-/* --------------------- Mobile Responsive --------------------- */
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
-    }
-    .sidebar.show {
-        transform: translateX(0);
-    }
-    .main-content {
-        margin-left: 0;
-        margin-right: 0;
-        padding: 20px;
-    }
-    .right-panel {
-        display: none;
-    }
-    .hamburger {
-        display: block;
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 1100;
-        cursor: pointer;
-        font-size: 1.5rem;
-        color: #343a40;
-    }
+.hamburger {
+    display: none;
+    cursor: pointer;
+    font-size: 1.5rem;
 }
-    /* Mobile events drawer */
-@media (max-width: 768px) {
-    .right-panel {
-        position: fixed;
-        bottom: -100%;
-        left: 0;
-        width: 100%;
-        height: 70%;
-        border-radius: 15px 15px 0 0;
-        box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
-        transition: bottom 0.3s ease;
-        z-index: 1200;
-        background: #f8f9fa;
-        padding: 10px;
-        overflow-y: auto;
-    }
-/* Desktop right panel */
-.right-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 100vh;
-    background: #f8f9fa;
-    z-index: 1000;
-    overflow-y: auto;
-    padding-top: 60px;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+@media (max-width:768px) {
+    .hamburger { display: inline-block; }
+    .sidebar { transform: translateX(-100%); position: fixed; top:0; left:0; height:100vh; z-index:1050; }
+    .sidebar.show { transform: translateX(0); }
+    .main-content { margin-left:0; }
 }
-
-/* Hide right panel on mobile - convert to bottom drawer */
-@media (max-width: 768px) {
-    .right-panel {
-        top: auto;
-        right: auto;
-        width: 100%;
-        height: 70%;
-        left: 0;
-        bottom: -100%;
-        padding: 15px;
-        border-radius: 15px 15px 0 0;
-        background: #fff;
-        transition: bottom 0.3s ease-in-out;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-    }
-    .right-panel.show {
-        bottom: 0;
-    }
+/* Backdrop */
+.backdrop {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.5); z-index:1040;
+    opacity:0; visibility:hidden; transition:0.3s;
 }
-
+.backdrop.show { opacity:1; visibility:visible; }
 
 </style>
 </head>
@@ -536,6 +477,14 @@ const sidebar = document.getElementById("sidebar");
 const backdrop = document.getElementById("backdrop");
 const hamburger = document.getElementById("hamburger");
 
+setInterval(updateDateTime, 1000);
+updateDateTime();
+<script>
+// Elements
+const sidebar = document.getElementById("sidebar");
+const backdrop = document.getElementById("backdrop");
+const hamburger = document.getElementById("hamburger");
+
 // Toggle sidebar
 function toggleSidebar() {
     sidebar.classList.toggle("show");
@@ -552,62 +501,7 @@ sidebar.querySelectorAll("a").forEach(link => {
         if(window.innerWidth <= 768) toggleSidebar();
     });
 });
-setInterval(updateDateTime, 1000);
-updateDateTime();
-  // Mobile Events Drawer Toggle
-const mobileEventsBtn = document.getElementById('mobileEventsBtn');
-const rightPanel = document.getElementById('rightPanel');
-
-if(mobileEventsBtn){
-    mobileEventsBtn.addEventListener('click', () => {
-        rightPanel.classList.toggle('show');
-    });
-}
-
-// Close the drawer when clicking outside
-document.addEventListener('click', function(e){
-    if(window.innerWidth <= 768){
-        if(rightPanel.classList.contains('show') && !rightPanel.contains(e.target) && e.target !== mobileEventsBtn){
-            rightPanel.classList.remove('show');
-        }
-    }
-});
 </script>
-  <script>
-// ===============================
-// MOBILE SIDEBAR (Hamburger menu)
-// ===============================
-const hamburger = document.getElementById("hamburger");
-const sidebar = document.querySelector(".sidebar");
-
-if (hamburger) {
-    hamburger.addEventListener("click", () => {
-        sidebar.classList.toggle("show");
-    });
-}
-
-// ===============================
-// MOBILE EVENTS DRAWER
-// ===============================
-const mobileEventsBtn = document.getElementById("mobileEventsBtn");
-const rightPanel = document.getElementById("rightPanel");
-
-// Open drawer
-mobileEventsBtn.addEventListener("click", function () {
-    rightPanel.classList.toggle("show");
-});
-
-// Close drawer when clicking outside
-document.addEventListener("click", function (e) {
-    if (window.innerWidth <= 768) {
-        if (rightPanel.classList.contains("show") &&
-            !rightPanel.contains(e.target) &&
-            e.target !== mobileEventsBtn &&
-            !mobileEventsBtn.contains(e.target)) {
-            rightPanel.classList.remove("show");
-        }
-    }
-});
 </script>
 </body>
 </html>
