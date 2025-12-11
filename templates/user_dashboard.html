@@ -388,23 +388,15 @@ document.querySelectorAll(".view-events-btn").forEach(btn => {
 });
 
 // Clock
-function updateDateTime() {
-  const now = new Date();
-  const options = {
-    weekday: "short",      // Thu
-    month: "short",        // Dec
-    day: "numeric",        // 11
-    year: "numeric",       // 2025
-    hour: "2-digit",       // 03
-    minute: "2-digit",     // 45
-    second: "2-digit",     // 30
-    hour12: true           // AM/PM
-  };
-  document.getElementById("datetime").innerHTML = now.toLocaleString("en-US", options);
-}
-
-setInterval(updateDateTime, 1000);
-updateDateTime();
+ <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+            document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+    </script>
 
 
 // Search (right panel)
@@ -427,5 +419,6 @@ function filterEvents(input, selector) {
 
 </body>
 </html>
+
 
 
