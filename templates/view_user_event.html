@@ -20,7 +20,11 @@
       width: 220px; 
       padding-top: 20px; 
       box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
     }
+    .sidebar.show { transform: translateX(0); }
     .sidebar a { 
       color: white; 
       display: block; 
@@ -32,7 +36,7 @@
     .sidebar a.active { background: #6c757d; font-weight: bold; border-left: 4px solid #ffc107; }
     .sidebar-logo { max-width: 120px; border-radius: 50%; padding: 5px; background: #343a40; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
-    .main-content { margin-left: 220px; padding: 20px; }
+    .main-content { margin-left: 0; padding: 20px; transition: margin-left 0.3s ease; }
 
     .profile-icon { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: transform 0.3s ease; }
     .profile-icon:hover { transform: scale(1.1); }
@@ -46,19 +50,40 @@
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3); }
     .btn-secondary { border-radius: 25px; padding: 10px 20px; }
 
-    @media (max-width: 768px) { .sidebar { width: 100%; height: auto; position: relative; } .main-content { margin-left: 0; } .container-box { margin: 20px; padding: 20px; } }
+    .hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #4b4f53; margin-bottom: 10px; }
+    .backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+    .backdrop.show { opacity: 1; visibility: visible; }
+
+    @media (max-width: 768px) { 
+      .hamburger { display: block; }
+      .sidebar { width: 220px; height: 100vh; position: fixed; top: 0; left: 0; }
+      .main-content { margin-left: 0; padding: 20px; } 
+      .container-box { margin: 20px; padding: 20px; } 
+    }
+    @media (min-width: 769px) { 
+      .sidebar { transform: translateX(0); }
+      .main-content { margin-left: 220px; }
+    }
   </style>
 </head>
 <body>
 
-<div class="sidebar">
+<!-- Backdrop for mobile -->
+<div class="backdrop" id="backdrop"></div>
+
+<!-- Hamburger for mobile -->
+<div class="d-md-none p-2">
+  <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
+</div>
+
+<div class="sidebar" id="sidebar">
   <div class="text-center">
     <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
   </div>
   <hr>
-  <a href="{{ url_for('user_dashboard') }}" class="active"><i class="fa-solid fa-house"></i> Dashboard</a>
-  <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church"></i> Ministries</a>
-  <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart"></i> Life Groups</a>
+  <a href="{{ url_for('user_dashboard') }}" class="active"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
+  <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church me-2"></i> Ministries</a>
+  <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
 </div>
 
 <div class="main-content">
@@ -87,13 +112,13 @@
         <p><strong><i class="fa-solid fa-file-alt me-2"></i>Description:</strong></p>
         <p class="ms-3">{{ event.description or 'No description available.' }}</p>
       </div>
-     <div class="col-md-4 text-center">
-    <img 
-        src="{% if event.image_url %}{{ url_for('static', filename='uploads/' ~ event.image_url) }}{% else %}{{ url_for('static', filename='images/cross-background.jpg') }}{% endif %}" 
-        class="img-fluid rounded mb-3" 
-        style="max-height: 200px;" 
-        alt="{{ event.event_name }}">
-</div>
+      <div class="col-md-4 text-center">
+        <img 
+          src="{% if event.image_url %}{{ url_for('static', filename='uploads/' ~ event.image_url) }}{% else %}{{ url_for('static', filename='images/cross-background.jpg') }}{% endif %}" 
+          class="img-fluid rounded mb-3" 
+          style="max-height: 200px;" 
+          alt="{{ event.event_name }}">
+      </div>
     </div>
     <div class="text-center mt-4">
       <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Back to Dashboard</a>
@@ -109,9 +134,28 @@ function updateDateTime() {
 }
 setInterval(updateDateTime, 1000);
 updateDateTime();
+
+// Sidebar toggle for mobile
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('backdrop');
+const hamburger = document.getElementById('hamburger');
+
+function toggleSidebar() {
+  sidebar.classList.toggle('show');
+  backdrop.classList.toggle('show');
+}
+
+hamburger.addEventListener('click', toggleSidebar);
+backdrop.addEventListener('click', toggleSidebar);
+
+// Close sidebar on link click (for mobile)
+sidebar.addEventListener('click', function(e) {
+  if (e.target.tagName === 'A') {
+    toggleSidebar();
+  }
+});
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
