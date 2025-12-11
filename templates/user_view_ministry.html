@@ -26,7 +26,10 @@
             color:white;
             box-shadow: 2px 0 15px rgba(0,0,0,0.1);
             z-index:1000;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
         }
+        .sidebar.show { transform: translateX(0); }
         .sidebar a {
             display:block;
             color:white;
@@ -70,12 +73,19 @@
         .profile-icon:hover { transform: scale(1.1);}
         @media (max-width: 768px) {
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+                width: 250px;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 1050;
             }
+            .sidebar.show { transform: translateX(0); }
             .main-content {
                 margin-left: 0;
+                padding: 20px;
             }
             .card {
                 padding: 20px;
@@ -84,39 +94,44 @@
             .card img {
                 max-height: 200px;
             }
+            .hamburger {
+                display: block;
+                font-size: 1.5rem;
+                cursor: pointer;
+                margin-bottom: 10px;
+            }
         }
-        @media (max-width: 768px) {
-    .sidebar {
-        position: fixed;
-        left: -100%;
-        top: 0;
-        width: 250px;
-        height: 100%;
-        transition: left 0.3s ease;
-        z-index: 1050;
-    }
-    .sidebar.show {
-        left: 0;
-    }
-    .main-content {
-        margin-left: 0;
-        padding: 20px;
-    }
-    .hamburger {
-        display: block;
-        font-size: 1.5rem;
-        cursor: pointer;
-        margin-bottom: 10px;
-    }
-}
-.hamburger {
-    display: none;
-}
+        .hamburger {
+            display: none;
+        }
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        @media (min-width: 769px) {
+            .sidebar { transform: translateX(0); }
+            .main-content { margin-left: 250px; }
+        }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
+<!-- Backdrop for mobile -->
+<div class="backdrop" id="backdrop"></div>
+
+<div class="sidebar" id="sidebar">
     <div class="text-center mb-4">
         <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Church Logo">
     </div>
@@ -127,7 +142,7 @@
     <a href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a>
 </div>
 
-    <div class="d-block d-md-none mb-2">
+<div class="d-block d-md-none mb-2">
     <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
 </div>
     
@@ -160,22 +175,38 @@
     </ul>
 </div>
 
-<script>
-    function updateDateTime() {
-        const now = new Date();
-        const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
-        document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
-</script>
-    <script>
-// Mobile sidebar toggle
-document.getElementById("hamburger").addEventListener("click", function () {
-    document.querySelector(".sidebar").classList.toggle("show");
-});
-</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Elements
+const sidebar = document.getElementById("sidebar");
+const backdrop = document.getElementById("backdrop");
+const hamburger = document.getElementById("hamburger");
+
+// Toggle sidebar
+function toggleSidebar() {
+    sidebar.classList.toggle("show");
+    backdrop.classList.toggle("show");
+}
+
+// Event listeners
+hamburger.addEventListener("click", toggleSidebar);
+backdrop.addEventListener("click", toggleSidebar);
+
+// Close sidebar on link click (for mobile)
+sidebar.addEventListener("click", function(e) {
+    if (e.target.tagName === 'A') {
+        toggleSidebar();
+    }
+});
+
+// Clock
+function updateDateTime() {
+    const now = new Date();
+    const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+    document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+</script>
 </body>
 </html>
-
