@@ -152,11 +152,12 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
 </style>
 </head>
 <body>
-<div class="backdrop" id="backdrop"></div>
 <!-- Hamburger for mobile -->
-<div class="d-md-none p-2">
-  <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
-</div>
+<span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
+
+<!-- Backdrop -->
+<div class="backdrop" id="backdrop"></div>
+
 
 <div class="sidebar">
   <div class="text-center">
@@ -356,25 +357,35 @@ memberSearch.addEventListener('input', function() {
     item.style.display = label.includes(query) ? '' : 'none';
   });
 });
-const sidebar = document.getElementById('sidebar');
-const backdrop = document.getElementById('backdrop');
-const hamburger = document.getElementById('hamburger');
+<script>
+// Elements
+const sidebar = document.querySelector('.sidebar');
+const backdrop = document.querySelector('#backdrop');
+const hamburger = document.querySelector('#hamburger');
+
+// Toggle sidebar
 function toggleSidebar() {
-  sidebar.classList.toggle('show');
-  backdrop.classList.toggle('show');
+    sidebar.classList.toggle('show');
+    backdrop.classList.toggle('show');
 }
+
+// Event listeners
 hamburger.addEventListener('click', toggleSidebar);
 backdrop.addEventListener('click', toggleSidebar);
-// Close sidebar on link click (for mobile)
-sidebar.addEventListener('click', function(e) {
-  if (e.target.tagName === 'A') {
-    toggleSidebar();
-  }
+
+// Close sidebar on link click (mobile)
+sidebar.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) toggleSidebar();
+    });
 });
+</script>
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
