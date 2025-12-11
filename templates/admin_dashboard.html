@@ -244,6 +244,14 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; margin:0; padding:0;
   </div>
 </div>
 
+  <div class="dropdown position-fixed top-0 end-0 p-2">
+  <img src="{{ url_for('uploaded_file', filename=admin_profile_pic) if admin_profile_pic else url_for('static', filename='images/default-profile.png') }}" class="profile-icon dropdown-toggle rounded-circle" data-bs-toggle="dropdown" alt="User Profile">
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
+    <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+  </ul>
+</div>
+
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
@@ -327,3 +335,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
