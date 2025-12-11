@@ -15,8 +15,6 @@
             font-family: 'Roboto', sans-serif;
             color: #333;
         }
-
-        /* Sidebar */
         .sidebar {
             height: 100vh;
             background: linear-gradient(180deg, #4b4f53 0%, #343a40 100%);
@@ -29,7 +27,9 @@
             transform: translateX(-100%);
             transition: transform 0.3s ease;
         }
-        .sidebar.show { transform: translateX(0); }
+        .sidebar.show {
+            transform: translateX(0);
+        }
         .sidebar a {
             color: white;
             display: block;
@@ -39,11 +39,18 @@
             margin: 5px 10px;
             transition: all 0.3s ease;
         }
-        .sidebar a:hover { background: rgba(255,255,255,0.2); transform: translateX(5px); }
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
         .sidebar a.active { background: #6c757d; font-weight: bold; border-left: 4px solid #ffc107; }
-        .sidebar-logo { max-width: 120px; border-radius: 50%; padding: 5px; background: #343a40; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-
-        /* Main content */
+        .sidebar-logo {
+            max-width: 120px;
+            border-radius: 50%;
+            padding: 5px;
+            background: #343a40;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
         .main-content {
             margin-left: 0;
             padding: 30px;
@@ -51,8 +58,6 @@
             background-size: 20px 20px;
             transition: margin-left 0.3s ease;
         }
-
-        /* Right panel */
         .right-panel {
             position: fixed;
             top: 0;
@@ -64,57 +69,130 @@
             overflow-y: auto;
             box-shadow: -2px 0 5px rgba(0,0,0,0.1);
             padding-top: 60px;
-            transform: translateX(0);
+            transform: translateX(100%);
             transition: transform 0.3s ease;
         }
+        .right-panel.show {
+            transform: translateX(0);
+        }
+     @media (max-width: 768px) {
+    .sidebar.show ~ .main-content {
+        margin-left: 250px;
+    }
+}
 
-        /* Navbar */
-        .navbar { background: linear-gradient(45deg, #ffffff, #f8f9fa); border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 30px; }
+            .main-content {
+                margin-left: 250px;
+                margin-right: 300px;
+            }
+            .right-panel {
+                transform: translateX(0);
+            }
+        }
+        .navbar {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
         .navbar-brand { color: #4b4f53; font-weight: 600; font-size: 1.2rem; }
-
-        /* Clock */
-        .time-card { display: inline-block; padding: 6px 12px; font-size: 0.7rem; font-weight: bold; color: #fff; background: #616d79; border-radius: 8px; box-shadow: 0 2px 6px rgba(202,190,190,0.2); font-family: 'Arial', sans-serif; }
-
-        /* Profile */
-        .profile-icon { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: transform 0.3s ease; border: 2px solid #fff; }
+        .time-card {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 0.7rem;    
+            font-weight: bold;
+            color: #ffffff;          
+            background: #616d79ff;    
+            border-radius: 8px;      
+            box-shadow: 0 2px 6px rgba(202, 190, 190, 0.2);
+            font-family: 'Arial', sans-serif;
+        }
+        .profile-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: 2px solid #ffffff;
+        }
         .profile-icon:hover { transform: scale(1.1); }
-
-        /* Cards */
-        .card { border: none; border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); background: linear-gradient(135deg, #fff 0%, #f9f9f9 100%); padding: 25px; transition: all 0.3s ease; text-align: center; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+            padding: 25px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
         .card h5 { color: #4b4f53; font-weight: 600; margin-bottom: 15px; }
-        .card .btn { background: linear-gradient(45deg, #28a745, #20c997); color: white; border: none; padding: 10px 20px; border-radius: 8px; transition: all 0.3s ease; }
-        .card .btn:hover { background: linear-gradient(45deg, #218838, #17a2b8); transform: translateY(-2px); }
-        .card a:not(.btn) { color: #28a745; text-decoration: none; font-weight: 500; display: block; margin-bottom: 8px; }
+        .card .btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .card .btn:hover {
+            background: linear-gradient(45deg, #218838, #17a2b8);
+            transform: translateY(-2px);
+        }
+        .card a:not(.btn) {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 8px;
+        }
         .card a:not(.btn):hover { color: #20c997; text-decoration: underline; }
-
-        /* Event cards */
-        .event-card { transition: transform 0.2s ease, box-shadow 0.2s ease; padding: 10px; border-bottom: 1px solid #ddd; text-decoration: none; color: inherit; }
-        .event-card:hover { transform: translateY(-2px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-decoration: none; color: inherit; }
-
-        /* Hamburger */
-        .hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #4b4f53; margin-right: 10px; }
-
-        /* Mobile styles */
+        h4 { color: #4b4f53; font-weight: 700; margin-bottom: 30px; }
+        .event-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-decoration: none;
+            color: inherit;
+        }
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: inherit;
+        }
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4b4f53;
+            margin-right: 10px;
+        }
         @media (max-width: 768px) {
-            .hamburger { display: block; }
-            .view-events-btn { display: block; margin-bottom: 20px; }
-            .right-panel { display: none; }
-            .sidebar.show ~ .main-content { margin-left: 250px; }
+            .hamburger {
+                display: block;
+            }
         }
+        .view-events-btn {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .view-events-btn {
+                display: block;
+                margin-bottom: 20px;
+            }
+        }
+        @media (max-width: 768px) {
+    .right-panel { display: none; }
+}
 
-        /* Desktop styles */
-        @media (min-width: 769px) {
-            .sidebar { transform: translateX(0); }
-            .main-content { margin-left: 250px; margin-right: 300px; }
-            .right-panel { transform: translateX(0); }
-            .view-events-btn { display: none; }
-        }
     </style>
 </head>
 <body>
 
-<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="text-center mb-4">
         <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Church Logo">
@@ -125,190 +203,197 @@
     <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
 </div>
 
-<!-- Right Panel (Desktop Events) -->
-<div class="right-panel">
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white fw-bold">
-            <span><i class="fa-solid fa-calendar-days me-2"></i> Events</span>
-        </div>
-        <div class="p-2">
-            <input type="text" id="eventSearch" class="form-control form-control-sm" placeholder="Search events...">
-        </div>
-        <ul class="nav nav-tabs nav-fill small" id="eventTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="true">Upcoming</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button" role="tab" aria-controls="past" aria-selected="false">Past</button>
-            </li>
-        </ul>
-        <div class="card-body p-2" style="max-height: 400px; overflow-y: auto;">
-            <div class="tab-content" id="eventTabsContent">
-                <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
-                    {% if upcoming_events %}
-                        {% for event in upcoming_events %}
-                            <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
-                                <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
-                                <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
-                                <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
-                                <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
-                                <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
-                            </a>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text-muted text-center mb-0 small">No upcoming events.</p>
-                    {% endif %}
-                </div>
-                <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
-                    {% if past_events %}
-                        {% for event in past_events %}
-                            <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
-                                <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
-                                <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
-                                <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
-                                <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
-                                <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
-                            </a>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text-muted text-center mb-0 small">No past events.</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+<div class="right-panel" id="rightPanel">
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white fw-bold">
+      <span><i class="fa-solid fa-calendar-days me-2"></i> Events</span>
     </div>
+    <div class="p-2">
+      <input type="text" id="eventSearch" class="form-control form-control-sm" placeholder="Search events...">
+    </div>
+    <ul class="nav nav-tabs nav-fill small" id="eventTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="true">Upcoming</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button" role="tab" aria-controls="past" aria-selected="false">Past</button>
+      </li>
+    </ul>
+    <div class="card-body p-2" style="max-height: 400px; overflow-y: auto;">
+      <div class="tab-content" id="eventTabsContent">
+        <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+          {% if upcoming_events %}
+            {% for event in upcoming_events %}
+              <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
+                <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
+                <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
+                <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
+                <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
+                <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
+              </a>
+            {% endfor %}
+          {% else %}
+            <p class="text-muted text-center mb-0 small">No upcoming events.</p>
+          {% endif %}
+        </div>
+        <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+          {% if past_events %}
+            {% for event in past_events %}
+              <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
+                <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
+                <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
+                <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
+                <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
+              </a>
+            {% endfor %}
+          {% else %}
+            <p class="text-muted text-center mb-0 small">No past events.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Main content -->
 <div class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="d-flex align-items-center">
-            <div class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></div>
-            <div id="datetime" class="time-card"></div>
-        </div>
-        <div class="dropdown position-fixed top-0 end-0 p-2" style="z-index:1050;">
-            <a class="d-block" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" class="profile-icon" onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
-                <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
-            </ul>
-        </div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center">
+      <div class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></div>
+      <div id="datetime" class="time-card"></div>
     </div>
-
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <span class="navbar-brand">Welcome, {{ username }}</span>
-        </div>
-    </nav>
-
-    <div class="container mt-3">
-        <button class="btn btn-primary view-events-btn" data-bs-toggle="modal" data-bs-target="#eventsModal"><i class="fa-solid fa-calendar-days me-2"></i> View Events</button>
-        <h4>Your Dashboard</h4>
-        <div class="row g-4">
-            {% if ministry and ministry['ministry_ids'] %}
-            <div class="col-md-6">
-                <div class="card">
-                    <h5><i class="fa-solid fa-church me-2"></i> Your Ministries</h5>
-                    {% for id, name in zip(ministry['ministry_ids'], ministry['ministry_names']) %}
-                        <a href="{{ url_for('user_view_ministry', ministry_id=id) }}">{{ name }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-            {% if lifegroup and lifegroup['lifegroup_ids'] %}
-            <div class="col-md-6">
-                <div class="card">
-                    <h5><i class="fa-solid fa-heart me-2"></i> Your Life Groups</h5>
-                    {% for id, name in zip(lifegroup['lifegroup_ids'], lifegroup['lifegroup_names']) %}
-                        <a href="{{ url_for('view_lifegroup', lifegroup_id=id) }}">{{ name }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-            <div class="col-md-6">
-                <div class="card">
-                    <h5><i class="fa-solid fa-church me-2"></i> Browse Ministries</h5>
-                    <p>Explore all ministries in the church.</p>
-                    <a href="{{ url_for('all_ministries') }}" class="btn">View All Ministries</a>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <h5><i class="fa-solid fa-heart me-2"></i> Browse Life Groups</h5>
-                    <p>Explore all life groups in the church.</p>
-                    <a href="{{ url_for('all_lifegroups') }}" class="btn">View All Life Groups</a>
-                </div>
-            </div>
-        </div>
+    <div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1050;">
+      <a class="d-block" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" class="profile-icon" onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+        <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
+        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+      </ul>
     </div>
+  </div>
+
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+      <span class="navbar-brand">Welcome, {{ username }}</span>
+    </div>
+  </nav>
+
+  <div class="container mt-3">
+    <button class="btn btn-primary view-events-btn" data-bs-toggle="modal" data-bs-target="#eventsModal"><i class="fa-solid fa-calendar-days me-2"></i>View Events</button>
+    <h4>Your Dashboard</h4>
+    <div class="row g-4">
+      {% if ministry and ministry['ministry_ids'] %}
+      <div class="col-md-6">
+        <div class="card">
+          <h5><i class="fa-solid fa-church me-2"></i> Your Ministries</h5>
+          {% for id, name in zip(ministry['ministry_ids'], ministry['ministry_names']) %}
+            <a href="{{ url_for('user_view_ministry', ministry_id=id) }}">{{ name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% if lifegroup and lifegroup['lifegroup_ids'] %}
+      <div class="col-md-6">
+        <div class="card">
+          <h5><i class="fa-solid fa-heart me-2"></i> Your Life Groups</h5>
+          {% for id, name in zip(lifegroup['lifegroup_ids'], lifegroup['lifegroup_names']) %}
+            <a href="{{ url_for('view_lifegroup', lifegroup_id=id) }}">{{ name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="col-md-6">
+        <div class="card">
+          <h5><i class="fa-solid fa-church me-2"></i> Browse Ministries</h5>
+          <p>Explore all ministries in the church.</p>
+          <a href="{{ url_for('all_ministries') }}" class="btn">View All Ministries</a>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <h5><i class="fa-solid fa-heart me-2"></i> Browse Life Groups</h5>
+          <p>Explore all life groups in the church.</p>
+          <a href="{{ url_for('all_lifegroups') }}" class="btn">View All Life Groups</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Events Modal (Mobile) -->
+<!-- Modal for Events on Mobile -->
 <div class="modal fade" id="eventsModal" tabindex="-1" aria-labelledby="eventsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="eventsModalLabel"><i class="fa-solid fa-calendar-days me-2"></i>Events</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="eventSearchModal" class="form-control form-control-sm mb-3" placeholder="Search events...">
-                <ul class="nav nav-tabs nav-fill small" id="eventTabsModal" role="tablist">
-                    <li class="nav-item">
-                        <button class="nav-link active" id="upcoming-tab-modal" data-bs-toggle="tab" data-bs-target="#upcoming-modal">Upcoming</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="past-tab-modal" data-bs-toggle="tab" data-bs-target="#past-modal">Past</button>
-                    </li>
-                </ul>
-                <div class="tab-content mt-2" id="eventTabsContentModal">
-                    <div class="tab-pane fade show active" id="upcoming-modal">
-                        {% if upcoming_events %}
-                            {% for event in upcoming_events %}
-                                <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
-                                    <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
-                                    <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
-                                    <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
-                                    <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
-                                    <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
-                                </a>
-                            {% endfor %}
-                        {% else %}
-                            <p class="text-muted text-center mb-0 small">No upcoming events.</p>
-                        {% endif %}
-                    </div>
-                    <div class="tab-pane fade" id="past-modal">
-                        {% if past_events %}
-                            {% for event in past_events %}
-                                <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
-                                    <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
-                                    <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
-                                    <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
-                                    <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
-                                    <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
-                                </a>
-                            {% endfor %}
-                        {% else %}
-                            <p class="text-muted text-center mb-0 small">No past events.</p>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventsModalLabel"><i class="fa-solid fa-calendar-days me-2"></i>Events</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="eventSearchModal" class="form-control form-control-sm mb-3" placeholder="Search events...">
+        <ul class="nav nav-tabs nav-fill small" id="eventTabsModal" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="upcoming-tab-modal" data-bs-toggle="tab" data-bs-target="#upcoming-modal" type="button" role="tab" aria-controls="upcoming-modal" aria-selected="true">Upcoming</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="past-tab-modal" data-bs-toggle="tab" data-bs-target="#past-modal" type="button" role="tab" aria-controls="past-modal" aria-selected="false">Past</button>
+          </li>
+        </ul>
+        <div class="tab-content" id="eventTabsContentModal">
+          <div class="tab-pane fade show active" id="upcoming-modal" role="tabpanel" aria-labelledby="upcoming-tab-modal">
+            {% if upcoming_events %}
+              {% for event in upcoming_events %}
+                <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
+                  <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
+                  <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
+                  <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
+                  <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
+                  <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
+                </a>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted text-center mb-0 small">No upcoming events.</p>
+            {% endif %}
+          </div>
+
+          <div class="tab-pane fade" id="past-modal" role="tabpanel" aria-labelledby="past-tab-modal">
+            {% if past_events %}
+              {% for event in past_events %}
+                <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
+                  <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
+                  <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
+                  <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
+                  <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
+                  <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
+                </a>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted text-center mb-0 small">No past events.</p>
+            {% endif %}
+          </div>
+
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<!-- Bootstrap JS -->
+<!-- Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 // Sidebar toggle
-document.getElementById("hamburger").addEventListener("click", function() {
-    document.getElementById("sidebar").classList.toggle("show");
+document.getElementById("hamburger").addEventListener("click", function () {
+  document.getElementById("sidebar").classList.toggle("show");
 });
 
-// Clock
+// Right panel toggle (mobile)
+document.querySelectorAll(".view-events-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.getElementById("rightPanel").classList.toggle("show");
+  });
+});
+
+<script>
 function updateDateTime() {
     const now = new Date();
     const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
@@ -316,22 +401,28 @@ function updateDateTime() {
 }
 setInterval(updateDateTime, 1000);
 updateDateTime();
-
-// Event search - desktop
-document.getElementById("eventSearch").addEventListener("keyup", function() {
-    const input = this.value.toLowerCase();
-    document.querySelectorAll(".right-panel .event-card").forEach(card => {
-        card.style.display = card.innerText.toLowerCase().includes(input) ? "" : "none";
-    });
-});
-
-// Event search - modal
-document.getElementById("eventSearchModal").addEventListener("keyup", function() {
-    const input = this.value.toLowerCase();
-    document.querySelectorAll("#eventsModal .event-card").forEach(card => {
-        card.style.display = card.innerText.toLowerCase().includes(input) ? "" : "none";
-    });
-});
 </script>
+
+
+
+
+// Search (right panel)
+document.getElementById("eventSearch").addEventListener("keyup", function () {
+  filterEvents(this.value.toLowerCase(), ".right-panel .event-card");
+});
+
+// Search (modal)
+document.getElementById("eventSearchModal").addEventListener("keyup", function () {
+  filterEvents(this.value.toLowerCase(), "#eventsModal .event-card");
+});
+
+function filterEvents(input, selector) {
+  document.querySelectorAll(selector).forEach(function (eventCard) {
+    let text = eventCard.innerText.toLowerCase();
+    eventCard.style.display = text.includes(input) ? "" : "none";
+  });
+}
+</script>
+
 </body>
 </html>
