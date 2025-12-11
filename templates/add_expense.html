@@ -111,25 +111,53 @@
       .main-content { margin-left: 0; }
       .container-box { margin: 20px; padding: 20px; }
     }
-
+/* --------------------- Mobile Responsive --------------------- */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    .main-content {
+        margin-left: 0;
+        margin-right: 0;
+        padding: 20px;
+    }
+    .right-panel {
+        display: none;
+    }
     .hamburger {
-    display: none;
-    cursor: pointer;
-    font-size: 1.5rem;
+        display: block;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1100;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #343a40;
+    }
 }
-@media (max-width:768px) {
-    .hamburger { display: inline-block; }
-    .sidebar { transform: translateX(-100%); position: fixed; top:0; left:0; height:100vh; z-index:1050; }
-    .sidebar.show { transform: translateX(0); }
-    .main-content { margin-left:0; }
+    /* Mobile events drawer */
+@media (max-width: 768px) {
+    .right-panel {
+        position: fixed;
+        bottom: -100%;
+        left: 0;
+        width: 100%;
+        height: 70%;
+        border-radius: 15px 15px 0 0;
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+        transition: bottom 0.3s ease;
+        z-index: 1200;
+        background: #f8f9fa;
+        padding: 10px;
+        overflow-y: auto;
+    }
+    .right-panel.show {
+        bottom: 0;
+    }
 }
-/* Backdrop */
-.backdrop {
-    position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.5); z-index:1040;
-    opacity:0; visibility:hidden; transition:0.3s;
-}
-.backdrop.show { opacity:1; visibility:visible; }
   </style>
 </head>
 <body>
@@ -318,4 +346,5 @@ sidebar.querySelectorAll("a").forEach(link => {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
