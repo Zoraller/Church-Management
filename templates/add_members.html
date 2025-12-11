@@ -350,33 +350,33 @@ document.addEventListener('click', function(e) {
     bootstrap.Dropdown.getInstance(toggle)?.hide();
   }
 });
-</script>
-  <script>
-// Elements
-const sidebar = document.getElementById("sidebar");
-const backdrop = document.getElementById("backdrop");
-const hamburger = document.getElementById("hamburger");
+  // Elements
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('backdrop');
+const hamburger = document.getElementById('hamburger');
 
 // Toggle sidebar
 function toggleSidebar() {
-    sidebar.classList.toggle("show");
-    backdrop.classList.toggle("show");
+    sidebar.classList.toggle('show');
+    backdrop.classList.toggle('show');
 }
 
 // Event listeners
-hamburger.addEventListener("click", toggleSidebar);
-backdrop.addEventListener("click", toggleSidebar);
+hamburger.addEventListener('click', toggleSidebar);
+backdrop.addEventListener('click', toggleSidebar);
 
 // Close sidebar on link click (mobile)
-sidebar.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", () => {
-        if(window.innerWidth <= 768) toggleSidebar();
+sidebar.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) toggleSidebar();
     });
 });
 </script>
 
 
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
