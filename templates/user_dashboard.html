@@ -347,10 +347,6 @@
               {% endfor %}
             {% else %}
               <p class="text-muted text-center mb-0 small">No upcoming events.</p>
-                </a>
-              {% endfor %}
-            {% else %}
-              <p class="text-muted text-center mb-0 small">No upcoming events.</p>
             {% endif %}
           </div>
 
@@ -376,7 +372,7 @@
   </div>
 </div>
 
-<!-- JS SCRIPTS -->
+<!-- Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -392,7 +388,7 @@ document.querySelectorAll(".view-events-btn").forEach(btn => {
   });
 });
 
-// Clock display
+// Clock
 function updateDateTime() {
   let now = new Date();
   document.getElementById("datetime").innerHTML = now.toLocaleString("en-US", {
@@ -405,12 +401,12 @@ function updateDateTime() {
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
-// Event search (right panel)
+// Search (right panel)
 document.getElementById("eventSearch").addEventListener("keyup", function () {
   filterEvents(this.value.toLowerCase(), ".right-panel .event-card");
 });
 
-// Event search (modal)
+// Search (modal)
 document.getElementById("eventSearchModal").addEventListener("keyup", function () {
   filterEvents(this.value.toLowerCase(), "#eventsModal .event-card");
 });
