@@ -75,10 +75,12 @@
         .right-panel.show {
             transform: translateX(0);
         }
-        @media (min-width: 769px) {
-            .sidebar {
-                transform: translateX(0);
-            }
+     @media (max-width: 768px) {
+    .sidebar.show ~ .main-content {
+        margin-left: 250px;
+    }
+}
+
             .main-content {
                 margin-left: 250px;
                 margin-right: 300px;
@@ -183,6 +185,10 @@
                 margin-bottom: 20px;
             }
         }
+        @media (max-width: 768px) {
+    .right-panel { display: none; }
+}
+
     </style>
 </head>
 <body>
@@ -420,6 +426,7 @@ function filterEvents(input, selector) {
 
 </body>
 </html>
+
 
 
 
