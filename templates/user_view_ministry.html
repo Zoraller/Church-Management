@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ ministry.ministry_name }}</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
     <style>
         body {
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg,#f8f9fa,#e9ecef);
             color:#333;
             line-height:1.6;
+            margin:0;
         }
+
+        /* SIDEBAR */
         .sidebar {
             height:100vh;
             width:250px;
@@ -24,12 +28,13 @@
             background: linear-gradient(180deg,#4b4f53,#343a40);
             padding-top:20px;
             color:white;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.1);
-            z-index:1000;
+            box-shadow:2px 0 15px rgba(0,0,0,0.1);
+            z-index:1050;
             transform: translateX(-100%);
-            transition: transform 0.3s ease;
+            transition:0.3s;
         }
         .sidebar.show { transform: translateX(0); }
+
         .sidebar a {
             display:block;
             color:white;
@@ -37,11 +42,26 @@
             margin:5px 10px;
             border-radius:8px;
             text-decoration:none;
-            transition: all 0.3s ease;
+            transition:0.3s;
         }
-        .sidebar a:hover { background: rgba(255,255,255,0.2); transform: translateX(5px);}
-        .sidebar-logo { display:block; max-width:120px; border-radius:50%; padding:5px; background:#343a40; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin:0 auto 15px;}
-        .main-content { margin-left:250px; padding:30px; background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 20px 20px; }
+        .sidebar a:hover { background:rgba(255,255,255,0.2); transform:translateX(5px); }
+
+        .sidebar-logo {
+            display:block;
+            max-width:120px;
+            border-radius:50%;
+            padding:5px;
+            background:#343a40;
+            box-shadow:0 4px 10px rgba(0,0,0,0.2);
+            margin:0 auto 15px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left:250px;
+            padding:30px;
+        }
+
         .time-card {
             display: inline-block;
             padding: 10px 18px;
@@ -50,123 +70,143 @@
             color: #ffffff;
             background: linear-gradient(45deg, #6c757d, #495057);
             border-radius: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .card { 
-            border:none; 
-            border-radius:15px; 
-            box-shadow:0 8px 25px rgba(0,0,0,0.1); 
-            background: linear-gradient(135deg,#fff,#f9f9f9); 
-            padding:25px; 
-            max-width:600px; 
-            margin:50px auto; 
-            text-align:center; 
-            transition: transform 0.3s ease;
+
+        /* CARD */
+        .card {
+            border:none;
+            border-radius:15px;
+            box-shadow:0 8px 25px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg,#fff,#f9f9f9);
+            padding:25px;
+            max-width:600px;
+            margin:50px auto;
+            text-align:center;
         }
-        .card:hover { transform: translateY(-5px); }
-        .card h4 { font-weight:700; margin-bottom:20px; color:#4b4f53; }
-        .card p { font-size:1rem; color:#555; margin-bottom:20px; }
-        .btn-secondary { background: linear-gradient(45deg,#28a745,#20c997); border:none; color:white; padding:10px 20px; border-radius:8px; transition: all 0.3s ease; }
-        .btn-secondary:hover { background: linear-gradient(45deg,#20c997,#17a2b8); transform: translateY(-2px); box-shadow:0 4px 10px rgba(0,0,0,0.2);}
-        .card img { border-radius:10px; max-height:300px; object-fit:cover; width:100%; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-        .profile-icon { width:45px; height:45px; border-radius:50%; cursor:pointer; transition: transform 0.3s ease; border:2px solid #fff; }
-        .profile-icon:hover { transform: scale(1.1);}
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 250px;
-                height: 100vh;
-                position: fixed;
-                top: 0;
-                left: 0;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                z-index: 1050;
-            }
-            .sidebar.show { transform: translateX(0); }
-            .main-content {
-                margin-left: 0;
-                padding: 20px;
-            }
-            .card {
-                padding: 20px;
-                margin-top: 30px;
-            }
-            .card img {
-                max-height: 200px;
-            }
-            .hamburger {
-    display: none;
-    cursor: pointer;
-    font-size: 1.5rem;
-}
-@media (max-width:768px) {
-    .hamburger { display: inline-block; }
-    .sidebar { transform: translateX(-100%); position: fixed; top:0; left:0; height:100vh; z-index:1050; }
-    .sidebar.show { transform: translateX(0); }
-    .main-content { margin-left:0; }
-}
-/* Backdrop */
-.backdrop {
-    position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.5); z-index:1040;
-    opacity:0; visibility:hidden; transition:0.3s;
-}
-.backdrop.show { opacity:1; visibility:visible; }
+
+        .card img {
+            border-radius:10px;
+            max-height:300px;
+            width:100%;
+            object-fit:cover;
+            margin-bottom:20px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg,#28a745,#20c997);
+            border:none;
+            color:white;
+            padding:10px 20px;
+            border-radius:8px;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(45deg,#20c997,#17a2b8);
+            transform: translateY(-2px);
+        }
+
+        /* PROFILE ICON */
+        .profile-icon {
+            width:45px;
+            height:45px;
+            border-radius:50%;
+            border:2px solid #fff;
+            cursor:pointer;
+        }
+
+        /* MOBILE */
+        .hamburger {
+            display:none;
+            cursor:pointer;
+            font-size:1.7rem;
+            padding:10px;
+            z-index:1100;
+        }
+
+        /* BACKDROP */
+        .backdrop {
+            position:fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background:rgba(0,0,0,0.5);
+            opacity:0;
+            visibility:hidden;
+            transition:0.3s;
+            z-index:1040;
+        }
+        .backdrop.show {
+            opacity:1;
+            visibility:visible;
+        }
+
+        @media(max-width:768px) {
+            .hamburger { display:block; position:fixed; top:15px; left:15px; }
+            .main-content { margin-left:0; padding:20px; }
+            .card img { max-height:200px; }
+        }
     </style>
 </head>
 <body>
 
+<!-- BACKDROP -->
 <div class="backdrop" id="backdrop"></div>
-    <div class="d-md-none p-3">
-    <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars fa-lg"></i></span>
-</div>
 
+<!-- HAMBURGER -->
+<span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
+
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
     <div class="text-center mb-4">
-        <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Church Logo">
+        <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Logo">
     </div>
     <hr>
+
     <a href="{{ url_for('user_dashboard') }}"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
     <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church me-2"></i> Ministries</a>
     <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
     <a href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a>
 </div>
 
-<div class="d-block d-md-none mb-2">
-    <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
-</div>
-    
+<!-- MAIN CONTENT -->
 <div class="main-content">
     <div id="datetime" class="time-card mb-3"></div>
+
     <div class="card">
         <h4>{{ ministry.ministry_name }}</h4>
         <p>{{ ministry.description }}</p>
+
         {% if ministry.schedule %}
             <p><strong>Schedule:</strong> {{ ministry.schedule }}</p>
         {% endif %}
+
         {% if ministry.picture %}
-            <img src="{{ url_for('uploaded_file', filename=ministry.picture) }}" alt="Ministry Picture" onerror="this.src='{{ url_for('static', filename='images/default-ministry.png') }}'">
+            <img src="{{ url_for('uploaded_file', filename=ministry.picture) }}" alt="Image"
+                 onerror="this.src='{{ url_for('static', filename='images/default-ministry.png') }}'">
         {% else %}
-            <i class="fa-solid fa-church fa-4x text-success" style="margin-bottom:20px;"></i>
+            <i class="fa-solid fa-church fa-4x text-success mb-3"></i>
         {% endif %}
+
         <a href="{{ url_for('all_ministries') }}" class="btn btn-secondary mt-3">
             <i class="fa-solid fa-arrow-left me-2"></i> Back to Ministries
         </a>
     </div>
 </div>
 
-<div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1050;">
-    <a class="d-block" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" class="profile-icon" onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
+<!-- PROFILE DROPDOWN -->
+<div class="dropdown position-fixed top-0 end-0 p-2" style="z-index:1100;">
+    <a href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown">
+        <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" class="profile-icon"
+             onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
     </a>
-    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+
+    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
         <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
         <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
     </ul>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+
 <script>
 // Elements
 const sidebar = document.getElementById("sidebar");
@@ -179,28 +219,25 @@ function toggleSidebar() {
     backdrop.classList.toggle("show");
 }
 
-// Event listeners
+// Events
 hamburger.addEventListener("click", toggleSidebar);
 backdrop.addEventListener("click", toggleSidebar);
 
-// Close sidebar on link click (mobile)
+// Close sidebar when clicking links (mobile)
 sidebar.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
-        if(window.innerWidth <= 768) toggleSidebar();
+        if (window.innerWidth <= 768) toggleSidebar();
     });
 });
-</script>
 
-/* Clock */
+// Clock
 function updateDateTime() {
-  const now = new Date();
-  const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
-  document.getElementById('datetime').innerText = now.toLocaleString('en-US', options);
+    const now = new Date();
+    document.getElementById("datetime").innerText = now.toLocaleString();
 }
 setInterval(updateDateTime, 1000);
 updateDateTime();
 </script>
+
 </body>
 </html>
-
-
