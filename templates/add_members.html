@@ -80,10 +80,35 @@ img.preview {
   border-radius: 50%;
   border: 2px solid #ccc;
 }
+  .hamburger {
+    display: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+@media (max-width:768px) {
+    .hamburger { display: inline-block; }
+    .sidebar { transform: translateX(-100%); position: fixed; top:0; left:0; height:100vh; z-index:1050; }
+    .sidebar.show { transform: translateX(0); }
+    .main-content { margin-left:0; }
+}
+/* Backdrop */
+.backdrop {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.5); z-index:1040;
+    opacity:0; visibility:hidden; transition:0.3s;
+}
+.backdrop.show { opacity:1; visibility:visible; }
 </style>
 </head>
 <body>
 
+<div class="backdrop" id="backdrop"></div>
+
+<!-- Mobile Hamburger -->
+<div class="d-md-none p-3">
+    <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars fa-lg"></i></span>
+</div>
+  
 <div class="sidebar">
   <div class="text-center">
     <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
@@ -326,7 +351,32 @@ document.addEventListener('click', function(e) {
   }
 });
 </script>
+  <script>
+// Elements
+const sidebar = document.getElementById("sidebar");
+const backdrop = document.getElementById("backdrop");
+const hamburger = document.getElementById("hamburger");
+
+// Toggle sidebar
+function toggleSidebar() {
+    sidebar.classList.toggle("show");
+    backdrop.classList.toggle("show");
+}
+
+// Event listeners
+hamburger.addEventListener("click", toggleSidebar);
+backdrop.addEventListener("click", toggleSidebar);
+
+// Close sidebar on link click (mobile)
+sidebar.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+        if(window.innerWidth <= 768) toggleSidebar();
+    });
+});
+</script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
