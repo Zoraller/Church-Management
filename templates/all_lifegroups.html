@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon"> <!-- Add a favicon if available -->
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <style>
         body {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -25,7 +25,10 @@
             padding-top: 20px;
             box-shadow: 2px 0 15px rgba(0,0,0,0.1);
             z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
         }
+        .sidebar.show { transform: translateX(0); }
         .sidebar a {
             color: white;
             display: block;
@@ -47,10 +50,11 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         .main-content {
-            margin-left: 250px;
+            margin-left: 0;
             padding: 30px;
             background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
             background-size: 20px 20px;
+            transition: margin-left 0.3s ease;
         }
         .card {
             border: none;
@@ -116,62 +120,132 @@
         .profile-icon:hover {
             transform: scale(1.1);
         }
+        .time-card {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #ffffff;
+            background: #616d79ff;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(202, 190, 190, 0.2);
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 20px;
+        }
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4b4f53;
+            margin-bottom: 10px;
+        }
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .card {
-                height: auto;
-                padding: 20px;
-            }
+            .hamburger { display: block; }
+            .card { height: auto; padding: 20px; }
+        }
+        @media (min-width: 769px) {
+            .sidebar { transform: translateX(0); }
+            .main-content { margin-left: 250px; }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="text-center mb-4">
-            <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Church Logo">
-        </div>
-        <hr>
-        <a href="{{ url_for('user_dashboard') }}"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
-        <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church me-2"></i> Ministries</a>
-        <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
+
+<!-- Backdrop for mobile -->
+<div class="backdrop" id="backdrop"></div>
+
+<div class="sidebar" id="sidebar">
+    <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Church Logo">
     </div>
-
-    <div class="main-content">
-        <h4>All Life Groups</h4>
-        <div class="row g-4">
-            {% for lifegroup in lifegroups %}
-            <div class="col-md-6 col-lg-4">
-                <a href="{{ url_for('view_lifegroup', lifegroup_id=lifegroup.lifegroup_id) }}" class="card">
-                    <div>
-                        <i class="fa-solid fa-heart"></i>
-                        <h5>{{ lifegroup.lifegroup_name }}</h5>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-<div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1050;">
-    <a class="d-block" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-<img src="{{ url_for('static', filename='uploads/' + profile_pic) }}" 
-     class="profile-icon" 
-     onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
-
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
-        <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
-        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
-    </ul>
+    <hr>
+    <a href="{{ url_for('user_dashboard') }}"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
+    <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church me-2"></i> Ministries</a>
+    <a href="{{ url_for('all_lifegroups') }}" class="active"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
 </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center">
+            <div class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></div>
+            <div id="datetime" class="time-card"></div>
+        </div>
+        <div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1050;">
+            <a class="d-block" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="{{ url_for('static', filename='uploads/' + profile_pic) }}" 
+                     class="profile-icon" 
+                     onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+                <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <h4>All Life Groups</h4>
+    <div class="row g-4">
+        {% for lifegroup in lifegroups %}
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('view_lifegroup', lifegroup_id=lifegroup.lifegroup_id) }}" class="card">
+                <div>
+                    <i class="fa-solid fa-heart"></i>
+                    <h5>{{ lifegroup.lifegroup_name }}</h5>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Elements
+const sidebar = document.getElementById("sidebar");
+const backdrop = document.getElementById("backdrop");
+const hamburger = document.getElementById("hamburger");
+
+// Toggle sidebar
+function toggleSidebar() {
+    sidebar.classList.toggle("show");
+    backdrop.classList.toggle("show");
+}
+
+// Event listeners
+hamburger.addEventListener("click", toggleSidebar);
+backdrop.addEventListener("click", toggleSidebar);
+
+// Close sidebar on link click (for mobile)
+sidebar.addEventListener("click", function(e) {
+    if (e.target.tagName === 'A') {
+        toggleSidebar();
+    }
+});
+
+// Clock
+function updateDateTime() {
+    const now = new Date();
+    const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+    document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+</script>
 </body>
 </html>
