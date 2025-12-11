@@ -11,12 +11,15 @@
 <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
 
 <style>
+/* ------------------- Base ------------------- */
 body {
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #f8f9fa, #e9ecef);
     margin: 0;
     color: #333;
 }
+
+/* Sidebar */
 .sidebar {
     position: fixed;
     width: 250px;
@@ -50,35 +53,29 @@ body {
     display: block;
     margin: 0 auto 15px;
 }
+
+/* Main content */
 .main-content {
     margin-left: 0;
     padding: 30px;
     transition: margin-left 0.3s ease;
 }
-h2 { color: #4b4f53; font-weight: 700; margin-bottom: 30px; text-align: center; }
-.navbar {
-    background: linear-gradient(45deg, #ffffff, #f8f9fa);
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
-}
-.navbar-brand {
-    color: #4b4f53;
+
+/* Time display */
+#datetime {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
     font-weight: 600;
-    font-size: 1.2rem;
+    color: #fff;
+    background: linear-gradient(45deg, #6c757d, #495057);
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-/* --------------------- Clock --------------------- */
-.time-card {
-    display: inline-block;
-    padding: 6px 12px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: #fff;
-    background: #616d79;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(202,190,190,0.2);
-}
+/* Cards */
 .card {
     border: none;
     border-radius: 15px;
@@ -100,6 +97,10 @@ h2 { color: #4b4f53; font-weight: 700; margin-bottom: 30px; text-align: center; 
 .card i { font-size: 2rem; color: #28a745; margin-bottom: 10px; }
 .card h5 { margin: 0; font-weight: 600; color: #4b4f53; }
 
+/* Headers */
+h2 { color: #4b4f53; font-weight: 700; margin-bottom: 30px; }
+
+/* Profile icon */
 .profile-icon {
     width: 45px;
     height: 45px;
@@ -110,6 +111,7 @@ h2 { color: #4b4f53; font-weight: 700; margin-bottom: 30px; text-align: center; 
 }
 .profile-icon:hover { transform: scale(1.1); }
 
+/* Hamburger & backdrop */
 .hamburger {
     display: none;
     font-size: 1.5rem;
@@ -117,7 +119,6 @@ h2 { color: #4b4f53; font-weight: 700; margin-bottom: 30px; text-align: center; 
     color: #4b4f53;
     margin-right: 10px;
 }
-
 .backdrop {
     position: fixed;
     top: 0; left: 0;
@@ -130,7 +131,7 @@ h2 { color: #4b4f53; font-weight: 700; margin-bottom: 30px; text-align: center; 
 }
 .backdrop.show { opacity: 1; visibility: visible; }
 
-/* Responsive */
+/* ------------------- Responsive ------------------- */
 @media (max-width: 768px) {
     .hamburger { display: block; }
     .card { height: auto; padding: 20px; }
@@ -216,4 +217,5 @@ sidebar.querySelectorAll("a").forEach(link => {
 </script>
 </body>
 </html>
+
 
