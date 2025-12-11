@@ -217,37 +217,50 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; margin: 0; padding: 
 </div>
 
 <script>
-function updateDateTime() {
-  const now = new Date();
-  const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
-  document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
-}
-setInterval(updateDateTime, 1000);
-updateDateTime();
-<script>
-const sidebar = document.getElementById('sidebar');
-const backdrop = document.getElementById('backdrop');
-const hamburger = document.getElementById('hamburger');
+document.addEventListener('DOMContentLoaded', function() {
+  // Sidebar toggle
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('backdrop');
+  const hamburger = document.getElementById('hamburger');
 
-function toggleSidebar() {
-  sidebar.classList.toggle('show');
-  backdrop.classList.toggle('show');
-}
-
-hamburger.addEventListener('click', toggleSidebar);
-backdrop.addEventListener('click', toggleSidebar);
-
-// Close sidebar on link click (for mobile)
-sidebar.addEventListener('click', function(e) {
-  if (e.target.tagName === 'A') {
-    toggleSidebar();
+  function toggleSidebar() {
+    sidebar.classList.toggle('show');
+    backdrop.classList.toggle('show');
   }
+
+  hamburger.addEventListener('click', toggleSidebar);
+  backdrop.addEventListener('click', toggleSidebar);
+
+  // Close sidebar on link click (for mobile)
+  sidebar.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth < 769) {
+        toggleSidebar();
+      }
+    });
+  });
+
+  // Date/Time
+  function updateDateTime() {
+    const now = new Date();
+    const options = {
+      month: 'numeric',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    };
+    document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
+  }
+  setInterval(updateDateTime, 1000);
+  updateDateTime();
 });
-</script>
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 
