@@ -111,6 +111,16 @@
       .main-content { margin-left: 0; }
       .container-box { margin: 20px; padding: 20px; }
     }
+
+    @media (max-width: 768px) {
+  .sidebar { 
+    transform: translateX(-100%); 
+  }
+  .sidebar.show { 
+    transform: translateX(0); 
+  }
+}
+
 .hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #4b4f53; margin-bottom: 10px; }
 .backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
 .backdrop.show { opacity: 1; visibility: visible; }
@@ -316,6 +326,7 @@ categorySelect.addEventListener('change', function() {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 
