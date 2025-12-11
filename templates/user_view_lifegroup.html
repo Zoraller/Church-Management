@@ -107,7 +107,7 @@
         transition: transform 0.3s ease;
     }
     .profile-icon:hover { transform: scale(1.1); }
-   .hamburger {
+.hamburger {
     display: none;
     cursor: pointer;
     font-size: 1.5rem;
@@ -203,11 +203,11 @@ sidebar.addEventListener("click", function(e) {
     }
 });
 
-// Clock
-function updateDateTime(){
-    const now = new Date();
-    const options = { weekday:'short', month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true };
-    document.getElementById("datetime").innerText = now.toLocaleString('en-US', options);
+/* Clock */
+function updateDateTime() {
+  const now = new Date();
+  const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+  document.getElementById('datetime').innerText = now.toLocaleString('en-US', options);
 }
 setInterval(updateDateTime, 1000);
 updateDateTime();
@@ -239,6 +239,7 @@ sidebar.querySelectorAll("a").forEach(link => {
 
 </body>
 </html>
+
 
 
 
