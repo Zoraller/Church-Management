@@ -121,7 +121,11 @@ h2 { color: #4b4f53; font-weight: 700; margin-bottom: 30px; }
 <!-- Backdrop for mobile -->
 <div class="backdrop" id="backdrop"></div>
 
-<!-- Sidebar -->
+<!-- Mobile Hamburger -->
+<div class="d-md-none p-3">
+    <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars fa-lg"></i></span>
+</div>
+
 <div class="sidebar" id="sidebar">
     <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Logo">
     <a href="{{ url_for('user_dashboard') }}"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
@@ -204,3 +208,4 @@ document.querySelectorAll('#sidebar a').forEach(link => {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
