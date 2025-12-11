@@ -118,18 +118,25 @@
         .hamburger { display: block; }
         .sidebar { width: 250px; position: fixed; top: 0; left: 0; height: 100vh; z-index: 1050; }
     }
-    .backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 1040;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
+/* Backdrop */
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1040; /* keep lower than sidebar */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Sidebar */
+.sidebar {
+    z-index: 1050; /* higher than backdrop */
+}
+
     .backdrop.show {
         opacity: 1;
         visibility: visible;
@@ -220,3 +227,4 @@ updateDateTime();
 
 </body>
 </html>
+
