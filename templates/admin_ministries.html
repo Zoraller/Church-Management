@@ -257,13 +257,14 @@ body {
 </style>
 </head>
 <body>
+<div class="backdrop" id="backdrop"></div>
 
-<div class="hamburger">
-    <i class="fa-solid fa-bars"></i>
+<!-- Mobile Hamburger -->
+<div class="d-md-none p-2">
+  <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
 </div>
 
-  
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
 <div class="text-center">
 <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
 </div>
@@ -641,5 +642,6 @@ hamburger.addEventListener('click', () => {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
