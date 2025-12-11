@@ -287,26 +287,36 @@ categorySelect.addEventListener('change', function() {
   }
 });
   document.addEventListener('DOMContentLoaded', function() {
-const sidebar = document.getElementById('sidebar');
-const backdrop = document.getElementById('backdrop');
-const hamburger = document.getElementById('hamburger');
+<script>
+// Elements
+const sidebar = document.querySelector('.sidebar');
+const backdrop = document.querySelector('.backdrop');
+const hamburger = document.querySelector('.hamburger');
+
+// Toggle sidebar
 function toggleSidebar() {
-  sidebar.classList.toggle('show');
-  backdrop.classList.toggle('show');
+    sidebar.classList.toggle('show');
+    backdrop.classList.toggle('show');
 }
+
+// Event listeners
 hamburger.addEventListener('click', toggleSidebar);
 backdrop.addEventListener('click', toggleSidebar);
-// Close sidebar on link click (for mobile)
-sidebar.addEventListener('click', function(e) {
-  if (e.target.tagName === 'A') {
-    toggleSidebar();
-  }
+
+// Optional: close sidebar when clicking a link (mobile)
+sidebar.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) toggleSidebar();
+    });
 });
+</script>
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 
