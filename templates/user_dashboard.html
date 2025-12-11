@@ -389,16 +389,23 @@ document.querySelectorAll(".view-events-btn").forEach(btn => {
 
 // Clock
 function updateDateTime() {
-  let now = new Date();
-  document.getElementById("datetime").innerHTML = now.toLocaleString("en-US", {
-    weekday: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
+  const now = new Date();
+  const options = {
+    weekday: "short",      // Thu
+    month: "short",        // Dec
+    day: "numeric",        // 11
+    year: "numeric",       // 2025
+    hour: "2-digit",       // 03
+    minute: "2-digit",     // 45
+    second: "2-digit",     // 30
+    hour12: true           // AM/PM
+  };
+  document.getElementById("datetime").innerHTML = now.toLocaleString("en-US", options);
 }
+
 setInterval(updateDateTime, 1000);
 updateDateTime();
+
 
 // Search (right panel)
 document.getElementById("eventSearch").addEventListener("keyup", function () {
@@ -420,4 +427,5 @@ function filterEvents(input, selector) {
 
 </body>
 </html>
+
 
