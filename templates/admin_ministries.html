@@ -209,10 +209,55 @@ body {
     padding: 15px; 
   }
 }
+  /* SIDEBAR DEFAULT (DESKTOP VISIBLE, MOBILE HIDDEN) */
+.sidebar {
+    width: 260px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    background: #fff;
+    transition: 0.3s ease;
+    z-index: 999;
+}
+
+/* MOBILE HIDDEN */
+@media (max-width: 768px) {
+    .sidebar {
+        left: -260px;
+    }
+    .sidebar.show {
+        left: 0;
+    }
+}
+
+/* HAMBURGER */
+.hamburger {
+    font-size: 26px;
+    cursor: pointer;
+    display: none;
+}
+
+/* SHOW HAMBURGER ONLY IN MOBILE */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1200;
+    }
+}
+
 </style>
 </head>
 <body>
 
+<div class="hamburger">
+    <i class="fa-solid fa-bars"></i>
+</div>
+
+  
 <div class="sidebar">
 <div class="text-center">
 <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
@@ -578,8 +623,17 @@ document.addEventListener('DOMContentLoaded', function() {
     updateMemberIds();
   });
 });
+  const sidebar = document.querySelector('.sidebar');
+const hamburger = document.querySelector('.hamburger'); 
+
+hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('show');
+    hamburger.classList.toggle('active'); 
+});
+</script>
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
