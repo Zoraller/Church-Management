@@ -12,7 +12,7 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
 /* Sidebar */
 .sidebar { 
   height: 100vh; 
-  background: linear-gradient(180deg, #4b4f53ff 0%, #343a40 100%); 
+  background: linear-gradient(180deg, #4b4f53 0%, #343a40 100%); 
   color: white; 
   position: fixed; 
   width: 220px; 
@@ -27,114 +27,48 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
   transition: all 0.3s ease;
 }
 .sidebar a:hover { background: #495057; transform: translateX(5px); }
-.sidebar-logo {
-  max-width: 120px;
-  border-radius: 50%;
-  padding: 5px;
-  background: #343a40;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
+.sidebar-logo { max-width: 120px; border-radius: 50%; padding: 5px; background: #343a40; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
 /* Main content */
-.main-content { 
-  margin-left: 220px; 
-  padding: 20px; 
-}
+.main-content { margin-left: 220px; padding: 20px; }
 
 /* Profile dropdown */
-.profile-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
+.profile-icon { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: transform 0.3s ease; }
 .profile-icon:hover { transform: scale(1.1); }
 
 /* Clock style */
-.time-card {
-  display: inline-block;
-  padding: 8px 16px;
-  font-size: 0.8rem;    
-  font-weight: bold;
-  color: #ffffff;          
-  background: linear-gradient(45deg, #616d79ff, #495057);    
-  border-radius: 20px;      
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  font-family: 'Arial', sans-serif;
-}
+.time-card { display: inline-block; padding: 6px 12px; font-size: 0.7rem; font-weight: bold; color: #fff; background: #616d79; border-radius: 8px; box-shadow: 0 2px 6px rgba(202, 190, 190, 0.2); font-family: 'Arial', sans-serif; }
 
 /* Form container */
-.container-box {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  max-width: 700px;
-  margin: 30px auto;
-  position: relative;
-}
-.container-box::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 5px;
-  background: linear-gradient(90deg, #007bff, #28a745);
-  border-radius: 15px 15px 0 0;
-}
+.container-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 6px 12px rgba(0,0,0,0.15); max-width: 700px; margin: 30px auto; position: relative; }
+.container-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #007bff, #28a745); border-radius: 15px 15px 0 0; }
 
 /* Form elements */
 .form-label { font-weight: bold; color: #495057; margin-bottom: 8px; }
 .form-control { border-radius: 8px; border: 1px solid #ced4da; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
-.form-control:focus { border-color: #007bff; box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
+.form-control:focus { border-color: #007bff; box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25); }
 
 /* Member checkboxes */
-.member-checkboxes {
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 10px;
-  background: #f8f9fa;
-}
+.member-checkboxes { max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 15px; border-radius: 10px; background: #f8f9fa; }
 .member-checkboxes .form-check { margin-bottom: 10px; padding: 8px; border-radius: 8px; transition: background 0.3s ease; }
 .member-checkboxes .form-check:hover { background: #e9ecef; }
 .member-checkboxes .form-check-input:checked { background-color: #007bff; border-color: #007bff; }
 
 /* Leader list */
-#leaderList { border: 1px solid #ddd; border-radius: 10px; background: white; max-height: 150px; overflow-y: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+#leaderList { border: 1px solid #ddd; border-radius: 10px; background: white; max-height: 150px; overflow-y: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: none; }
 #leaderList .leader-item { padding: 10px; cursor: pointer; transition: background 0.3s ease; }
 #leaderList .leader-item:hover { background: #f8f9fa; }
 
-/* Button */
-.btn-success {
-  background: linear-gradient(45deg, #28a745, #20c997);
-  border: none;
-  border-radius: 25px;
-  padding: 12px;
-  font-weight: bold;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+/* Buttons */
+.btn-success { background: linear-gradient(45deg, #28a745, #20c997); border: none; border-radius: 25px; padding: 12px; font-weight: bold; transition: transform 0.3s ease, box-shadow 0.3s ease; }
 .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3); }
+.btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .sidebar { width: 100%; height: auto; position: relative; }
   .main-content { margin-left: 0; }
   .container-box { margin: 20px; padding: 20px; }
-}
-.time-card {
-  display: inline-block;
-  padding: 6px 12px;
-  font-size: 0.7rem;    
-  font-weight: bold;
-  color: #ffffff;          
-  background: #616d79ff;    
-  border-radius: 8px;      
-  box-shadow: 0 2px 6px rgba(202, 190, 190, 0.2);
-  font-family: 'Arial', sans-serif;
 }
 </style>
 </head>
@@ -146,71 +80,10 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
   </div>
   <hr>
   <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a>
-
-  <a class="collapsed" data-bs-toggle="collapse"
-  href="#membersDropdown" role="button" aria-expanded="false" aria-controls="membersDropdown">
-      <i class="fa-solid fa-users"></i> Members
-      <i class="fa-solid fa-chevron-down float-end"></i>
-  </a>
-  <div class="collapse" id="membersDropdown">
-      <a href="{{ url_for('add_members') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add Member</a>
-      <a href="{{ url_for('view_members') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Members</a>
-  </div>
-
-  <a class="collapsed" data-bs-toggle="collapse"
-  href="#ministriesDropdown" role="button" aria-expanded="false" aria-controls="ministriesDropdown">
-      <i class="fa-solid fa-church"></i> Ministries
-      <i class="fa-solid fa-chevron-down float-end"></i>
-  </a>
-  <div class="collapse" id="ministriesDropdown">
-      <a href="{{ url_for('add_ministry') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Ministry</a>
-      <a href="{{ url_for('admin_ministries') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Ministries</a>
-  </div>
-
-  <a class="collapsed" data-bs-toggle="collapse"
-  href="#lifegroupsDropdown" role="button" aria-expanded="false" aria-controls="lifegroupsDropdown">
-      <i class="fa-solid fa-people-group"></i> Life Groups
-      <i class="fa-solid fa-chevron-down float-end"></i>
-  </a>
+  <a class="collapsed" data-bs-toggle="collapse" href="#lifegroupsDropdown"><i class="fa-solid fa-people-group"></i> Life Groups</a>
   <div class="collapse show" id="lifegroupsDropdown">
-     <a href="{{ url_for('add_lifegroup') }}" class="ps-4 d-block active"><i class="fa-solid fa-plus me-2"></i> Add LifeGroup</a>
-      <a href="{{ url_for('admin_lifegroups') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Life Groups</a>
-  </div>
-
-  <a class="collapsed" data-bs-toggle="collapse"
-  href="#tithesDropdown" role="button" aria-expanded="false" aria-controls="tithesDropdown">
-      <i class="fa-solid fa-hand-holding-dollar"></i> Tithes & Expenses
-      <i class="fa-solid fa-chevron-down float-end"></i>
-  </a>
-  <div class="collapse" id="tithesDropdown">
-      <a href="{{ url_for('add_tithe') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Tithe</a>
-      <a href="{{ url_for('view_tithes') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Tithes</a>
-      <a href="{{ url_for('add_expense') }}" class="ps-4 d-block"><i class="fa-solid fa-circle-plus me-2"></i> Add Expense</a>
-      <a href="{{ url_for('view_expenses') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Expenses</a>
-  </div>
-
-  <a class="collapsed" data-bs-toggle="collapse"
-   href="#eventsDropdown" role="button" aria-expanded="false" aria-controls="eventsDropdown">
-  <i class="fa-solid fa-calendar-days"></i> Events
-  <i class="fa-solid fa-chevron-down float-end"></i>
-</a>
-<div class="collapse" id="eventsDropdown">
-  <a href="{{ url_for('add_event') }}" class="ps-4 d-block">
-    <i class="fa-solid fa-plus me-2"></i> Add Event
-  </a>
-  <a href="{{ url_for('view_events') }}" class="ps-4 d-block">
-    <i class="fa-solid fa-list me-2"></i> View Events
-  </a>
-</div>
-
-  <a class="collapsed" data-bs-toggle="collapse"
-  href="#usersDropdown" role="button" aria-expanded="false">
-      <i class="fa-solid fa-user"></i> Users
-      <i class="fa-solid fa-chevron-down float-end"></i>
-  </a>
-  <div class="collapse" id="usersDropdown">
-      <a href="{{ url_for('add_user') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add User</a>
-      <a href="{{ url_for('view_users') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> All Users</a>
+    <a href="{{ url_for('add_lifegroup') }}" class="ps-4 d-block active"><i class="fa-solid fa-plus me-2"></i> Add LifeGroup</a>
+    <a href="{{ url_for('admin_lifegroups') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Life Groups</a>
   </div>
 </div>
 
@@ -226,9 +99,7 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
   </div>
 
   <div class="container-box">
-    <h4 class="mb-4 fw-bold text-primary text-center">
-      <i class="fa-solid fa-plus-circle fa-lg me-2"></i>Add New Life Group
-    </h4>
+    <h4 class="mb-4 fw-bold text-primary text-center"><i class="fa-solid fa-plus-circle fa-lg me-2"></i>Add New Life Group</h4>
 
     <form action="{{ url_for('add_lifegroup') }}" method="POST">
       <!-- Life Group Name -->
@@ -241,11 +112,9 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
       <div class="mb-3">
         <label class="form-label"><i class="fa-solid fa-user-tie me-2"></i>Leader</label>
         <input type="text" id="leaderSearch" class="form-control mb-2" placeholder="Search for a leader...">
-        <div id="leaderList" class="member-checkboxes" style="display:none;">
+        <div id="leaderList" class="member-checkboxes">
           {% for leader in leaders %}
-            <div class="leader-item p-1" data-id="{{ leader.member_id }}" style="cursor:pointer;">
-              <i class="fa-solid fa-user me-2"></i>{{ leader.first_name }} {{ leader.last_name }}
-            </div>
+            <div class="leader-item" data-id="{{ leader.member_id }}"><i class="fa-solid fa-user me-2"></i>{{ leader.first_name }} {{ leader.last_name }}</div>
           {% endfor %}
         </div>
         <input type="hidden" name="leader_id" id="leaderId">
@@ -254,14 +123,16 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
       <!-- Assign Members -->
       <div class="mb-3">
         <label class="form-label"><i class="fa-solid fa-users me-2"></i>Assign Members</label>
+        <div class="mb-2">
+          <button type="button" class="btn btn-sm btn-primary" id="checkAllMembers">Check All</button>
+          <button type="button" class="btn btn-sm btn-secondary" id="uncheckAllMembers">Uncheck All</button>
+        </div>
         <input type="text" id="memberSearch" class="form-control mb-2" placeholder="Search for members...">
         <div class="member-checkboxes" id="memberList">
           {% for member in members %}
             <div class="form-check">
               <input class="form-check-input member-checkbox" type="checkbox" value="{{ member.member_id }}" id="member{{ member.member_id }}" name="member_ids[]">
-              <label class="form-check-label" for="member{{ member.member_id }}">
-                <i class="fa-solid fa-user me-2"></i>{{ member.first_name }} {{ member.last_name }}
-              </label>
+              <label class="form-check-label" for="member{{ member.member_id }}"><i class="fa-solid fa-user me-2"></i>{{ member.first_name }} {{ member.last_name }}</label>
             </div>
           {% endfor %}
         </div>
@@ -279,9 +150,7 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
         <textarea name="description" class="form-control" rows="3" placeholder="Enter a description for the life group"></textarea>
       </div>
 
-      <button type="submit" class="btn btn-success w-100 mt-3">
-        <i class="fa-solid fa-save me-2"></i>Add Life Group
-      </button>
+      <button type="submit" class="btn btn-success w-100 mt-3"><i class="fa-solid fa-save me-2"></i>Add Life Group</button>
     </form>
   </div>
 </div>
@@ -305,10 +174,7 @@ leaderSearch.addEventListener('input', function() {
   let hasResults = false;
   leaderList.querySelectorAll('.leader-item').forEach(item => {
     const name = item.innerText.toLowerCase();
-    if(name.includes(query)) {
-      item.style.display = '';
-      hasResults = true;
-    } else item.style.display = 'none';
+    if(name.includes(query)) { item.style.display = ''; hasResults = true; } else item.style.display = 'none';
   });
   leaderList.style.display = hasResults ? 'block' : 'none';
 });
@@ -329,14 +195,22 @@ document.addEventListener('click', function(e) {
 
 // Member search
 const memberSearch = document.getElementById('memberSearch');
-const memberList = document.getElementById('memberList');
+const memberListDiv = document.getElementById('memberList');
 
 memberSearch.addEventListener('input', function() {
   const query = this.value.toLowerCase();
-  memberList.querySelectorAll('.form-check').forEach(item => {
+  memberListDiv.querySelectorAll('.form-check').forEach(item => {
     const label = item.querySelector('label').innerText.toLowerCase();
     item.style.display = label.includes(query) ? '' : 'none';
   });
+});
+
+// Check / Uncheck all members
+document.getElementById('checkAllMembers').addEventListener('click', () => {
+  memberListDiv.querySelectorAll('.member-checkbox').forEach(cb => cb.checked = true);
+});
+document.getElementById('uncheckAllMembers').addEventListener('click', () => {
+  memberListDiv.querySelectorAll('.member-checkbox').forEach(cb => cb.checked = false);
 });
 </script>
 
