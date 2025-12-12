@@ -382,6 +382,44 @@ body {
       </td>
     </tr>
 
+
+    <div class="table-container mt-3">
+  <h3>Add Life Group</h3>
+  <form action="{{ url_for('add_lifegroup') }}" method="POST">
+    <div class="mb-3">
+      <label class="fw-semibold">Life Group Name</label>
+      <input type="text" name="lifegroup_name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="fw-semibold">Leader</label>
+      <select name="leader_id" class="form-select">
+        <option value="">-- Select Leader --</option>
+        {% for member in members %}
+          <option value="{{ member.member_id }}">{{ member.first_name }} {{ member.last_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="fw-semibold">Schedule</label>
+      <input type="text" name="schedule" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="fw-semibold">Members</label>
+      <select name="member_ids" class="form-select" multiple>
+        {% for member in members %}
+          <option value="{{ member.member_id }}">{{ member.first_name }} {{ member.last_name }}</option>
+        {% endfor %}
+      </select>
+      <small class="text-muted">Hold Ctrl (Cmd on Mac) to select multiple members</small>
+    </div>
+
+    <button type="submit" class="btn btn-add">Add Life Group</button>
+  </form>
+</div>
+    
 <!-- Edit Life Group Modal -->
 <div class="modal fade" id="editLGModal{{ lg.lifegroup_id }}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
@@ -646,6 +684,7 @@ backdrop.addEventListener("click", () => {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 
