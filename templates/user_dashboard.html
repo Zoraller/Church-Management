@@ -1,304 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="User Dashboard - Welcome to your personalized church app view.">
-<title>User Dashboard</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-<link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
-<style>
-body { background: #f8f9fa; font-family: Arial, sans-serif; }
-
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 250px;
-    background: linear-gradient(180deg, #4b4f53 0%, #343a40 100%);
-    color: white;
-    padding-top: 20px;
-    box-shadow: 2px 0 15px rgba(0,0,0,0.1);
-    z-index: 1000;
-    transition: transform 0.3s ease;
-}
-
-.sidebar a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    padding: 12px 20px;
-    margin: 5px 10px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.sidebar a:hover {
-    background: rgba(255,255,255,0.2);
-    transform: translateX(5px);
-}
-
-.sidebar a.active {
-    background: #6c757d;
-    font-weight: bold;
-    border-left: 4px solid #ffc107;
-}
-
-.sidebar-logo {
-    display: block;
-    max-width: 120px;
-    margin: 0 auto 20px;
-    border-radius: 50%;
-    padding: 5px;
-    background: #343a40;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-/* ========================================================
-   MAIN CONTENT
-======================================================== */
-.main-content {
-    margin-left: 250px;
-    margin-right: 300px;
-    padding: 20px;
-    transition: margin-left 0.3s ease;
-}
-
-/* ========================================================
-   RIGHT PANEL (DESKTOP)
-======================================================== */
-.right-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 100vh;
-    background: #f8f9fa;
-    z-index: 1000;
-    overflow-y: auto;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-    padding-top: 60px;
-}
-
-/* Remove extra top spacing in tabs */
-.tab-container {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
-
-.nav-tabs {
-    margin-top: 0 !important;
-}
-
-/* ========================================================
-   NAVBAR
-======================================================== */
-.navbar {
-    background: linear-gradient(45deg, #ffffff, #f8f9fa);
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
-}
-
-.navbar-brand {
-    color: #4b4f53;
-    font-weight: 600;
-    font-size: 1.2rem;
-}
-
-/* ========================================================
-   CLOCK
-======================================================== */
-.time-card {
-    display: inline-block;
-    padding: 6px 12px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: #fff;
-    background: #616d79;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(202,190,190,0.2);
-}
-
-/* ========================================================
-   PROFILE ICON
-======================================================== */
-.profile-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid #fff;
-    transition: transform 0.3s ease;
-}
-
-.profile-icon:hover {
-    transform: scale(1.1);
-}
-
-/* ========================================================
-   CARDS
-======================================================== */
-.card {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    background: linear-gradient(135deg, #fff 0%, #f9f9f9 100%);
-    padding: 25px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-
-.card h5 {
-    color: #4b4f53;
-    font-weight: 600;
-    margin-bottom: 15px;
-}
-
-.card .btn {
-    background: linear-gradient(45deg, #28a745, #20c997);
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.card .btn:hover {
-    background: linear-gradient(45deg, #218838, #17a2b8);
-    transform: translateY(-2px);
-}
-
-/* ========================================================
-   EVENTS
-======================================================== */
-.event-card {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    transition: 0.2s ease;
-    text-decoration: none;
-    color: inherit;
-}
-
-.event-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-/* ========================================================
-   HAMBURGER & MOBILE RESPONSIVE
-======================================================== */
-.hamburger {
-    display: none;
-}
-
-/* MOBILE STYLES */
-@media (max-width: 768px) {
-    
-    /* Sidebar */
-    .sidebar {
-        transform: translateX(-100%);
-    }
-    .sidebar.show {
-        transform: translateX(0);
-    }
-
-    .hamburger {
-        display: block;
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 1100;
-        cursor: pointer;
-        font-size: 1.7rem;
-        color: #343a40;
-    }
-
-    /* Main Content */
-    .main-content {
-        margin-left: 0;
-        margin-right: 0;
-    }
-
-    /* Hide right panel */
-    .right-panel {
-        display: none;
-    }
-
-    /* Mobile events panel */
-    .events-mobile-panel {
-        position: fixed;
-        bottom: -100%;
-        left: 0;
-        width: 100%;
-        height: 70%;
-        background: #f8f9fa;
-        border-radius: 15px 15px 0 0;
-        box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
-        transition: bottom 0.3s ease;
-        z-index: 1200;
-        overflow-y: auto;
-        padding: 15px;
-    }
-
-    .events-mobile-panel.show {
-        bottom: 0;
-    }
-
-    .open-events-btn {
-        display: block;
-        position: fixed;
-        bottom: 15px;
-        right: 15px;
-        background: #343a40;
-        color: #fff;
-        padding: 12px 18px;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        z-index: 1300;
-        cursor: pointer;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="User Dashboard - Welcome to your personalized church app view.">
+    <title>User Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+        .sidebar {
+            height: 100vh;
+            background: linear-gradient(180deg, #4b4f53 0%, #343a40 100%);
+            color: white;
+            position: fixed;
+            width: 250px;
+            padding-top: 20px;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        .sidebar a {
+            color: white;
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 5px 10px;
+            transition: all 0.3s ease;
+        }
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+        .sidebar a.active { background: #6c757d; font-weight: bold; border-left: 4px solid #ffc107; }
+        .sidebar-logo {
+            max-width: 120px;
+            border-radius: 50%;
+            padding: 5px;
+            background: #343a40;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .main-content {
+            margin-left: 250px;
+            margin-right: 300px;
+            padding: 30px;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .right-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100vh;
+            background: #f8f9fa;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            padding-top: 60px;
+        }
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; margin-right: 0; }
+            .right-panel { display: none; }
+        }
+        .navbar {
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .navbar-brand { color: #4b4f53; font-weight: 600; font-size: 1.2rem; }
+        .time-card {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 0.7rem;    
+            font-weight: bold;
+            color: #ffffff;          
+            background: #616d79ff;    
+            border-radius: 8px;      
+            box-shadow: 0 2px 6px rgba(202, 190, 190, 0.2);
+            font-family: 'Arial', sans-serif;
+        }
+        .profile-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: 2px solid #ffffff;
+        }
+        .profile-icon:hover { transform: scale(1.1); }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+            padding: 25px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .card h5 { color: #4b4f53; font-weight: 600; margin-bottom: 15px; }
+        .card .btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .card .btn:hover {
+            background: linear-gradient(45deg, #218838, #17a2b8);
+            transform: translateY(-2px);
+        }
+        .card a:not(.btn) {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .card a:not(.btn):hover { color: #20c997; text-decoration: underline; }
+        h4 { color: #4b4f53; font-weight: 700; margin-bottom: 30px; }
+        .event-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-decoration: none;
+            color: inherit;
+        }
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
 </head>
 <body>
 
-<!-- Backdrop for mobile -->
-<div class="backdrop" id="backdrop"></div>
-
-<!-- Hamburger -->
-<div class="d-md-none p-2">
-    <span class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></span>
-</div>
-
-    <!-- Mobile Events Toggle Button -->
-<div class="d-md-none position-fixed bottom-0 end-0 m-3" style="z-index:1100;">
-    <button id="mobileEventsBtn" class="btn btn-primary shadow-sm">
-        <i class="fa-solid fa-calendar-days me-1"></i> Events
-    </button>
-</div>
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="text-center mb-4">
-        <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Church Logo">
+    <div class="sidebar">
+        <div class="text-center mb-4">
+            <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo" alt="Church Logo">
+        </div>
+        <hr>
+        <a href="{{ url_for('user_dashboard') }}" class="active"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
+        <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church me-2"></i> Ministries</a>
+        <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
     </div>
-    <hr>
-    <a href="{{ url_for('user_dashboard') }}" class="active"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
-    <a href="{{ url_for('all_ministries') }}"><i class="fa-solid fa-church me-2"></i> Ministries</a>
-    <a href="{{ url_for('all_lifegroups') }}"><i class="fa-solid fa-heart me-2"></i> Life Groups</a>
-</div>
-
-<!-- Right Panel (Events) -->
 <div class="right-panel">
   <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white fw-bold">
@@ -307,6 +166,14 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
     <div class="p-2">
       <input type="text" id="eventSearch" class="form-control form-control-sm" placeholder="Search events...">
     </div>
+    <ul class="nav nav-tabs nav-fill small" id="eventTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="true">Upcoming</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button" role="tab" aria-controls="past" aria-selected="false">Past</button>
+      </li>
+    </ul>
     <div class="card-body p-2" style="max-height: 400px; overflow-y: auto;">
       <div class="tab-content" id="eventTabsContent">
         <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
@@ -343,72 +210,19 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
   </div>
 </div>
 
-<!-- Mobile Events Slide-Up Panel -->
-<div class="events-mobile-panel" id="eventsMobilePanel">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="mb-0"><i class="fa-solid fa-calendar-days me-2"></i> Events</h5>
-    <button id="closeEventsPanel" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-times"></i></button>
-  </div>
-  <div class="p-2">
-    <input type="text" id="eventSearchMobile" class="form-control form-control-sm" placeholder="Search events...">
-  </div>
-  <ul class="nav nav-tabs nav-fill small" id="eventTabsMobile" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="upcoming-tab-mobile" data-bs-toggle="tab" data-bs-target="#upcoming-mobile" type="button" role="tab" aria-controls="upcoming-mobile" aria-selected="true">Upcoming</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="past-tab-mobile" data-bs-toggle="tab" data-bs-target="#past-mobile" type="button" role="tab" aria-controls="past-mobile" aria-selected="false">Past</button>
-    </li>
-  </ul>
-  <div class="card-body p-2" style="max-height: 300px; overflow-y: auto;">
-    <div class="tab-content" id="eventTabsContentMobile">
-      <div class="tab-pane fade show active" id="upcoming-mobile" role="tabpanel" aria-labelledby="upcoming-tab-mobile">
-        {% if upcoming_events %}
-          {% for event in upcoming_events %}
-            <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
-              <h6 class="fw-bold text-primary mb-1 small">{{ event.event_name }}</h6>
-              <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
-              <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
-              <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
-              <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
-            </a>
-          {% endfor %}
-        {% else %}
-          <p class="text-muted text-center mb-0 small">No upcoming events.</p>
-        {% endif %}
-      </div>
-      <div class="tab-pane fade" id="past-mobile" role="tabpanel" aria-labelledby="past-tab-mobile">
-        {% if past_events %}
-          {% for event in past_events %}
-            <a href="{{ url_for('view_user_event', event_id=event.event_id) }}" class="event-card">
-              <p class="text-muted mb-1 small"><i class="fa-solid fa-calendar"></i> {{ event.event_date.strftime('%B %d, %Y') }}</p>
-              <p class="text-muted mb-1 small"><i class="fa-solid fa-clock"></i> {{ event.event_time_formatted or 'Time not set' }}</p>
-              <p class="small text-muted mb-1">{{ event.description or 'No description.' }}</p>
-              <p class="mb-0 small"><i class="fa-solid fa-location-dot text-danger"></i> {{ event.location }}</p>
-            </a>
-          {% endfor %}
-        {% else %}
-          <p class="text-muted text-center mb-0 small">No past events.</p>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Main content -->
 <div class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div id="datetime" class="time-card"></div>
-        <div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1050;">
-            <a class="d-block" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" class="profile-icon" onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
-                <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
-            </ul>
-        </div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div id="datetime" class="time-card"></div>
+    <div class="dropdown position-fixed top-0 end-0 p-2" style="z-index: 1050;">
+      <a class="d-block" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" class="profile-icon" onerror="this.src='{{ url_for('static', filename='images/default-profile.png') }}'">
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+        <li><a class="dropdown-item" href="{{ url_for('update_profile') }}"><i class="fa-solid fa-user me-2"></i> Update Profile</a></li>
+        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+      </ul>
     </div>
+  </div>
 
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
@@ -424,7 +238,7 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
         <div class="card">
           <h5><i class="fa-solid fa-church me-2"></i> Your Ministries</h5>
           {% for id, name in zip(ministry['ministry_ids'], ministry['ministry_names']) %}
-            <a href="{{ url_for('user_view_ministry', ministry_id=id) }}">{{ name}}</a>
+            <a href="{{ url_for('user_view_ministry', ministry_id=id) }}">{{ name }}</a>
           {% endfor %}
         </div>
       </div>
@@ -458,96 +272,23 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+function updateDateTime() {
+  const now = new Date();
+  const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+  document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
 
-    // -------------------- CLOCK --------------------
-    function updateDateTime() {
-        const now = new Date();
-        const options = {
-            month: 'numeric',
-            day: 'numeric',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        };
-        const datetimeEl = document.getElementById('datetime');
-        if(datetimeEl) datetimeEl.innerText = now.toLocaleString(navigator.language, options);
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
-
-    // -------------------- SIDEBAR TOGGLE --------------------
-    const sidebar = document.getElementById("sidebar");
-    const backdrop = document.getElementById("backdrop");
-    const hamburger = document.getElementById("hamburger");
-
-    function toggleSidebar() {
-        if(sidebar) sidebar.classList.toggle("show");
-        if(backdrop) backdrop.classList.toggle("show");
-    }
-
-    if(hamburger) hamburger.addEventListener("click", toggleSidebar);
-    if(backdrop) backdrop.addEventListener("click", toggleSidebar);
-
-    // Close sidebar on mobile link click
-    if(sidebar){
-        sidebar.querySelectorAll("a").forEach(link => {
-            link.addEventListener("click", () => {
-                if(window.innerWidth <= 768) toggleSidebar();
-            });
-        });
-    }
-
-    // -------------------- EVENT SEARCH UTILITY --------------------
-    function setupEventSearch(inputId, containerSelector) {
-        const searchInput = document.getElementById(inputId);
-        if(!searchInput) return;
-        searchInput.addEventListener('input', function() {
-            const filter = this.value.toLowerCase();
-            document.querySelectorAll(containerSelector).forEach(eventCard => {
-                const text = eventCard.textContent.toLowerCase();
-                eventCard.style.display = text.includes(filter) ? '' : 'none';
-            });
-        });
-    }
-
-    // Desktop search
-    setupEventSearch('eventSearch', '#eventTabsContent .tab-pane .event-card');
-
-    // Mobile search
-    setupEventSearch('eventSearchMobile', '#eventsMobilePanel .tab-pane .event-card');
-
-    // -------------------- MOBILE EVENTS PANEL --------------------
-    const mobileEventsBtn = document.getElementById('mobileEventsBtn');
-    const eventsMobilePanel = document.getElementById('eventsMobilePanel');
-    const closeEventsPanel = document.getElementById('closeEventsPanel');
-
-    if(mobileEventsBtn && eventsMobilePanel) {
-        mobileEventsBtn.addEventListener('click', () => eventsMobilePanel.classList.add('show'));
-    }
-    if(closeEventsPanel && eventsMobilePanel) {
-        closeEventsPanel.addEventListener('click', () => eventsMobilePanel.classList.remove('show'));
-    }
-
-    // Close mobile panel when clicking outside panel content
-    if(eventsMobilePanel){
-        eventsMobilePanel.addEventListener('click', e => {
-            if(e.target === eventsMobilePanel) eventsMobilePanel.classList.remove('show');
-        });
-    }
-
+document.getElementById('eventSearch').addEventListener('input', function() {
+  const filter = this.value.toLowerCase();
+  document.querySelectorAll('.event-card').forEach(event => {
+    const text = event.textContent.toLowerCase();
+    event.style.display = text.includes(filter) ? '' : 'none';
+  });
 });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
-
-
-
-
-
-
-
