@@ -1663,7 +1663,6 @@ def add_event():
     return render_template('add_event.html')
 
 
-# ===================== View Events =====================
 @app.route('/admin/view_events')
 def view_events():
     conn = get_db_connection()
@@ -1675,8 +1674,12 @@ def view_events():
 
     for ev in events:
         ev_time = ev.get('event_time')
+
+        # Case 1: Already a 'time' object
         if isinstance(ev_time, time):
             ev['event_time_formatted'] = ev_time.strftime("%I:%M %p")
+
+        # Case 2: MySQL TIME returned as timedelta
         elif isinstance(ev_time, timedelta):
             total_seconds = ev_time.total_seconds()
             hours = int(total_seconds // 3600)
@@ -1684,10 +1687,20 @@ def view_events():
             seconds = int(total_seconds % 60)
             t = time(hour=hours, minute=minutes, second=seconds)
             ev['event_time_formatted'] = t.strftime("%I:%M %p")
+
+        # 🔥 Case 3: MySQL TIME stored as string (common issue)
+        elif isinstance(ev_time, str):
+            try:
+                parsed = datetime.strptime(ev_time, "%H:%M:%S").time()
+                ev['event_time_formatted'] = parsed.strftime("%I:%M %p")
+            except:
+                ev['event_time_formatted'] = ev_time  # fallback
+
         else:
             ev['event_time_formatted'] = ""
 
     return render_template('view_events.html', events=events)
+
 
 
 # ===================== Edit Event =====================
@@ -1807,3 +1820,4 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
