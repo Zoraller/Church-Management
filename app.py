@@ -905,32 +905,34 @@ def view_ministry_members(ministry_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    # Fetch members
-    query = """
-        SELECT 
-            m.member_id, 
-            m.first_name, 
-            m.last_name, 
-            m.gender, 
-            m.contact_number, 
-            m.email, 
-            m.status, 
-            mm.notes
+    # Fetch ministry details including description
+    cursor.execute("""
+        SELECT ministry_id, ministry_name, description 
+        FROM ministries 
+        WHERE ministry_id = %s
+    """, (ministry_id,))
+    ministry = cursor.fetchone()
+
+    # Fetch all members assigned to this ministry
+    cursor.execute("""
+        SELECT m.member_id, m.first_name, m.last_name, m.gender, 
+               m.contact_number, m.email, m.status, mm.notes
         FROM member_ministries mm
         JOIN members m ON mm.member_id = m.member_id
         WHERE mm.ministry_id = %s
-    """
-    cursor.execute(query, (ministry_id,))
+        ORDER BY m.first_name, m.last_name
+    """, (ministry_id,))
     members = cursor.fetchall()
-
-    # Fetch ministry details including description
-    cursor.execute("SELECT ministry_id, ministry_name, description FROM ministries WHERE ministry_id = %s", (ministry_id,))
-    ministry = cursor.fetchone()
 
     cursor.close()
     conn.close()
 
-    return render_template("view_ministry_members.html", ministry=ministry, members=members)
+    return render_template(
+        "view_ministry_members.html",
+        ministry=ministry,
+        members=members
+    )
+
 
 
 
@@ -1146,11 +1148,10 @@ def edit_ministry(ministry_id):
         return redirect(url_for("login"))
 
     ministry_name = request.form.get("ministry_name")
-    description = request.form.get("description")  # <-- new
+    description = request.form.get("description")
     leader_id = request.form.get("leader_id")
     schedule = request.form.get("schedule")
-    member_ids_str = request.form.get("member_ids")  # comma-separated
-    member_ids = member_ids_str.split(",") if member_ids_str else []
+    member_ids = request.form.getlist("member_ids")
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1305,11 +1306,10 @@ def edit_lifegroup(lifegroup_id):
         return redirect(url_for("login"))
 
     lifegroup_name = request.form.get("lifegroup_name")
-    description = request.form.get("description")  # new field
+    description = request.form.get("description")
     leader_id = request.form.get("leader_id")
     schedule = request.form.get("schedule")
-    member_ids_str = request.form.get("member_ids")  # comma-separated
-    member_ids = member_ids_str.split(",") if member_ids_str else []
+    member_ids = request.form.getlist("member_ids")
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1819,6 +1819,7 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
 
