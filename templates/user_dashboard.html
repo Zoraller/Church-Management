@@ -462,16 +462,23 @@ body {
 </div>
 
 <script>
-// Clock
+// -------------------- CLOCK --------------------
 function updateDateTime() {
-  const now = new Date();
-  const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
-  document.getElementById('datetime').innerText = now.toLocaleString('en-US', options);
+    const now = new Date();
+    const options = {
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    };
+    document.getElementById('datetime').innerText = now.toLocaleString(navigator.language, options);
 }
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
-// Sidebar toggle
+// -------------------- SIDEBAR TOGGLE --------------------
 const sidebar = document.getElementById("sidebar");
 const backdrop = document.getElementById("backdrop");
 const hamburger = document.getElementById("hamburger");
@@ -484,42 +491,44 @@ function toggleSidebar() {
 hamburger.addEventListener("click", toggleSidebar);
 backdrop.addEventListener("click", toggleSidebar);
 
-sidebar.querySelectorAll("a").forEach(link=>{
-    link.addEventListener("click",()=>{ if(window.innerWidth<=768) toggleSidebar(); });
+// Close sidebar when clicking a link on mobile
+sidebar.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => { if(window.innerWidth <= 768) toggleSidebar(); });
 });
 
-// Event search (desktop)
-document.getElementById('eventSearch').addEventListener('input', function() {
-    const filter = this.value.toLowerCase();
-    document.querySelectorAll('.event-card').forEach(event => {
-        const text = event.textContent.toLowerCase();
-        event.style.display = text.includes(filter) ? '' : 'none';
+// -------------------- EVENT SEARCH UTILITY --------------------
+function setupEventSearch(inputId, containerSelector) {
+    const searchInput = document.getElementById(inputId);
+    searchInput.addEventListener('input', function() {
+        const filter = this.value.toLowerCase();
+        document.querySelectorAll(containerSelector).forEach(eventCard => {
+            const text = eventCard.textContent.toLowerCase();
+            eventCard.style.display = text.includes(filter) ? '' : 'none';
+        });
     });
-});
+}
 
-// Mobile events panel toggle
+// Desktop search (only active tab)
+setupEventSearch('eventSearch', '#eventTabsContent .tab-pane .event-card');
+
+// Mobile search (only active tab)
+setupEventSearch('eventSearchMobile', '#eventsMobilePanel .tab-pane .event-card');
+
+// -------------------- MOBILE EVENTS PANEL --------------------
 const mobileEventsBtn = document.getElementById('mobileEventsBtn');
 const eventsMobilePanel = document.getElementById('eventsMobilePanel');
 const closeEventsPanel = document.getElementById('closeEventsPanel');
 
-mobileEventsBtn.addEventListener('click', () => {
-    eventsMobilePanel.classList.add('show');
-});
+mobileEventsBtn.addEventListener('click', () => eventsMobilePanel.classList.add('show'));
+closeEventsPanel.addEventListener('click', () => eventsMobilePanel.classList.remove('show'));
 
-closeEventsPanel.addEventListener('click', () => {
-    eventsMobilePanel.classList.remove('show');
-});
-
-// Event search (mobile)
-document.getElementById('eventSearchMobile').addEventListener('input', function() {
-    const filter = this.value.toLowerCase();
-    document.querySelectorAll('#eventsMobilePanel .event-card').forEach(event => {
-        const text = event.textContent.toLowerCase();
-        event.style.display = text.includes(filter) ? '' : 'none';
-    });
+// Close mobile panel when clicking outside panel content
+eventsMobilePanel.addEventListener('click', e => {
+    if(e.target === eventsMobilePanel) eventsMobilePanel.classList.remove('show');
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
+
