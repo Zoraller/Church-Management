@@ -10,107 +10,157 @@
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
 
 <style>
-/* --------------------- General --------------------- */
+/* --------------------- Root / General --------------------- */
 :root {
   --sidebar-width: 220px;
   --accent-blue: #007bff;
 }
+
 body {
   background: #f8f9fa;
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  -webkit-font-smoothing:antialiased;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* --------------------- Sidebar --------------------- */
 .sidebar {
-  height: 100vh;
-  background: linear-gradient(180deg,#4b4f53,#343a40);
-  color: #fff;
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
+  height: 100vh;
   width: var(--sidebar-width);
+  background: linear-gradient(180deg, #4b4f53, #343a40);
+  color: #fff;
   padding-top: 18px;
   overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
   z-index: 1100;
-  transform: translateX(0);
-  transition: transform .28s ease;
-  box-shadow: 2px 0 8px rgba(0,0,0,.08);
+  transition: transform 0.28s ease;
 }
-.sidebar.hidden { transform: translateX(-110%); }
+
+.sidebar.hidden {
+  transform: translateX(-110%);
+}
 
 .sidebar .sidebar-logo {
-  display:block;
+  display: block;
   margin: 0 auto 10px;
   max-width: 110px;
   border-radius: 50%;
   background: #343a40;
   padding: 6px;
-  box-shadow: 0 6px 12px rgba(0,0,0,.12);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
 }
-.sidebar hr { border-color: rgba(255,255,255,0.08); margin:12px 16px; }
+
+.sidebar hr {
+  border-color: rgba(255, 255, 255, 0.08);
+  margin: 12px 16px;
+}
 
 .sidebar a {
-  color: #fff;
-  display:block;
+  display: block;
   padding: 10px 18px;
-  text-decoration: none;
-  transition: background .15s, transform .15s;
-  border-radius: 8px;
   margin: 6px 8px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.15s, transform 0.15s;
 }
-.sidebar a:hover { background: rgba(255,255,255,0.05); transform: translateX(4px); }
-.sidebar a.active { background: rgba(255,255,255,0.08); font-weight:700; border-left: 4px solid #ffc107; padding-left:14px; }
 
-/* --------------------- Main content & right panel --------------------- */
+.sidebar a:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(4px);
+}
+
+.sidebar a.active {
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 700;
+  border-left: 4px solid #ffc107;
+  padding-left: 14px;
+}
+
+/* --------------------- Main Content --------------------- */
 .main-content {
   margin-left: var(--sidebar-width);
   padding: 20px;
-  transition: margin-left .28s ease;
-}
-@media (max-width: 768px) {
-  .main-content { margin-left:0; padding:18px; }
+  transition: margin-left 0.28s ease;
 }
 
-/* Right panel (desktop events) */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding: 18px;
+  }
+}
+
+/* --------------------- Right Panel --------------------- */
 .right-panel {
   position: fixed;
-  right: 0;
   top: 0;
+  right: 0;
   width: 300px;
   height: 100vh;
   background: #fff;
-  box-shadow: -2px 0 8px rgba(0,0,0,.06);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.06);
   overflow-y: auto;
-  z-index: 1000;
   padding-top: 60px;
+  z-index: 1000;
 }
-@media (max-width:768px) { .right-panel { display: none; } }
+
+@media (max-width: 768px) {
+  .right-panel {
+    display: none;
+  }
+}
 
 /* --------------------- Cards / UI --------------------- */
-.card.box-card { border-radius:12px; box-shadow: 0 8px 20px rgba(0,0,0,.06); }
-.card.box-card h5 { font-weight:700; }
-.time-card {
-  display:inline-block;
-  padding:8px 12px;
-  font-size:.85rem;
-  font-weight:700;
-  color:#fff;
-  background:#616d79;
-  border-radius:12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.05);
+.card.box-card {
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
-/* profile icon */
-.profile-icon { width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.12); }
+.card.box-card h5 {
+  font-weight: 700;
+}
 
-/* event cards */
-.event-card { padding:10px; border-bottom:1px solid #eee; display:block; text-decoration:none; color:inherit; }
-.event-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+.time-card {
+  display: inline-block;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background: #616d79;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
 
-/* --------------------- Mobile events panel --------------------- */
+.profile-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+}
+
+/* --------------------- Event Cards --------------------- */
+.event-card {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.event-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+/* --------------------- Mobile Events Panel --------------------- */
 .events-mobile-panel {
   position: fixed;
   bottom: -110%;
@@ -119,27 +169,37 @@ body {
   height: 70%;
   background: #fff;
   border-radius: 12px 12px 0 0;
-  box-shadow: 0 -8px 30px rgba(0,0,0,.12);
-  transition: bottom .28s ease;
-  z-index: 1300;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
+  transition: bottom 0.28s ease;
   overflow-y: auto;
   padding: 16px;
+  z-index: 1300;
 }
-.events-mobile-panel.show { bottom: 0; }
 
-/* mobile open events button */
+.events-mobile-panel.show {
+  bottom: 0;
+}
+
 .open-events-btn {
-  display:none;
-}
-@media (max-width:768px) {
-  .open-events-btn { display:block; position: fixed; bottom:16px; right:16px; z-index:1299; border-radius:999px; }
+  display: none;
 }
 
-/* --------------------- Hamburger + backdrop --------------------- */
+@media (max-width: 768px) {
+  .open-events-btn {
+    display: block;
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 1299;
+    border-radius: 999px;
+  }
+}
+
+/* --------------------- Hamburger / Backdrop --------------------- */
 .hamburger {
-  display:none;
-  font-size:1.7rem;
-  cursor:pointer;
+  display: none;
+  font-size: 1.7rem;
+  cursor: pointer;
   position: fixed;
   top: 14px;
   left: 14px;
@@ -147,25 +207,47 @@ body {
   color: #343a40;
   background: #fff;
   padding: 8px;
-  border-radius:8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
-@media (max-width:768px) { .hamburger { display:block; } }
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+}
 
 .backdrop {
-  position: fixed; inset:0; background: rgba(0,0,0,.45);
-  z-index: 1200; opacity: 0; visibility: hidden; transition: opacity .2s;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1200;
+  transition: opacity 0.2s;
 }
-.backdrop.show { opacity:1; visibility:visible; }
 
-/* small helpers */
-.small-muted { font-size:.85rem; color:#666; }
-
-/* responsive tweaks for calendar / components */
-@media (max-width:768px) {
-  .box-card { padding:12px; }
-  .card-body { padding:10px; }
+.backdrop.show {
+  opacity: 1;
+  visibility: visible;
 }
+
+/* --------------------- Helpers --------------------- */
+.small-muted {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .box-card {
+    padding: 12px;
+  }
+
+  .card-body {
+    padding: 10px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -542,6 +624,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </script
 </body>
 </html>
+
 
 
 
