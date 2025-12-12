@@ -1256,10 +1256,11 @@ def add_lifegroup():
         return redirect(url_for("login"))
 
     lifegroup_name = request.form.get("lifegroup_name")
-    description = request.form.get("description", "")  # optional
+    description = request.form.get("description", "")
     leader_id = request.form.get("leader_id")
     schedule = request.form.get("schedule")
-    member_ids = request.form.getlist("member_ids")  # list of selected member IDs
+    member_ids_str = request.form.get("member_ids")
+    member_ids = member_ids_str.split(",") if member_ids_str else []
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1273,10 +1274,11 @@ def add_lifegroup():
 
     # Assign members
     for member_id in member_ids:
-        cursor.execute(
-            "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)",
-            (lifegroup_id, member_id)
-        )
+        if member_id:
+            cursor.execute(
+                "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)",
+                (lifegroup_id, int(member_id))
+            )
 
     conn.commit()
     cursor.close()
@@ -1284,21 +1286,6 @@ def add_lifegroup():
 
     flash("Life Group added successfully!", "success")
     return redirect(url_for("admin_lifegroups"))
-
-@app.route("/admin/lifegroups/add", methods=["GET"])
-def add_lifegroup_page():
-    if "email" not in session or session.get("role") != "admin":
-        return redirect(url_for("login"))
-
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT member_id, first_name, last_name FROM members ORDER BY first_name ASC")
-    members = cursor.fetchall()
-    cursor.close()
-    conn.close()
-
-    return render_template("add_lifegroup.html", members=members, leaders=members)
-
 
 @app.route("/admin/lifegroups/edit/<int:lifegroup_id>", methods=["POST"])
 def edit_lifegroup(lifegroup_id):
@@ -1820,4 +1807,5 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
