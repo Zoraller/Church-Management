@@ -490,141 +490,140 @@ body {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
 
 <script>
-/* ---------- Utility safe helpers ---------- */
-function qs(sel){ return document.querySelector(sel); }
-function qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
+document.addEventListener('DOMContentLoaded', () => {
 
-/* ---------- Time updater ---------- */
-(function timeUpdater(){
-  const el = qs('#datetime');
-  if(!el) return;
-  function update(){
-    const now = new Date();
-    const date = now.toLocaleDateString('en-US', {month:'2-digit', day:'2-digit', year:'numeric'});
-    const time = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-    el.textContent = `${date} ${time}`;
+  /* ---------- Time updater ---------- */
+  const datetimeEl = document.getElementById('datetime');
+  if(datetimeEl){
+    function updateTime(){
+      const now = new Date();
+      const date = now.toLocaleDateString('en-US', {month:'2-digit', day:'2-digit', year:'numeric'});
+      const time = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+      datetimeEl.textContent = `${date} ${time}`;
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
   }
-  update();
-  setInterval(update, 1000);
-})();
 
-/* ---------- Sidebar mobile logic ---------- */
-(function sidebarMobile(){
-  const sidebar = qs('#sidebar');
-  const hamburger = qs('#hamburger');
-  const backdrop = qs('#backdrop');
-  if(!sidebar || !hamburger || !backdrop) return;
+  /* ---------- Sidebar toggle (mobile) ---------- */
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('hamburger');
+  const backdrop = document.getElementById('backdrop');
 
-  function showSidebar(){ sidebar.classList.remove('hidden'); backdrop.classList.add('show'); }
-  function hideSidebar(){ sidebar.classList.add('hidden'); backdrop.classList.remove('show'); }
+  if(sidebar && hamburger && backdrop){
+    function showSidebar(){ sidebar.classList.remove('hidden'); backdrop.classList.add('show'); }
+    function hideSidebar(){ sidebar.classList.add('hidden'); backdrop.classList.remove('show'); }
 
-  // start hidden on small screens
-  if(window.innerWidth <= 768) sidebar.classList.add('hidden');
+    // Start hidden on mobile
+    if(window.innerWidth <= 768) sidebar.classList.add('hidden');
 
-  hamburger.addEventListener('click', function(e){
-    if(sidebar.classList.contains('hidden')) showSidebar(); else hideSidebar();
-  });
-  backdrop.addEventListener('click', hideSidebar);
-
-  // close on link click (only on mobile)
-  qsa('#sidebar a').forEach(a=>{
-    a.addEventListener('click', () => {
-      if(window.innerWidth <= 768) hideSidebar();
+    hamburger.addEventListener('click', () => {
+      sidebar.classList.contains('hidden') ? showSidebar() : hideSidebar();
     });
-  });
+    backdrop.addEventListener('click', hideSidebar);
 
-  // keep sidebar visible on desktop resize
-  window.addEventListener('resize', function(){
-    if(window.innerWidth > 768){
-      sidebar.classList.remove('hidden');
-      backdrop.classList.remove('show');
-    } else {
-      sidebar.classList.add('hidden');
-    }
-  });
-})();
-
-/* ---------- Mobile events panel ---------- */
-(function mobileEvents(){
-  const mobileBtn = qs('#mobileEventsBtn');
-  const mobilePanel = qs('#mobileEventsPanel');
-  const closeBtn = qs('#closeEventsPanel');
-  if(!mobileBtn || !mobilePanel || !closeBtn) return;
-  mobileBtn.addEventListener('click', ()=> mobilePanel.classList.add('show'));
-  closeBtn.addEventListener('click', ()=> mobilePanel.classList.remove('show'));
-
-  // mobile search
-  const search = qs('#eventSearchMobile');
-  search && search.addEventListener('input', function(){
-    const q = this.value.toLowerCase().trim();
-    qsa('#mobileEventsList .event-card').forEach(card=>{
-      card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+    // Close sidebar on link click (mobile)
+    sidebar.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => { if(window.innerWidth <= 768) hideSidebar(); });
     });
-  });
-})();
 
-/* ---------- Right panel event search (desktop) ---------- */
-(function rightEventSearch(){
-  const input = qs('#eventSearch');
-  if(!input) return;
-  input.addEventListener('input', function(){
-    const q = this.value.toLowerCase().trim();
-    qsa('.right-panel .event-card').forEach(card=>{
-      card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
-    });
-  });
-})();
-
-/* ---------- Toggle inputs (Tithes / Expenses) ---------- */
-function toggleInput(type){
-  // type expects 'Tithes' or 'Expenses'
-  const prefix = type;
-  const filter = qs(`#filterType${prefix}`)?.value || 'day_month';
-  const date = qs(`#dateInput${prefix}`);
-  const month = qs(`#monthInput${prefix}`);
-  const year = qs(`#yearInput${prefix}`);
-  if(!date||!month||!year) return;
-  date.classList.add('d-none'); month.classList.add('d-none'); year.classList.add('d-none');
-  if(filter === 'day_month'){ date.classList.remove('d-none'); month.classList.remove('d-none'); }
-  if(filter === 'year'){ year.classList.remove('d-none'); }
-}
-
-/* ---------- FullCalendar ---------- */
-document.addEventListener('DOMContentLoaded', function(){
-  const calendarEl = document.getElementById('calendar');
-  if(!calendarEl) return;
-
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    height: 'auto',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    },
-    events: [
-      {% for ev in events %}
-      {
-        title: "{{ ev.event_name|escape }}",
-        start: "{{ ev.event_date }}",
-        url: "{{ ev.link if 'link' in ev else '#' }}",
-        description: "{{ ev.description|escape }}"
-      }{% if not loop.last %},{% endif %}
-      {% endfor %}
-    ],
-    eventClick: function(info){
-      // if url present and not '#', open
-      if(info.event.url && info.event.url !== '#'){
-        window.open(info.event.url, '_blank');
-        info.jsEvent.preventDefault();
+    // Reset sidebar on resize
+    window.addEventListener('resize', () => {
+      if(window.innerWidth > 768){
+        sidebar.classList.remove('hidden');
+        backdrop.classList.remove('show');
+      } else {
+        sidebar.classList.add('hidden');
       }
+    });
+  }
+
+  /* ---------- Right panel desktop event search ---------- */
+  const rightSearch = document.getElementById('eventSearch');
+  if(rightSearch){
+    rightSearch.addEventListener('input', function(){
+      const q = this.value.toLowerCase().trim();
+      document.querySelectorAll('.right-panel .event-card').forEach(card => {
+        card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+  }
+
+  /* ---------- Mobile events panel ---------- */
+  const mobileBtn = document.getElementById('mobileEventsBtn');
+  const mobilePanel = document.getElementById('mobileEventsPanel');
+  const closeBtn = document.getElementById('closeEventsPanel');
+  const mobileSearch = document.getElementById('eventSearchMobile');
+
+  if(mobileBtn && mobilePanel && closeBtn){
+    mobileBtn.addEventListener('click', () => mobilePanel.classList.add('show'));
+    closeBtn.addEventListener('click', () => mobilePanel.classList.remove('show'));
+
+    // Close if click outside panel content
+    mobilePanel.addEventListener('click', e => {
+      if(e.target === mobilePanel) mobilePanel.classList.remove('show');
+    });
+
+    // Mobile search
+    if(mobileSearch){
+      mobileSearch.addEventListener('input', function(){
+        const q = this.value.toLowerCase().trim();
+        document.querySelectorAll('#mobileEventsList .event-card').forEach(card => {
+          card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+      });
     }
-  });
-  calendar.render();
+  }
+
+  /* ---------- Tithes / Expenses filter toggle ---------- */
+  window.toggleInput = function(type){
+    const filter = document.getElementById(`filterType${type}`)?.value || 'day_month';
+    const date = document.getElementById(`dateInput${type}`);
+    const month = document.getElementById(`monthInput${type}`);
+    const year = document.getElementById(`yearInput${type}`);
+    if(!date || !month || !year) return;
+
+    date.classList.add('d-none'); month.classList.add('d-none'); year.classList.add('d-none');
+    if(filter === 'day_month'){ date.classList.remove('d-none'); month.classList.remove('d-none'); }
+    if(filter === 'year'){ year.classList.remove('d-none'); }
+  };
+
+  /* ---------- FullCalendar ---------- */
+  const calendarEl = document.getElementById('calendar');
+  if(calendarEl){
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      height: 'auto',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      events: [
+        {% for ev in events %}
+        {
+          title: "{{ ev.event_name|escape }}",
+          start: "{{ ev.event_date }}",
+          url: "{{ ev.link if 'link' in ev else '#' }}",
+          description: "{{ ev.description|escape }}"
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ],
+      eventClick: function(info){
+        if(info.event.url && info.event.url !== '#'){
+          window.open(info.event.url, '_blank');
+          info.jsEvent.preventDefault();
+        }
+      }
+    });
+    calendar.render();
+  }
+
 });
-</script
+</script>
 </body>
 </html>
+
 
 
 
