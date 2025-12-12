@@ -21,14 +21,11 @@ app.jinja_env.globals.update(zip=zip)
 
 def get_db_connection():
     return mysql.connector.connect(
-        host=os.environ.get("DB_HOST"),
-        user=os.environ.get("DB_USER"),
-        password=os.environ.get("DB_PASSWORD"),
-        database=os.environ.get("DB_NAME"),
-        port=int(os.environ.get("DB_PORT")),
-        ssl_ca=os.environ.get("SSL_CA_PATH")
+        host="localhost",
+        user="root",
+        password="root",
+        database="church_db"
     )
-
 
 
 @app.route('/')
@@ -1256,11 +1253,10 @@ def add_lifegroup():
         return redirect(url_for("login"))
 
     lifegroup_name = request.form.get("lifegroup_name")
-    description = request.form.get("description", "")
+    description = request.form.get("description", "")  # optional
     leader_id = request.form.get("leader_id")
     schedule = request.form.get("schedule")
-    member_ids_str = request.form.get("member_ids")
-    member_ids = member_ids_str.split(",") if member_ids_str else []
+    member_ids = request.form.getlist("member_ids")  # list of selected member IDs
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1274,11 +1270,10 @@ def add_lifegroup():
 
     # Assign members
     for member_id in member_ids:
-        if member_id:
-            cursor.execute(
-                "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)",
-                (lifegroup_id, int(member_id))
-            )
+        cursor.execute(
+            "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)",
+            (lifegroup_id, member_id)
+        )
 
     conn.commit()
     cursor.close()
@@ -1286,6 +1281,21 @@ def add_lifegroup():
 
     flash("Life Group added successfully!", "success")
     return redirect(url_for("admin_lifegroups"))
+
+@app.route("/admin/lifegroups/add", methods=["GET"])
+def add_lifegroup_page():
+    if "email" not in session or session.get("role") != "admin":
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT member_id, first_name, last_name FROM members ORDER BY first_name ASC")
+    members = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return render_template("add_lifegroup.html", members=members, leaders=members)
+
 
 @app.route("/admin/lifegroups/edit/<int:lifegroup_id>", methods=["POST"])
 def edit_lifegroup(lifegroup_id):
@@ -1650,6 +1660,7 @@ def add_event():
     return render_template('add_event.html')
 
 
+# ===================== View Events =====================
 @app.route('/admin/view_events')
 def view_events():
     conn = get_db_connection()
@@ -1661,12 +1672,8 @@ def view_events():
 
     for ev in events:
         ev_time = ev.get('event_time')
-
-        # Case 1: Already a 'time' object
         if isinstance(ev_time, time):
             ev['event_time_formatted'] = ev_time.strftime("%I:%M %p")
-
-        # Case 2: MySQL TIME returned as timedelta
         elif isinstance(ev_time, timedelta):
             total_seconds = ev_time.total_seconds()
             hours = int(total_seconds // 3600)
@@ -1674,20 +1681,10 @@ def view_events():
             seconds = int(total_seconds % 60)
             t = time(hour=hours, minute=minutes, second=seconds)
             ev['event_time_formatted'] = t.strftime("%I:%M %p")
-
-        # 🔥 Case 3: MySQL TIME stored as string (common issue)
-        elif isinstance(ev_time, str):
-            try:
-                parsed = datetime.strptime(ev_time, "%H:%M:%S").time()
-                ev['event_time_formatted'] = parsed.strftime("%I:%M %p")
-            except:
-                ev['event_time_formatted'] = ev_time  # fallback
-
         else:
             ev['event_time_formatted'] = ""
 
     return render_template('view_events.html', events=events)
-
 
 
 # ===================== Edit Event =====================
@@ -1805,7 +1802,5 @@ def event_detail(event_id):
 
 
 if __name__ == "__main__":
-
     app.run(debug=True)
-
-
+    
