@@ -378,6 +378,7 @@ body {
   <thead class="table-dark">
     <tr>
       <th>Ministry Name</th>
+      <th>Description</th>  <!-- Added Description column header -->
       <th>Leader</th>
       <th>Schedule</th>
       <th>Actions</th>
@@ -391,6 +392,7 @@ body {
           {{ ministry.ministry_name }}
         </a>
       </td>
+      <td>{{ ministry.description or 'No description' }}</td>  <!-- Added Description column data -->
       <td>
         {% if ministry.leader_id %}
           <a href="{{ url_for('member_profile', member_id=ministry.leader_id) }}" class="text-decoration-none text-primary fw-semibold">
@@ -671,6 +673,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 
