@@ -10,9 +10,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
 <style>
-/* ========================================================
-   GLOBAL STYLES
-======================================================== */
 body {
     margin: 0;
     font-family: 'Arial', sans-serif;
@@ -469,75 +466,93 @@ body {
 </div>
 
 <script>
-// -------------------- CLOCK --------------------
-function updateDateTime() {
-    const now = new Date();
-    const options = {
-        month: 'numeric',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    };
-    document.getElementById('datetime').innerText = now.toLocaleString(navigator.language, options);
-}
-setInterval(updateDateTime, 1000);
-updateDateTime();
+document.addEventListener('DOMContentLoaded', () => {
 
-// -------------------- SIDEBAR TOGGLE --------------------
-const sidebar = document.getElementById("sidebar");
-const backdrop = document.getElementById("backdrop");
-const hamburger = document.getElementById("hamburger");
+    // -------------------- CLOCK --------------------
+    function updateDateTime() {
+        const now = new Date();
+        const options = {
+            month: 'numeric',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        };
+        const datetimeEl = document.getElementById('datetime');
+        if(datetimeEl) datetimeEl.innerText = now.toLocaleString(navigator.language, options);
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
 
-function toggleSidebar() {
-    sidebar.classList.toggle("show");
-    backdrop.classList.toggle("show");
-}
+    // -------------------- SIDEBAR TOGGLE --------------------
+    const sidebar = document.getElementById("sidebar");
+    const backdrop = document.getElementById("backdrop");
+    const hamburger = document.getElementById("hamburger");
 
-hamburger.addEventListener("click", toggleSidebar);
-backdrop.addEventListener("click", toggleSidebar);
+    function toggleSidebar() {
+        if(sidebar) sidebar.classList.toggle("show");
+        if(backdrop) backdrop.classList.toggle("show");
+    }
 
-// Close sidebar when clicking a link on mobile
-sidebar.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", () => { if(window.innerWidth <= 768) toggleSidebar(); });
-});
+    if(hamburger) hamburger.addEventListener("click", toggleSidebar);
+    if(backdrop) backdrop.addEventListener("click", toggleSidebar);
 
-// -------------------- EVENT SEARCH UTILITY --------------------
-function setupEventSearch(inputId, containerSelector) {
-    const searchInput = document.getElementById(inputId);
-    searchInput.addEventListener('input', function() {
-        const filter = this.value.toLowerCase();
-        document.querySelectorAll(containerSelector).forEach(eventCard => {
-            const text = eventCard.textContent.toLowerCase();
-            eventCard.style.display = text.includes(filter) ? '' : 'none';
+    // Close sidebar on mobile link click
+    if(sidebar){
+        sidebar.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                if(window.innerWidth <= 768) toggleSidebar();
+            });
         });
-    });
-}
+    }
 
-// Desktop search (only active tab)
-setupEventSearch('eventSearch', '#eventTabsContent .tab-pane .event-card');
+    // -------------------- EVENT SEARCH UTILITY --------------------
+    function setupEventSearch(inputId, containerSelector) {
+        const searchInput = document.getElementById(inputId);
+        if(!searchInput) return;
+        searchInput.addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll(containerSelector).forEach(eventCard => {
+                const text = eventCard.textContent.toLowerCase();
+                eventCard.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+    }
 
-// Mobile search (only active tab)
-setupEventSearch('eventSearchMobile', '#eventsMobilePanel .tab-pane .event-card');
+    // Desktop search
+    setupEventSearch('eventSearch', '#eventTabsContent .tab-pane .event-card');
 
-// -------------------- MOBILE EVENTS PANEL --------------------
-const mobileEventsBtn = document.getElementById('mobileEventsBtn');
-const eventsMobilePanel = document.getElementById('eventsMobilePanel');
-const closeEventsPanel = document.getElementById('closeEventsPanel');
+    // Mobile search
+    setupEventSearch('eventSearchMobile', '#eventsMobilePanel .tab-pane .event-card');
 
-mobileEventsBtn.addEventListener('click', () => eventsMobilePanel.classList.add('show'));
-closeEventsPanel.addEventListener('click', () => eventsMobilePanel.classList.remove('show'));
+    // -------------------- MOBILE EVENTS PANEL --------------------
+    const mobileEventsBtn = document.getElementById('mobileEventsBtn');
+    const eventsMobilePanel = document.getElementById('eventsMobilePanel');
+    const closeEventsPanel = document.getElementById('closeEventsPanel');
 
-// Close mobile panel when clicking outside panel content
-eventsMobilePanel.addEventListener('click', e => {
-    if(e.target === eventsMobilePanel) eventsMobilePanel.classList.remove('show');
+    if(mobileEventsBtn && eventsMobilePanel) {
+        mobileEventsBtn.addEventListener('click', () => eventsMobilePanel.classList.add('show'));
+    }
+    if(closeEventsPanel && eventsMobilePanel) {
+        closeEventsPanel.addEventListener('click', () => eventsMobilePanel.classList.remove('show'));
+    }
+
+    // Close mobile panel when clicking outside panel content
+    if(eventsMobilePanel){
+        eventsMobilePanel.addEventListener('click', e => {
+            if(e.target === eventsMobilePanel) eventsMobilePanel.classList.remove('show');
+        });
+    }
+
 });
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
+
 
 
 
