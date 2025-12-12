@@ -10,12 +10,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
 <style>
-
+/* ========================================================
+   GLOBAL STYLES
+======================================================== */
 body {
     margin: 0;
     font-family: 'Arial', sans-serif;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #343a40;
 }
+
+/* ========================================================
+   SIDEBAR
+======================================================== */
 .sidebar {
     position: fixed;
     top: 0;
@@ -61,9 +68,9 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-/* --------------------------------------------------------
+/* ========================================================
    MAIN CONTENT
----------------------------------------------------------*/
+======================================================== */
 .main-content {
     margin-left: 250px;
     margin-right: 300px;
@@ -71,9 +78,9 @@ body {
     transition: margin-left 0.3s ease;
 }
 
-/* --------------------------------------------------------
+/* ========================================================
    RIGHT PANEL (DESKTOP)
----------------------------------------------------------*/
+======================================================== */
 .right-panel {
     position: fixed;
     top: 0;
@@ -87,20 +94,19 @@ body {
     padding-top: 60px;
 }
 
-    /* Remove huge top spacing above tabs */
+/* Remove extra top spacing in tabs */
 .tab-container {
     margin-top: 0 !important;
     padding-top: 0 !important;
 }
 
-/* Optional: shrink tab bar height */
 .nav-tabs {
     margin-top: 0 !important;
 }
 
-/* --------------------------------------------------------
+/* ========================================================
    NAVBAR
----------------------------------------------------------*/
+======================================================== */
 .navbar {
     background: linear-gradient(45deg, #ffffff, #f8f9fa);
     border-radius: 15px;
@@ -114,9 +120,9 @@ body {
     font-size: 1.2rem;
 }
 
-/* --------------------------------------------------------
+/* ========================================================
    CLOCK
----------------------------------------------------------*/
+======================================================== */
 .time-card {
     display: inline-block;
     padding: 6px 12px;
@@ -128,9 +134,9 @@ body {
     box-shadow: 0 2px 6px rgba(202,190,190,0.2);
 }
 
-/* --------------------------------------------------------
-   PROFILE
----------------------------------------------------------*/
+/* ========================================================
+   PROFILE ICON
+======================================================== */
 .profile-icon {
     width: 45px;
     height: 45px;
@@ -144,9 +150,9 @@ body {
     transform: scale(1.1);
 }
 
-/* --------------------------------------------------------
+/* ========================================================
    CARDS
----------------------------------------------------------*/
+======================================================== */
 .card {
     border: none;
     border-radius: 15px;
@@ -182,9 +188,9 @@ body {
     transform: translateY(-2px);
 }
 
-/* --------------------------------------------------------
+/* ========================================================
    EVENTS
----------------------------------------------------------*/
+======================================================== */
 .event-card {
     padding: 10px;
     border-bottom: 1px solid #ddd;
@@ -198,14 +204,14 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* --------------------------------------------------------
-   MOBILE RESPONSIVE
----------------------------------------------------------*/
+/* ========================================================
+   HAMBURGER & MOBILE RESPONSIVE
+======================================================== */
 .hamburger {
     display: none;
 }
 
-/* MOBILE MODE */
+/* MOBILE STYLES */
 @media (max-width: 768px) {
     
     /* Sidebar */
@@ -233,12 +239,12 @@ body {
         margin-right: 0;
     }
 
-    /* Hide right panel on small screens */
+    /* Hide right panel */
     .right-panel {
         display: none;
     }
 
-    /* EVENTS SLIDE-UP PANEL FOR MOBILE */
+    /* Mobile events panel */
     .events-mobile-panel {
         position: fixed;
         bottom: -100%;
@@ -273,8 +279,6 @@ body {
         cursor: pointer;
     }
 }
-
-
 </style>
 </head>
 <body>
@@ -534,6 +538,7 @@ eventsMobilePanel.addEventListener('click', e => {
 
 </body>
 </html>
+
 
 
 
