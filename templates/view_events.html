@@ -346,17 +346,27 @@
 </div>
 
 <script>
-function updateDateTime() {
-  const now = new Date();
-  const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
-  document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
-}
-setInterval(updateDateTime, 1000);
-updateDateTime();
+document.addEventListener('DOMContentLoaded', () => {
+    // Update date and time
+    function updateDateTime() {
+        const now = new Date();
+        const options = { 
+            month: 'numeric', 
+            day: 'numeric', 
+            year: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit' 
+        };
+        const datetimeEl = document.getElementById('datetime');
+        if(datetimeEl) {
+            datetimeEl.innerText = now.toLocaleDateString('en-US', options);
+        }
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
 
-    
-    document.addEventListener('DOMContentLoaded', () => {
-    // Elements
+    // Sidebar elements
     const sidebar = document.querySelector('.sidebar');
     const backdrop = document.querySelector('.backdrop');
     const hamburger = document.querySelector('.hamburger');
@@ -368,19 +378,21 @@ updateDateTime();
     }
 
     // Event listeners
-    hamburger.addEventListener('click', toggleSidebar);
-    backdrop.addEventListener('click', toggleSidebar);
+    if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+    if (backdrop) backdrop.addEventListener('click', toggleSidebar);
 
-    // Optional: close sidebar when clicking a link (mobile only)
+    // Close sidebar when clicking a link (mobile only)
     sidebar.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
             if (window.innerWidth <= 768) toggleSidebar();
         });
     });
+});
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
+
 
