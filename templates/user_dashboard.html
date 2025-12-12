@@ -314,14 +314,6 @@ body {
     <div class="p-2">
       <input type="text" id="eventSearch" class="form-control form-control-sm" placeholder="Search events...">
     </div>
-    <ul class="nav nav-tabs nav-fill small" id="eventTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="true">Upcoming</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button" role="tab" aria-controls="past" aria-selected="false">Past</button>
-      </li>
-    </ul>
     <div class="card-body p-2" style="max-height: 400px; overflow-y: auto;">
       <div class="tab-content" id="eventTabsContent">
         <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
@@ -542,5 +534,6 @@ eventsMobilePanel.addEventListener('click', e => {
 
 </body>
 </html>
+
 
 
