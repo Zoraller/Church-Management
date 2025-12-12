@@ -142,7 +142,7 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
   background: #f8f9fa;
 }
 
-/* Button */
+/* Buttons */
 .btn-success {
   background: linear-gradient(45deg, #28a745, #20c997);
   border: none;
@@ -154,6 +154,10 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
 .btn-success:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+}
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
 }
 
 /* Responsive adjustments */
@@ -340,6 +344,10 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
       <!-- Assign Members -->
       <div class="mb-3">
         <label class="form-label"><i class="fa-solid fa-users me-2"></i>Assign Members</label>
+        <div class="mb-2">
+          <button type="button" class="btn btn-sm btn-primary" id="checkAllMembers">Check All</button>
+          <button type="button" class="btn btn-sm btn-secondary" id="uncheckAllMembers">Uncheck All</button>
+        </div>
         <input type="text" id="memberSearch" class="form-control mb-2" placeholder="Search for members...">
         <div class="member-checkboxes" id="memberList">
           {% for member in members %}
@@ -359,13 +367,18 @@ body { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-famil
         <input type="text" name="schedule" class="form-control" required placeholder="e.g., Every Sunday 10 AM">
       </div>
 
+      <!-- Description -->
+      <div class="mb-3">
+        <label class="form-label"><i class="fa-solid fa-file-alt me-2"></i>Description</label>
+        <textarea name="description" class="form-control" rows="3" placeholder="Enter a description for the ministry"></textarea>
+      </div>
+
       <button type="submit" class="btn btn-success w-100 mt-3">
         <i class="fa-solid fa-save me-2"></i>Add Ministry
       </button>
     </form>
   </div>
 </div>
-
 
 <script>
 function updateDateTime() {
@@ -447,10 +460,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
-
-
-
-
-
