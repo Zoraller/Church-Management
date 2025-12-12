@@ -1283,8 +1283,22 @@ def add_lifegroup():
     conn.close()
 
     flash("Life Group added successfully!", "success")
-    # Updated: Redirect to the view members page for the new group
-    return redirect(url_for("view_lifegroup_members", lifegroup_id=lifegroup_id))
+    return redirect(url_for("admin_lifegroups"))
+
+@app.route("/admin/lifegroups/add", methods=["GET"])
+def add_lifegroup_page():
+    if "email" not in session or session.get("role") != "admin":
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT member_id, first_name, last_name FROM members ORDER BY first_name ASC")
+    members = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return render_template("add_lifegroup.html", members=members, leaders=members)
+
 @app.route("/admin/lifegroups/edit/<int:lifegroup_id>", methods=["POST"])
 def edit_lifegroup(lifegroup_id):
     if "email" not in session or session.get("role") != "admin":
@@ -1805,6 +1819,7 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
 
