@@ -1291,7 +1291,7 @@ def add_lifegroup():
     flash("Life Group added successfully!", "success")
     return redirect(url_for("view_lifegroups"))
 
-@app.route("/admin/lifegroups/edit/<int:lifegroup_id>", methods=["POST"])
+@app.route("/admin/lifegroups/edit/<int:lifegroup_id>", methods=["GET", "POST"])
 def edit_lifegroup(lifegroup_id):
     if "email" not in session or session.get("role") != "admin":
         return redirect(url_for("login"))
@@ -1811,5 +1811,6 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
