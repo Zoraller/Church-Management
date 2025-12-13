@@ -1064,18 +1064,20 @@ def admin_ministries():
     cursor = conn.cursor(dictionary=True)
 
     # Fetch all ministries with their leaders
-    cursor.execute("""
-        SELECT 
-            m.ministry_id, 
-            m.ministry_name, 
-            m.schedule,
-            m.leader_id,
-            CONCAT(mem.first_name, ' ', mem.last_name) AS leader_name
-        FROM ministries m
-        LEFT JOIN members mem ON m.leader_id = mem.member_id
-        ORDER BY m.ministry_name
-    """)
-    ministries = cursor.fetchall()
+   cursor.execute("""
+    SELECT 
+        m.ministry_id, 
+        m.ministry_name, 
+        m.description,
+        m.schedule,
+        m.leader_id,
+        CONCAT(mem.first_name, ' ', mem.last_name) AS leader_name
+    FROM ministries m
+    LEFT JOIN members mem ON m.leader_id = mem.member_id
+    ORDER BY m.ministry_name
+""")
+ministries = cursor.fetchall()
+
 
     # Fetch all members for leader/member selection
     cursor.execute("SELECT member_id, first_name, last_name FROM members ORDER BY first_name ASC")
@@ -1819,6 +1821,7 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
 
