@@ -315,6 +315,7 @@ body {
       <th>Life Group Name</th>
       <th>Leader</th>
       <th>Schedule</th>
+       <th>Description</th> 
       <th>Actions</th>
     </tr>
   </thead>
@@ -336,6 +337,13 @@ body {
         {% endif %}
       </td>
       <td>{{ lg.schedule }}</td>
+       <td>
+            {% if lg.description %}
+              <span class="text-muted">{{ lg.description }}</span>
+            {% else %}
+              <span class="text-muted">No description</span>
+            {% endif %}
+          </td>
       <td>
         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editLGModal{{ lg.lifegroup_id }}">
           <i class="fa-solid fa-pen-to-square"></i> Edit
@@ -562,3 +570,4 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
