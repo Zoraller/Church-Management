@@ -1137,7 +1137,6 @@ def add_ministry():
 
 
 
-
 @app.route("/admin/edit_ministry/<int:ministry_id>", methods=["POST"])
 def edit_ministry(ministry_id):
     if "email" not in session or session.get("role") != "admin":
@@ -1176,7 +1175,6 @@ def edit_ministry(ministry_id):
 
     flash("Ministry updated successfully!", "info")
     return redirect(url_for("view_ministry_members", ministry_id=ministry_id))
-
 
 
 
@@ -1812,3 +1810,4 @@ def event_detail(event_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
