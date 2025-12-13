@@ -421,24 +421,19 @@ body {
           </div>
 
 
-          <!-- Add Members (unchanged, already correct) -->
+         <!-- Add Members -->
           <div class="mb-3">
             <label class="fw-semibold">Add Members</label>
-            <input type="text" id="searchAddMembers{{ lg.lifegroup_id }}" class="form-control mb-2" placeholder="Search members to add...">
-            <div id="addMembersList{{ lg.lifegroup_id }}" class="border rounded p-2"
-                 style="max-height:150px; overflow-y:auto; display:none;">
-
+            <input type="text" id="searchAddMembers{{ ministry.ministry_id }}" class="form-control mb-2" placeholder="Search members to add...">
+            <div id="addMembersList{{ ministry.ministry_id }}" class="border rounded p-2" style="max-height:150px; overflow-y:auto; display:none;">
+              {% set added_members = ministry_member_ids[ministry.ministry_id] | default([]) %}
               {% for member in members %}
-                {% if member.member_id not in current_members and member.member_id != lg.leader_id %}
-                  <div class="add-member-item p-1"
-                       data-id="{{ member.member_id }}"
-                       data-name="{{ member.first_name }} {{ member.last_name }}"
-                       style="cursor:pointer;">
+                {% if member.member_id not in added_members and member.member_id != ministry.leader_id %}
+                  <div class="add-member-item p-1" data-id="{{ member.member_id }}" data-name="{{ member.first_name }} {{ member.last_name }}" style="cursor:pointer;">
                     {{ member.first_name }} {{ member.last_name }}
                   </div>
                 {% endif %}
               {% endfor %}
-
             </div>
             <small class="text-muted d-block mt-1">Click a member to add. Duplicates are prevented.</small>
           </div>
@@ -572,3 +567,4 @@ document.querySelectorAll('.add-member-item').forEach(item => {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
