@@ -29,6 +29,8 @@ def get_db_connection():
         ssl_ca=os.environ.get("SSL_CA_PATH")
     )
 
+
+
 @app.route('/')
 def home():
     if 'email' in session:
@@ -1136,16 +1138,19 @@ def add_ministry():
     return render_template("add_ministry.html", members=members, leaders=members)  # leaders list is same as members
 
 
-@app.route("/admin/edit_ministry/<int:ministry_id>", methods=["GET", "POST"])
+
+
+@app.route("/admin/edit_ministry/<int:ministry_id>", methods=["POST"])
 def edit_ministry(ministry_id):
     if "email" not in session or session.get("role") != "admin":
         return redirect(url_for("login"))
 
     ministry_name = request.form.get("ministry_name")
-    description = request.form.get("description")
+    description = request.form.get("description")  # <-- new
     leader_id = request.form.get("leader_id")
     schedule = request.form.get("schedule")
-    member_ids = request.form.getlist("member_ids")
+    member_ids_str = request.form.get("member_ids")  # comma-separated
+    member_ids = member_ids_str.split(",") if member_ids_str else []
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1174,6 +1179,7 @@ def edit_ministry(ministry_id):
 
     flash("Ministry updated successfully!", "info")
     return redirect(url_for("view_ministry_members", ministry_id=ministry_id))
+
 
 
 
@@ -1244,98 +1250,40 @@ def admin_lifegroups():
         lifegroup_member_ids=lifegroup_member_ids
     )
     
-@app.route("/admin/lifegroups/add", methods=["POST"])
-def add_lifegroup():
-    if "email" not in session or session.get("role") != "admin":
-        return redirect(url_for("login"))
+@app.route("/admin/lifegroups/add", methods=["POST"]) def add_lifegroup(): if "email" not in session or session.get("role") != "admin": return redirect(url_for("login")) lifegroup_name = request.form.get("lifegroup_name") description = request.form.get("description", "") # optional leader_id = request.form.get("leader_id") schedule = request.form.get("schedule") member_ids = request.form.getlist("member_ids") # list of selected member IDs conn = get_db_connection() cursor = conn.cursor(dictionary=True) # Insert new life group cursor.execute(""" INSERT INTO lifegroups (lifegroup_name, description, leader_id, schedule) VALUES (%s, %s, %s, %s) """, (lifegroup_name, description, leader_id, schedule)) lifegroup_id = cursor.lastrowid # Assign members for member_id in member_ids: cursor.execute( "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)", (lifegroup_id, member_id) ) conn.commit() cursor.close() conn.close() flash("Life Group added successfully!", "success") return redirect(url_for("admin_lifegroups"))
 
-    lifegroup_name = request.form.get("lifegroup_name")
-    description = request.form.get("description", "")  # optional
-    leader_id = request.form.get("leader_id")
-    schedule = request.form.get("schedule")
-    member_ids = request.form.getlist("member_ids")  # list of selected member IDs
-
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    # Insert new life group
-    cursor.execute("""
-        INSERT INTO lifegroups (lifegroup_name, description, leader_id, schedule)
-        VALUES (%s, %s, %s, %s)
-    """, (lifegroup_name, description, leader_id, schedule))
-    lifegroup_id = cursor.lastrowid
-
-    # Assign members
-    for member_id in member_ids:
-        cursor.execute(
-            "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)",
-            (lifegroup_id, member_id)
-        )
-
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-    flash("Life Group added successfully!", "success")
-    return redirect(url_for("admin_lifegroups"))
-
-@app.route("/admin/lifegroups/add", methods=["GET"])
-def add_lifegroup_page():
-    if "email" not in session or session.get("role") != "admin":
-        return redirect(url_for("login"))
-
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT member_id, first_name, last_name FROM members ORDER BY first_name ASC")
-    members = cursor.fetchall()
-    cursor.close()
-    conn.close()
-
-    return render_template("add_lifegroup.html", members=members, leaders=members)
-
-
-@app.route("/admin/lifegroups/edit/<int:lifegroup_id>",methods=["GET", "POST"])
+@app.route("/admin/lifegroups/edit/<int:lifegroup_id>", methods=["POST"])
 def edit_lifegroup(lifegroup_id):
     if "email" not in session or session.get("role") != "admin":
         return redirect(url_for("login"))
 
     lifegroup_name = request.form.get("lifegroup_name")
-    description = request.form.get("description")
+    description = request.form.get("description")  # new field
     leader_id = request.form.get("leader_id")
     schedule = request.form.get("schedule")
-    member_ids = request.form.getlist("member_ids")
+    member_ids_str = request.form.get("member_ids")  # comma-separated
+    member_ids = member_ids_str.split(",") if member_ids_str else []
 
-    # ✅ Pantay lahat ng nasa loob ng function
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    # Update Life Group info
+    # Update life group info
     cursor.execute("""
         UPDATE lifegroups
         SET lifegroup_name=%s, description=%s, leader_id=%s, schedule=%s
         WHERE lifegroup_id=%s
     """, (lifegroup_name, description, leader_id, schedule, lifegroup_id))
 
-    # Kunin existing members
-    cursor.execute("SELECT member_id FROM member_lifegroups WHERE lifegroup_id=%s", (lifegroup_id,))
-    existing_members = {row["member_id"] for row in cursor.fetchall()}
+    # Clear old members
+    cursor.execute("DELETE FROM member_lifegroups WHERE lifegroup_id=%s", (lifegroup_id,))
 
-    # Convert to set para madali i‑compare
-    new_members = set(member_ids)
-
-    # Idagdag yung bago
-    for member_id in new_members - existing_members:
-        cursor.execute(
-            "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)",
-            (lifegroup_id, member_id)
-        )
-
-    # Tanggalin lang yung hindi na napili
-    for member_id in existing_members - new_members:
-        cursor.execute(
-            "DELETE FROM member_lifegroups WHERE lifegroup_id=%s AND member_id=%s",
-            (lifegroup_id, member_id)
-        )
+    # Insert new members
+    for member_id in member_ids:
+        if member_id:  # skip empty strings
+            cursor.execute(
+                "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)",
+                (lifegroup_id, member_id)
+            )
 
     conn.commit()
     cursor.close()
@@ -1343,6 +1291,7 @@ def edit_lifegroup(lifegroup_id):
 
     flash("Life Group updated successfully!", "info")
     return redirect(url_for("view_lifegroup_members", lifegroup_id=lifegroup_id))
+
 
 
 # Delete Life Group
@@ -1666,7 +1615,6 @@ def add_event():
     return render_template('add_event.html')
 
 
-# ===================== View Events =====================
 @app.route('/admin/view_events')
 def view_events():
     conn = get_db_connection()
@@ -1678,8 +1626,12 @@ def view_events():
 
     for ev in events:
         ev_time = ev.get('event_time')
+
+        # Case 1: Already a 'time' object
         if isinstance(ev_time, time):
             ev['event_time_formatted'] = ev_time.strftime("%I:%M %p")
+
+        # Case 2: MySQL TIME returned as timedelta
         elif isinstance(ev_time, timedelta):
             total_seconds = ev_time.total_seconds()
             hours = int(total_seconds // 3600)
@@ -1687,10 +1639,20 @@ def view_events():
             seconds = int(total_seconds % 60)
             t = time(hour=hours, minute=minutes, second=seconds)
             ev['event_time_formatted'] = t.strftime("%I:%M %p")
+
+        # 🔥 Case 3: MySQL TIME stored as string (common issue)
+        elif isinstance(ev_time, str):
+            try:
+                parsed = datetime.strptime(ev_time, "%H:%M:%S").time()
+                ev['event_time_formatted'] = parsed.strftime("%I:%M %p")
+            except:
+                ev['event_time_formatted'] = ev_time  # fallback
+
         else:
             ev['event_time_formatted'] = ""
 
     return render_template('view_events.html', events=events)
+
 
 
 # ===================== Edit Event =====================
@@ -1808,8 +1770,5 @@ def event_detail(event_id):
 
 
 if __name__ == "__main__":
+
     app.run(debug=True)
-
-
-
-
