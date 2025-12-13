@@ -1053,8 +1053,6 @@ def remove_member_from_lifegroup(member_id, lifegroup_id):
     flash("Member removed from this Life Group successfully!", "success")
     return redirect(url_for("view_lifegroup_members", lifegroup_id=lifegroup_id))
 
-
-
 @app.route("/admin_ministries")
 def admin_ministries():
     if "email" not in session or session.get("role") != "admin":
@@ -1064,20 +1062,18 @@ def admin_ministries():
     cursor = conn.cursor(dictionary=True)
 
     # Fetch all ministries with their leaders
-   cursor.execute("""
-    SELECT 
-        m.ministry_id, 
-        m.ministry_name, 
-        m.description,
-        m.schedule,
-        m.leader_id,
-        CONCAT(mem.first_name, ' ', mem.last_name) AS leader_name
-    FROM ministries m
-    LEFT JOIN members mem ON m.leader_id = mem.member_id
-    ORDER BY m.ministry_name
-""")
-ministries = cursor.fetchall()
-
+    cursor.execute("""
+        SELECT 
+            m.ministry_id, 
+            m.ministry_name, 
+            m.schedule,
+            m.leader_id,
+            CONCAT(mem.first_name, ' ', mem.last_name) AS leader_name
+        FROM ministries m
+        LEFT JOIN members mem ON m.leader_id = mem.member_id
+        ORDER BY m.ministry_name
+    """)
+    ministries = cursor.fetchall()
 
     # Fetch all members for leader/member selection
     cursor.execute("SELECT member_id, first_name, last_name FROM members ORDER BY first_name ASC")
@@ -1302,6 +1298,7 @@ def add_lifegroup_page():
 
     return render_template("add_lifegroup.html", members=members, leaders=members)
 
+
 @app.route("/admin/lifegroups/edit/<int:lifegroup_id>", methods=["POST"])
 def edit_lifegroup(lifegroup_id):
     if "email" not in session or session.get("role") != "admin":
@@ -1311,28 +1308,39 @@ def edit_lifegroup(lifegroup_id):
     description = request.form.get("description")
     leader_id = request.form.get("leader_id")
     schedule = request.form.get("schedule")
+    member_ids = request.form.getlist("member_ids")
 
-    # hidden input is a comma-separated string
-    member_ids_str = request.form.get("member_ids", "")
-    member_ids = member_ids_str.split(",") if member_ids_str else []
-
+    # ✅ Pantay lahat ng nasa loob ng function
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    # Update Life Group info
     cursor.execute("""
         UPDATE lifegroups
         SET lifegroup_name=%s, description=%s, leader_id=%s, schedule=%s
         WHERE lifegroup_id=%s
     """, (lifegroup_name, description, leader_id, schedule, lifegroup_id))
 
-    cursor.execute("DELETE FROM member_lifegroups WHERE lifegroup_id=%s", (lifegroup_id,))
+    # Kunin existing members
+    cursor.execute("SELECT member_id FROM member_lifegroups WHERE lifegroup_id=%s", (lifegroup_id,))
+    existing_members = {row["member_id"] for row in cursor.fetchall()}
 
-    for member_id in member_ids:
-        if member_id.strip():
-            cursor.execute(
-                "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)",
-                (lifegroup_id, member_id.strip())
-            )
+    # Convert to set para madali i‑compare
+    new_members = set(member_ids)
+
+    # Idagdag yung bago
+    for member_id in new_members - existing_members:
+        cursor.execute(
+            "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)",
+            (lifegroup_id, member_id)
+        )
+
+    # Tanggalin lang yung hindi na napili
+    for member_id in existing_members - new_members:
+        cursor.execute(
+            "DELETE FROM member_lifegroups WHERE lifegroup_id=%s AND member_id=%s",
+            (lifegroup_id, member_id)
+        )
 
     conn.commit()
     cursor.close()
@@ -1340,8 +1348,6 @@ def edit_lifegroup(lifegroup_id):
 
     flash("Life Group updated successfully!", "info")
     return redirect(url_for("view_lifegroup_members", lifegroup_id=lifegroup_id))
-
-
 
 
 # Delete Life Group
