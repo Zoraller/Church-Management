@@ -1140,7 +1140,7 @@ def add_ministry():
 
 
 
-@app.route("/admin/edit_ministry/<int:ministry_id>", methods=["POST"])
+@app.route("/admin/edit_ministry/<int:ministry_id>", methods=["GET", "POST"])
 def edit_ministry(ministry_id):
     if "email" not in session or session.get("role") != "admin":
         return redirect(url_for("login"))
@@ -1811,4 +1811,5 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
