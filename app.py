@@ -29,8 +29,6 @@ def get_db_connection():
         ssl_ca=os.environ.get("SSL_CA_PATH")
     )
 
-
-
 @app.route('/')
 def home():
     if 'email' in session:
@@ -905,34 +903,32 @@ def view_ministry_members(ministry_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    # Fetch ministry details including description
-    cursor.execute("""
-        SELECT ministry_id, ministry_name, description 
-        FROM ministries 
-        WHERE ministry_id = %s
-    """, (ministry_id,))
-    ministry = cursor.fetchone()
-
-    # Fetch all members assigned to this ministry
-    cursor.execute("""
-        SELECT m.member_id, m.first_name, m.last_name, m.gender, 
-               m.contact_number, m.email, m.status, mm.notes
+    # Fetch members
+    query = """
+        SELECT 
+            m.member_id, 
+            m.first_name, 
+            m.last_name, 
+            m.gender, 
+            m.contact_number, 
+            m.email, 
+            m.status, 
+            mm.notes
         FROM member_ministries mm
         JOIN members m ON mm.member_id = m.member_id
         WHERE mm.ministry_id = %s
-        ORDER BY m.first_name, m.last_name
-    """, (ministry_id,))
+    """
+    cursor.execute(query, (ministry_id,))
     members = cursor.fetchall()
+
+    # Fetch ministry details including description
+    cursor.execute("SELECT ministry_id, ministry_name, description FROM ministries WHERE ministry_id = %s", (ministry_id,))
+    ministry = cursor.fetchone()
 
     cursor.close()
     conn.close()
 
-    return render_template(
-        "view_ministry_members.html",
-        ministry=ministry,
-        members=members
-    )
-
+    return render_template("view_ministry_members.html", ministry=ministry, members=members)
 
 
 
@@ -1052,6 +1048,8 @@ def remove_member_from_lifegroup(member_id, lifegroup_id):
 
     flash("Member removed from this Life Group successfully!", "success")
     return redirect(url_for("view_lifegroup_members", lifegroup_id=lifegroup_id))
+
+
 
 @app.route("/admin_ministries")
 def admin_ministries():
@@ -1671,6 +1669,7 @@ def add_event():
     return render_template('add_event.html')
 
 
+# ===================== View Events =====================
 @app.route('/admin/view_events')
 def view_events():
     conn = get_db_connection()
@@ -1682,12 +1681,8 @@ def view_events():
 
     for ev in events:
         ev_time = ev.get('event_time')
-
-        # Case 1: Already a 'time' object
         if isinstance(ev_time, time):
             ev['event_time_formatted'] = ev_time.strftime("%I:%M %p")
-
-        # Case 2: MySQL TIME returned as timedelta
         elif isinstance(ev_time, timedelta):
             total_seconds = ev_time.total_seconds()
             hours = int(total_seconds // 3600)
@@ -1695,20 +1690,10 @@ def view_events():
             seconds = int(total_seconds % 60)
             t = time(hour=hours, minute=minutes, second=seconds)
             ev['event_time_formatted'] = t.strftime("%I:%M %p")
-
-        # 🔥 Case 3: MySQL TIME stored as string (common issue)
-        elif isinstance(ev_time, str):
-            try:
-                parsed = datetime.strptime(ev_time, "%H:%M:%S").time()
-                ev['event_time_formatted'] = parsed.strftime("%I:%M %p")
-            except:
-                ev['event_time_formatted'] = ev_time  # fallback
-
         else:
             ev['event_time_formatted'] = ""
 
     return render_template('view_events.html', events=events)
-
 
 
 # ===================== Edit Event =====================
@@ -1826,12 +1811,4 @@ def event_detail(event_id):
 
 
 if __name__ == "__main__":
-
     app.run(debug=True)
-
-
-
-
-
-
-
