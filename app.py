@@ -1311,27 +1311,27 @@ def edit_lifegroup(lifegroup_id):
     description = request.form.get("description")
     leader_id = request.form.get("leader_id")
     schedule = request.form.get("schedule")
-    member_ids = request.form.getlist("member_ids")
+
+    # hidden input is a comma-separated string
+    member_ids_str = request.form.get("member_ids", "")
+    member_ids = member_ids_str.split(",") if member_ids_str else []
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    # Update life group info
     cursor.execute("""
         UPDATE lifegroups
         SET lifegroup_name=%s, description=%s, leader_id=%s, schedule=%s
         WHERE lifegroup_id=%s
     """, (lifegroup_name, description, leader_id, schedule, lifegroup_id))
 
-    # Clear old members
     cursor.execute("DELETE FROM member_lifegroups WHERE lifegroup_id=%s", (lifegroup_id,))
 
-    # Insert new members
     for member_id in member_ids:
-        if member_id:  # skip empty strings
+        if member_id.strip():
             cursor.execute(
                 "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)",
-                (lifegroup_id, member_id)
+                (lifegroup_id, member_id.strip())
             )
 
     conn.commit()
@@ -1340,6 +1340,7 @@ def edit_lifegroup(lifegroup_id):
 
     flash("Life Group updated successfully!", "info")
     return redirect(url_for("view_lifegroup_members", lifegroup_id=lifegroup_id))
+
 
 
 
@@ -1821,6 +1822,7 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
 
