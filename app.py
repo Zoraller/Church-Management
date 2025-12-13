@@ -1250,7 +1250,46 @@ def admin_lifegroups():
         lifegroup_member_ids=lifegroup_member_ids
     )
     
-@app.route("/admin/lifegroups/add", methods=["POST"]) def add_lifegroup(): if "email" not in session or session.get("role") != "admin": return redirect(url_for("login")) lifegroup_name = request.form.get("lifegroup_name") description = request.form.get("description", "") # optional leader_id = request.form.get("leader_id") schedule = request.form.get("schedule") member_ids = request.form.getlist("member_ids") # list of selected member IDs conn = get_db_connection() cursor = conn.cursor(dictionary=True) # Insert new life group cursor.execute(""" INSERT INTO lifegroups (lifegroup_name, description, leader_id, schedule) VALUES (%s, %s, %s, %s) """, (lifegroup_name, description, leader_id, schedule)) lifegroup_id = cursor.lastrowid # Assign members for member_id in member_ids: cursor.execute( "INSERT INTO member_lifegroups (lifegroup_id, member_id) VALUES (%s, %s)", (lifegroup_id, member_id) ) conn.commit() cursor.close() conn.close() flash("Life Group added successfully!", "success") return redirect(url_for("admin_lifegroups"))
+@app.route("/admin/lifegroups/add", methods=["POST"])
+def add_lifegroup():
+    if "email" not in session or session.get("role") != "admin":
+        return redirect(url_for("login"))
+
+    lifegroup_name = request.form.get("lifegroup_name")
+    description = request.form.get("description", "")  # optional
+    leader_id = request.form.get("leader_id")
+    schedule = request.form.get("schedule")
+    member_ids = request.form.getlist("member_ids")  # list of selected member IDs
+
+    if not lifegroup_name:
+        flash("Life Group name is required.", "danger")
+        return redirect(request.referrer)
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # Insert new life group
+    cursor.execute("""
+        INSERT INTO lifegroups (lifegroup_name, description, leader_id, schedule)
+        VALUES (%s, %s, %s, %s)
+    """, (lifegroup_name, description, leader_id, schedule))
+
+    lifegroup_id = cursor.lastrowid
+
+    # Assign members
+    for member_id in member_ids:
+        if member_id:
+            cursor.execute("""
+                INSERT INTO member_lifegroups (lifegroup_id, member_id)
+                VALUES (%s, %s)
+            """, (lifegroup_id, member_id))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    flash("Life Group added successfully!", "success")
+    return redirect(url_for("view_lifegroups"))
 
 @app.route("/admin/lifegroups/edit/<int:lifegroup_id>", methods=["POST"])
 def edit_lifegroup(lifegroup_id):
@@ -1772,3 +1811,4 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
