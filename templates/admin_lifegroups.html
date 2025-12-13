@@ -315,7 +315,6 @@ body {
       <th>Life Group Name</th>
       <th>Leader</th>
       <th>Schedule</th>
-       <th>Description</th> 
       <th>Actions</th>
     </tr>
   </thead>
@@ -337,13 +336,6 @@ body {
         {% endif %}
       </td>
       <td>{{ lg.schedule }}</td>
-       <td>
-            {% if lg.description %}
-              <span class="text-muted">{{ lg.description }}</span>
-            {% else %}
-              <span class="text-muted">No description</span>
-            {% endif %}
-          </td>
       <td>
         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editLGModal{{ lg.lifegroup_id }}">
           <i class="fa-solid fa-pen-to-square"></i> Edit
@@ -364,9 +356,10 @@ body {
           <h5 class="modal-title"><i class="fa-solid fa-pen"></i> Edit Life Group</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
+
         <div class="modal-body">
 
-          <!-- Name -->
+          <!-- Life Group Name -->
           <div class="mb-3">
             <label class="fw-semibold">Life Group Name</label>
             <input type="text" name="lifegroup_name" value="{{ lg.lifegroup_name }}" class="form-control" required>
@@ -390,18 +383,25 @@ body {
                 </div>
               {% endfor %}
             </div>
+
             <input type="hidden" name="leader_id" id="leaderId{{ lg.lifegroup_id }}" value="{{ lg.leader_id }}">
           </div>
 
-          <!-- Current Members -->
+
+          <!-- 🟦 Current Members (FIXED: excludes the leader) -->
           <div class="mb-3">
             <label class="fw-semibold">Current Members</label>
+
             <div id="currentMembers{{ lg.lifegroup_id }}" class="border rounded p-2" style="max-height:150px; overflow-y:auto;">
-              {% if lifegroup_member_ids[lg.lifegroup_id] %}
-                {% for member_id in lifegroup_member_ids[lg.lifegroup_id] %}
+
+              {% set current_members = lifegroup_member_ids[lg.lifegroup_id] | reject('equalto', lg.leader_id) | list %}
+
+              {% if current_members %}
+                {% for member_id in current_members %}
                   {% set member = members | selectattr('member_id','equalto',member_id) | list | first %}
                   {% if member %}
-                    <div class="d-flex justify-content-between align-items-center mb-1 member-entry" data-member-id="{{ member.member_id }}">
+                    <div class="d-flex justify-content-between align-items-center mb-1 member-entry"
+                        data-member-id="{{ member.member_id }}">
                       <span>{{ member.first_name }} {{ member.last_name }}</span>
                       <button type="button" class="btn btn-sm btn-danger remove-member" data-member-id="{{ member.member_id }}">
                         <i class="fa-solid fa-times"></i>
@@ -412,24 +412,33 @@ body {
               {% else %}
                 <p class="text-muted mb-0">No members assigned.</p>
               {% endif %}
+
             </div>
-            <input type="hidden" name="member_ids" id="memberIds{{ lg.lifegroup_id }}" 
-                   value="{% if lifegroup_member_ids[lg.lifegroup_id] %}{{ lifegroup_member_ids[lg.lifegroup_id] | join(',') }}{% endif %}">
+
+            <!-- 🟦 Hidden field (FIXED: stores only real members, not the leader) -->
+            <input type="hidden" name="member_ids" id="memberIds{{ lg.lifegroup_id }}"
+              value="{{ current_members | join(',') }}">
           </div>
 
-          <!-- Add Members -->
+
+          <!-- Add Members (unchanged, already correct) -->
           <div class="mb-3">
             <label class="fw-semibold">Add Members</label>
             <input type="text" id="searchAddMembers{{ lg.lifegroup_id }}" class="form-control mb-2" placeholder="Search members to add...">
-            <div id="addMembersList{{ lg.lifegroup_id }}" class="border rounded p-2" style="max-height:150px; overflow-y:auto; display:none;">
-              {% set added_members = lifegroup_member_ids[lg.lifegroup_id] | default([]) %}
+            <div id="addMembersList{{ lg.lifegroup_id }}" class="border rounded p-2"
+                 style="max-height:150px; overflow-y:auto; display:none;">
+
               {% for member in members %}
-                {% if member.member_id not in added_members and member.member_id != lg.leader_id %}
-                  <div class="add-member-item p-1" data-id="{{ member.member_id }}" data-name="{{ member.first_name }} {{ member.last_name }}" style="cursor:pointer;">
+                {% if member.member_id not in current_members and member.member_id != lg.leader_id %}
+                  <div class="add-member-item p-1"
+                       data-id="{{ member.member_id }}"
+                       data-name="{{ member.first_name }} {{ member.last_name }}"
+                       style="cursor:pointer;">
                     {{ member.first_name }} {{ member.last_name }}
                   </div>
                 {% endif %}
               {% endfor %}
+
             </div>
             <small class="text-muted d-block mt-1">Click a member to add. Duplicates are prevented.</small>
           </div>
@@ -441,6 +450,7 @@ body {
           </div>
 
         </div>
+
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Save Changes</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -450,11 +460,6 @@ body {
   </div>
 </div>
 
-{% endfor %}
-  </tbody>
-</table>
-</div>
-</div>
 
 <!-- Profile Dropdown -->
 <div class="dropdown position-fixed top-0 end-0 p-2">
@@ -530,30 +535,27 @@ document.addEventListener('DOMContentLoaded', function() {
       addMembersList.style.display = query ? 'block' : 'none';
     });
 
-    addMembersList.querySelectorAll('.add-member-item').forEach(item => {
-      item.addEventListener('click', function() {
-        const id = this.getAttribute('data-id');
-        const name = this.getAttribute('data-name');
+   
+document.querySelectorAll('.add-member-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const memberId = this.dataset.id;
+        const memberName = this.dataset.name;
 
-        if (!currentMembers.querySelector('[data-member-id="' + id + '"]')) {
-          const div = document.createElement('div');
-          div.className = 'd-flex justify-content-between align-items-center mb-1 member-entry';
-          div.dataset.memberId = id;
-          div.innerHTML = `<span>${name}</span>
-            <button type="button" class="btn btn-sm btn-danger remove-member" data-member-id="${id}">
-              <i class="fa-solid fa-times"></i>
-            </button>`;
-          currentMembers.appendChild(div);
-          updateMemberIds();
+        // Add to assigned members list
+        const assignedList = document.getElementById('assignedMembersList{{ lg.lifegroup_id }}');
+        if (!assignedList.querySelector(`[data-id='${memberId}']`)) {
+            const newItem = document.createElement('div');
+            newItem.className = 'assigned-member-item p-1';
+            newItem.dataset.id = memberId;
+            newItem.textContent = memberName;
+            assignedList.appendChild(newItem);
 
-          div.querySelector('.remove-member').addEventListener('click', function() {
-            div.remove();
-            updateMemberIds();
-          });
+            // Optionally hide from search list
+            this.style.display = 'none';
         }
-        this.style.display = 'none';
-      });
     });
+});
+
 
     currentMembers.querySelectorAll('.remove-member').forEach(btn => {
       btn.addEventListener('click', function() {
@@ -566,8 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
-
+{% endfor %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
