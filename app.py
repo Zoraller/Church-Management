@@ -1146,27 +1146,27 @@ def edit_ministry(ministry_id):
     description = request.form.get("description")
     leader_id = request.form.get("leader_id")
     schedule = request.form.get("schedule")
-
-    # hidden input is a comma-separated string
-    member_ids_str = request.form.get("member_ids", "")
-    member_ids = member_ids_str.split(",") if member_ids_str else []
+    member_ids = request.form.getlist("member_ids")
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    # Update ministry info with description
     cursor.execute("""
         UPDATE ministries
         SET ministry_name=%s, description=%s, leader_id=%s, schedule=%s
         WHERE ministry_id=%s
     """, (ministry_name, description, leader_id, schedule, ministry_id))
 
+    # Clear old members
     cursor.execute("DELETE FROM member_ministries WHERE ministry_id=%s", (ministry_id,))
 
+    # Insert new members
     for member_id in member_ids:
-        if member_id.strip():
+        if member_id:  # skip empty strings
             cursor.execute(
                 "INSERT INTO member_ministries (ministry_id, member_id) VALUES (%s, %s)",
-                (ministry_id, int(member_id.strip()))
+                (ministry_id, member_id)
             )
 
     conn.commit()
@@ -1810,5 +1810,6 @@ def event_detail(event_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
