@@ -1136,8 +1136,7 @@ def add_ministry():
     return render_template("add_ministry.html", members=members, leaders=members)  # leaders list is same as members
 
 
-
-@app.route("/admin/edit_ministry/<int:ministry_id>", methods=["POST"])
+@app.route("/admin/edit_ministry/<int:ministry_id>", methods=["GET", "POST"])
 def edit_ministry(ministry_id):
     if "email" not in session or session.get("role") != "admin":
         return redirect(url_for("login"))
@@ -1295,7 +1294,7 @@ def add_lifegroup_page():
     return render_template("add_lifegroup.html", members=members, leaders=members)
 
 
-@app.route("/admin/lifegroups/edit/<int:lifegroup_id>", methods=["POST"])
+@app.route("/admin/lifegroups/edit/<int:lifegroup_id>",methods=["GET", "POST"])
 def edit_lifegroup(lifegroup_id):
     if "email" not in session or session.get("role") != "admin":
         return redirect(url_for("login"))
@@ -1810,6 +1809,7 @@ def event_detail(event_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
