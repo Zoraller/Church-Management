@@ -1,4 +1,4 @@
-Lfrom flask import Flask, render_template, request, redirect, session, flash, url_for
+from flask import Flask, render_template, request, redirect, session, flash, url_for
 import mysql.connector
 from werkzeug.utils import secure_filename
 import os
@@ -1811,6 +1811,7 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
 
