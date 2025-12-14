@@ -1140,47 +1140,49 @@ def add_ministry():
 
 
 
-@app.route("/admin/edit_ministry/<int:ministry_id>", methods=["GET", "POST"])
+@app.route("/admin/edit_ministry/<int:ministry_id>", methods=["POST"])
 def edit_ministry(ministry_id):
     if "email" not in session or session.get("role") != "admin":
         return redirect(url_for("login"))
 
     ministry_name = request.form.get("ministry_name")
-    description = request.form.get("description")  # <-- new
-    leader_id = request.form.get("leader_id")
+    description = request.form.get("description")
+    leader_id = request.form.get("leader_id") or None
     schedule = request.form.get("schedule")
-    member_ids_str = request.form.get("member_ids")  # comma-separated
-    member_ids = member_ids_str.split(",") if member_ids_str else []
+    member_ids = request.form.get("member_ids", "")
+
+    # 🔒 SAFETY CHECK
+    if not ministry_name:
+        flash("Ministry name is required.", "danger")
+        return redirect(url_for("admin_ministries"))
 
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
 
-    # Update ministry info with description
     cursor.execute("""
         UPDATE ministries
-        SET ministry_name=%s, description=%s, leader_id=%s, schedule=%s
+        SET ministry_name=%s,
+            description=%s,
+            leader_id=%s,
+            schedule=%s
         WHERE ministry_id=%s
     """, (ministry_name, description, leader_id, schedule, ministry_id))
 
-    # Clear old members
-    cursor.execute("DELETE FROM member_ministries WHERE ministry_id=%s", (ministry_id,))
-
-    # Insert new members
-    for member_id in member_ids:
-        if member_id:  # skip empty strings
-            cursor.execute(
-                "INSERT INTO member_ministries (ministry_id, member_id) VALUES (%s, %s)",
-                (ministry_id, member_id)
-            )
+    # Update members
+    cursor.execute("DELETE FROM ministry_members WHERE ministry_id=%s", (ministry_id,))
+    if member_ids:
+        for member_id in member_ids.split(","):
+            cursor.execute("""
+                INSERT INTO ministry_members (ministry_id, member_id)
+                VALUES (%s, %s)
+            """, (ministry_id, member_id))
 
     conn.commit()
     cursor.close()
     conn.close()
 
-    flash("Ministry updated successfully!", "info")
-    return redirect(url_for("view_ministry_members", ministry_id=ministry_id))
-
-
+    flash("Ministry updated successfully!", "success")
+    return redirect(url_for("admin_ministries"))
 
 
 @app.route("/admin/delete_ministry/<int:ministry_id>")
@@ -1811,6 +1813,7 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
 
