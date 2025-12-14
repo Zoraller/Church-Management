@@ -33,38 +33,39 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; margin: 0; padding: 
 .time-card { display: inline-block; padding: 6px 12px; font-size: 0.7rem; font-weight: bold; color: #ffffff; background: #616d79; border-radius: 8px; box-shadow: 0 2px 6px rgba(202, 190, 190, 0.2); }
 .profile-icon { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: transform 0.3s ease; border: 2px solid #ffffff; }
 .profile-icon:hover { transform: scale(1.1); }
-/* Hamburger & Backdrop */
-.hamburger {
-  display: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: #343a40;
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -220px; /* hidden offscreen */
+  width: 220px;
+  height: 100vh;
+  background: #4b4f53ff;
+  color: white;
+  transition: left 0.3s ease;
+  z-index: 1050;
 }
+
+/* When active */
+.sidebar.active {
+  left: 0;
+}
+
+/* Backdrop */
 .backdrop {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0,0,0,0.5);
+  display: none; /* hidden by default */
   z-index: 1040;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-.backdrop.show { opacity: 1; visibility: visible; }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .hamburger { display: block; position: fixed; top: 15px; left: 15px; z-index: 1100; }
-  .sidebar { width: 220px; height: 100vh; position: fixed; top: 0; left: 0; }
-  .main-content { margin-left: 0; padding: 20px; }
-  .table-container { margin: 20px; padding: 15px; }
-  .time-card { top: 15px; left: 15px; }
-}
-@media (min-width: 769px) {
-  .sidebar { transform: translateX(0); }
-  .main-content { margin-left: 220px; }
+/* Show backdrop when sidebar is active */
+.backdrop.active {
+  display: block;
 }
 </style>
 </head>
@@ -235,46 +236,21 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; margin: 0; padding: 
   </ul>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Elements
-    const sidebar = document.getElementById("sidebar");
-    const backdrop = document.getElementById("backdrop");
-    const hamburger = document.getElementById("hamburger");
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('backdrop');
 
-    // Toggle sidebar
-    function toggleSidebar() {
-        sidebar.classList.toggle("show");
-        backdrop.classList.toggle("show");
-    }
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('active');
+  backdrop.classList.toggle('active');
+});
 
-    // Event listeners
-    hamburger.addEventListener("click", toggleSidebar);
-    backdrop.addEventListener("click", () => {
-        sidebar.classList.remove("show");
-        backdrop.classList.remove("show");
-    });
-
-    // Close sidebar on link click (mobile)
-    sidebar.querySelectorAll("a").forEach(link => {
-        link.addEventListener("click", () => {
-            if(window.innerWidth <= 768) toggleSidebar();
-        });
-    });
-
-    // Click sidebar background (not links) to close on mobile
-    sidebar.addEventListener('click', function(e) {
-        if (window.innerWidth <= 768 && !e.target.closest('a')) {
-            toggleSidebar();
-        }
-    });
-
-    // Keep dropdowns open if they contain an active link
-    document.querySelectorAll('.collapse').forEach(collapse => {
-        if (collapse.querySelector('.active')) {
-            collapse.classList.add('show');
-        }
-    });
-
+// Close sidebar when clicking backdrop
+backdrop.addEventListener('click', () => {
+  sidebar.classList.remove('active');
+  backdrop.classList.remove('active');
+});
+  
     // Date/Time
     function updateDateTime() {
         const now = new Date();
@@ -296,6 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 
