@@ -1151,9 +1151,9 @@ def edit_ministry(ministry_id):
     schedule = request.form.get("schedule")
     member_ids = request.form.get("member_ids", "")
 
-    # 🔒 SAFETY CHECK
+    # 🔐 HARD BLOCK (prevents HEAD/GET crashes)
     if not ministry_name:
-        flash("Ministry name is required.", "danger")
+        flash("Ministry name cannot be empty.", "danger")
         return redirect(url_for("admin_ministries"))
 
     conn = get_db_connection()
@@ -1172,10 +1172,10 @@ def edit_ministry(ministry_id):
     cursor.execute("DELETE FROM ministry_members WHERE ministry_id=%s", (ministry_id,))
     if member_ids:
         for member_id in member_ids.split(","):
-            cursor.execute("""
-                INSERT INTO ministry_members (ministry_id, member_id)
-                VALUES (%s, %s)
-            """, (ministry_id, member_id))
+            cursor.execute(
+                "INSERT INTO ministry_members (ministry_id, member_id) VALUES (%s, %s)",
+                (ministry_id, member_id)
+            )
 
     conn.commit()
     cursor.close()
@@ -1813,6 +1813,7 @@ def event_detail(event_id):
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
 
