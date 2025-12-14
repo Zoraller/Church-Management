@@ -122,10 +122,11 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
 </head>
 <body>
 
-    <div class="toggle-btn" id="toggleBtn">
+  <div class="toggle-btn" id="toggleBtn">
   <i class="fa-solid fa-bars"></i>
+</div>
   
-<div class="sidebar" id="navLinks">
+<<div class="sidebar" id="sidebar">
 <div class="text-center">
 <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
 </div>
@@ -470,16 +471,24 @@ updateDateTime();
 </script>
   
   <script>
- const toggleBtn = document.getElementById('toggleBtn');
-const navLinks = document.getElementById('navLinks');
+const toggleBtn = document.getElementById('toggleBtn');
+const sidebar = document.getElementById('sidebar');
 
 toggleBtn.addEventListener('click', () => {
-  navLinks.classList.toggle('active'); 
+  sidebar.classList.toggle('active');
+});
+    document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+    if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+      sidebar.classList.remove('active');
+    }
+  }
 });
 </script>
 
 </body>
 </html>
+
 
 
 
