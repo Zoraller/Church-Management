@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Ministries</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { 
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
+  font-family: 'Arial', sans-serif; 
+}
+
+/* Sidebar */
+.sidebar { 
+  height: 100vh; 
+  background: linear-gradient(180deg, #4b4f53ff 0%, #343a40 100%); 
+  color: white; 
+  position: fixed; 
+  width: 220px; 
+  padding-top: 20px; 
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+.sidebar a { 
+  color: white; 
+  display: block; 
+  padding: 10px 20px; 
+  text-decoration: none; 
+  transition: all 0.3s ease;
+}
+.sidebar a:hover { 
+  background: #495057; 
+  transform: translateX(5px); 
+}
+.sidebar a.active { 
+  background: #6c757d; 
+  font-weight: bold; 
+  border-left: 4px solid #ffc107; 
+}
+.sidebar-logo { 
+  max-width: 120px; 
+  border-radius: 50%; 
+  padding: 5px; 
+  background: #343a40; 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+}
+
+/* Main Content */
+.main-content { 
+  margin-left: 220px; 
+  padding: 20px; 
+}
+
+/* Table Container */
+.table-container {
+  background: linear-gradient(135deg, #ffffff, #f9f9f9);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 1px solid #e9ecef;
+}
+.table th { 
+  background: linear-gradient(45deg, #4b4f53ff, #343a40); 
+  color: white; 
+  text-align: center; 
+  border-radius: 8px 8px 0 0;
+}
+.table td { 
+  vertical-align: middle; 
+  padding: 15px;
+}
+.table tbody tr { 
+  transition: all 0.3s ease; 
+}
+.table tbody tr:hover { 
+  background: linear-gradient(45deg, #f1f3f6, #e3f2fd); 
+  transform: translateY(-2px); 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+}
+
+/* Buttons */
+.btn-add { 
+  background: linear-gradient(45deg, #28a745, #20c997); 
+  border: none; 
+  border-radius: 25px; 
+  padding: 10px 20px; 
+  font-weight: bold; 
+  color: white; 
+  transition: all 0.3s ease; 
+}
+.btn-add:hover { 
+  background: linear-gradient(45deg, #218838, #17a2b8); 
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+}
+.btn-warning:hover, .btn-danger:hover, .btn-info:hover { 
+  transform: translateY(-2px); 
+  transition: all 0.2s ease; 
+}
+
+/* Time Card */
+.time-card {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 0.7rem;    
+  font-weight: bold;
+  color: #ffffff;          
+  background: #616d79ff;    
+  border-radius: 8px;      
+  box-shadow: 0 2px 6px rgba(202, 190, 190, 0.2);
+  font-family: 'Arial', sans-serif;
+}
+
+/* Profile Icon */
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.profile-icon:hover { 
+  transform: scale(1.1); 
+}
+
+/* Modals */
+.modal-content { 
+  border-radius: 15px; 
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15); 
+}
+.modal-header { 
+  background: linear-gradient(45deg, #007bff, #0056b3); 
+  color: white; 
+  border-radius: 15px 15px 0 0; 
+}
+.modal-body { 
+  padding: 20px; 
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+}
+
+/* Member Lists in Modals */
+.border.rounded.p-2 { 
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
+  border-radius: 8px; 
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); 
+}
+.member-entry { 
+  background: white; 
+  padding: 5px 10px; 
+  margin-bottom: 5px; 
+  border-radius: 5px; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+  transition: all 0.2s ease; 
+}
+.member-entry:hover { 
+  background: #e9ecef; 
+  transform: translateY(-1px); 
+}
+.add-member-item:hover { 
+  background: #e9ecef; 
+  cursor: pointer; 
+}
+
+/* Ministries Badge (Blue, Matching Life Groups) */
+.ministries-design {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.ministries-badge {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(45deg, #007bff, #0056b3); /* Blue gradient */
+  border-radius: 25px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3), 0 0 15px rgba(0, 123, 255, 0.5); /* Blue glow */
+  border: 3px solid #ffc107; /* Yellow border like Life Groups */
+  font-family: 'Georgia', serif;
+  letter-spacing: 1px;
+  position: relative;
+}
+.ministries-badge::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: linear-gradient(45deg, #ffc107, #ffed4e); /* Yellow glow like Life Groups */
+  border-radius: 30px;
+  z-index: -1;
+  opacity: 0.7;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .sidebar { 
+    width: 100%; 
+    height: auto; 
+    position: relative; 
+  }
+  .main-content { 
+    margin-left: 0; 
+  }
+  .table-container { 
+    margin: 20px; 
+    padding: 15px; 
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+<div class="text-center">
+<img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
+</div>
+<hr>
+   <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+    href="#membersDropdown" role="button" aria-expanded="false" aria-controls="membersDropdown">
+        <i class="fa-solid fa-users"></i> Members
+        <i class="fa-solid fa-chevron-down float-end"></i>
+    </a>
+    <div class="collapse" id="membersDropdown">
+        <a href="{{ url_for('add_members') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add Member</a>
+        <a href="{{ url_for('view_members') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Members</a>
+    </div>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+    href="#ministriesDropdown" role="button" aria-expanded="false" aria-controls="ministriesDropdown">
+        <i class="fa-solid fa-church"></i> Ministries
+        <i class="fa-solid fa-chevron-down float-end"></i>
+    </a>
+    <div class="collapse" id="ministriesDropdown">
+        <a href="{{ url_for('add_ministry') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Ministry</a>
+        <a href="{{ url_for('admin_ministries') }}" class="ps-4 d-block active"><i class="fa-solid fa-list me-2"></i> View Ministries</a>
+    </div>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+    href="#lifegroupsDropdown" role="button" aria-expanded="false" aria-controls="lifegroupsDropdown">
+        <i class="fa-solid fa-people-group"></i> Life Groups
+        <i class="fa-solid fa-chevron-down float-end"></i>
+    </a>
+    <div class="collapse" id="lifegroupsDropdown">
+       <a href="{{ url_for('add_lifegroup') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add LifeGroup</a>
+        <a href="{{ url_for('admin_lifegroups') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Life Groups</a>
+    </div>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+    href="#tithesDropdown" role="button" aria-expanded="false" aria-controls="tithesDropdown">
+        <i class="fa-solid fa-hand-holding-dollar"></i> Tithes & Expenses
+        <i class="fa-solid fa-chevron-down float-end"></i>
+    </a>
+    <div class="collapse" id="tithesDropdown">
+        <a href="{{ url_for('add_tithe') }}" class="ps-4 d-block"><i class="fa-solid fa-plus me-2"></i> Add Tithe</a>
+        <a href="{{ url_for('view_tithes') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> View Tithes</a>
+        <a href="{{ url_for('add_expense') }}" class="ps-4 d-block"><i class="fa-solid fa-circle-plus me-2"></i> Add Expense</a>
+        <a href="{{ url_for('view_expenses') }}" class="ps-4 d-block"><i class="fa-solid fa-list me-2"></i> View Expenses</a>
+    </div>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+     href="#eventsDropdown" role="button" aria-expanded="false" aria-controls="eventsDropdown">
+    <i class="fa-solid fa-calendar-days"></i> Events
+    <i class="fa-solid fa-chevron-down float-end"></i>
+  </a>
+  <div class="collapse" id="eventsDropdown">
+    <a href="{{ url_for('add_event') }}" class="ps-4 d-block">
+      <i class="fa-solid fa-plus me-2"></i> Add Event
+    </a>
+    <a href="{{ url_for('view_events') }}" class="ps-4 d-block">
+      <i class="fa-solid fa-list me-2"></i> View Events
+    </a>
+  </div>
+
+    <a class="collapsed" data-bs-toggle="collapse"
+    href="#usersDropdown" role="button" aria-expanded="false">
+        <i class="fa-solid fa-user"></i> Users
+        <i class="fa-solid fa-chevron-down float-end"></i>
+    </a>
+    <div class="collapse" id="usersDropdown">
+        <a href="{{ url_for('add_user') }}" class="ps-4 d-block"><i class="fa-solid fa-user-plus me-2"></i> Add User</a>
+        <a href="{{ url_for('view_users') }}" class="ps-4 d-block"><i class="fa-solid fa-table me-2"></i> All Users</a>
+    </div>
+</div>
+
+<div class="main-content">
+  <div id="datetime" class="time-card mb-2"></div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="mt-3">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+<div class="table-container mt-3">
+<div class="ministries-design mb-3">
+  <i class="fa-solid fa-church me-2"></i> 
+  <span class="ministries-badge">Ministries</span>
+</div>
+<div class="table-responsive">
+<table class="table table-striped align-middle text-center">
+  <thead class="table-dark">
+    <tr>
+      <th>Ministry Name</th>
+      <th>Leader</th>
+      <th>Schedule</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ministry in ministries %}
+    <tr>
+      <td>
+        <a href="{{ url_for('view_ministry_members', ministry_id=ministry.ministry_id) }}" class="text-decoration-none text-primary fw-bold">
+          {{ ministry.ministry_name }}
+        </a>
+      </td>
+      <td>
+        {% if ministry.leader_id %}
+          <a href="{{ url_for('member_profile', member_id=ministry.leader_id) }}" class="text-decoration-none text-primary fw-semibold">
+            <i class="fa-solid fa-user me-1"></i> {{ ministry.leader_name }}
+          </a>
+        {% else %}
+          <span class="text-muted">No Leader</span>
+        {% endif %}
+      </td>
+      <td>{{ ministry.schedule }}</td>
+      <td>
+        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editMinistryModal{{ ministry.ministry_id }}">
+          <i class="fa-solid fa-pen-to-square"></i> Edit
+        </button>
+        <a href="{{ url_for('delete_ministry', ministry_id=ministry.ministry_id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this ministry?');">
+          <i class="fa-solid fa-trash"></i> Delete
+        </a>
+      </td>
+    </tr>
+
+<!-- Edit Ministry Modal -->
+<div class="modal fade" id="editMinistryModal{{ ministry.ministry_id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ url_for('edit_ministry', ministry_id=ministry.ministry_id) }}" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fa-solid fa-pen"></i> Edit Ministry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+
+          <!-- Ministry Name -->
+          <div class="mb-3">
+            <label class="fw-semibold">Ministry Name</label>
+            <input type="text" name="ministry_name" value="{{ ministry.ministry_name }}" class="form-control" required>
+          </div>
+
+         <div class="mb-3">
+  <label class="form-label">Description</label>
+  <textarea name="description" id="edit_description" class="form-control" rows="4" required>{{ ministry.description }}</textarea>
+</div>
+
+        <div class="mb-3">
+          <div class="border rounded p-2 bg-light">
+            {% if ministry.leader_id %}
+              <p class="mb-0 text-muted">
+                Current Leader: <strong>{{ ministry.leader_name }}</strong>
+              </p>
+            {% else %}
+              <p class="mb-0 text-muted">No leader assigned.</p>
+            {% endif %}
+          </div>
+        </div>
+
+          <!-- Leader Selection -->
+          <div class="mb-3 position-relative">
+            <label class="fw-semibold">Leader</label>
+            <input type="text" id="searchLeader{{ ministry.ministry_id }}" class="form-control mb-2" placeholder="Search leader...">
+            <div id="leaderList{{ ministry.ministry_id }}" class="border rounded p-2 position-absolute bg-white w-100"
+                 style="max-height: 150px; overflow-y:auto; z-index:1050; display:none;">
+              {% for member in members %}
+                <div class="leader-item p-1" data-id="{{ member.member_id }}" data-name="{{ member.first_name }} {{ member.last_name }}" style="cursor:pointer;">
+                  {{ member.first_name }} {{ member.last_name }}
+                </div>
+              {% endfor %}
+            </div>
+            <input type="hidden" name="leader_id" id="leaderId{{ ministry.ministry_id }}" value="{{ ministry.leader_id }}">
+          </div>
+
+          <!-- Current Members -->
+          <div class="mb-3">
+            <label class="fw-semibold">Current Members</label>
+            <div id="currentMembers{{ ministry.ministry_id }}" class="border rounded p-2" style="max-height:150px; overflow-y:auto;">
+              {% if ministry_member_ids[ministry.ministry_id] %}
+                {% for member_id in ministry_member_ids[ministry.ministry_id] %}
+                  {% set member = members | selectattr('member_id','equalto',member_id) | list | first %}
+                  {% if member %}
+                    <div class="d-flex justify-content-between align-items-center mb-1 member-entry" data-member-id="{{ member.member_id }}">
+                      <span>{{ member.first_name }} {{ member.last_name }}</span>
+                      <button type="button" class="btn btn-sm btn-danger remove-member" data-member-id="{{ member.member_id }}">
+                        <i class="fa-solid fa-times"></i>
+                      </button>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                <p class="text-muted mb-0">No members assigned.</p>
+              {% endif %}
+            </div>
+            <input type="hidden" name="member_ids" id="memberIds{{ ministry.ministry_id }}" 
+                   value="{% if ministry_member_ids[ministry.ministry_id] %}{{ ministry_member_ids[ministry.ministry_id] | join(',') }}{% endif %}">
+          </div>
+
+          <!-- Add Members -->
+          <div class="mb-3">
+            <label class="fw-semibold">Add Members</label>
+            <input type="text" id="searchAddMembers{{ ministry.ministry_id }}" class="form-control mb-2" placeholder="Search members to add...">
+            <div id="addMembersList{{ ministry.ministry_id }}" class="border rounded p-2" style="max-height:150px; overflow-y:auto; display:none;">
+              {% set added_members = ministry_member_ids[ministry.ministry_id] | default([]) %}
+              {% for member in members %}
+                {% if member.member_id not in added_members and member.member_id != ministry.leader_id %}
+                  <div class="add-member-item p-1" data-id="{{ member.member_id }}" data-name="{{ member.first_name }} {{ member.last_name }}" style="cursor:pointer;">
+                    {{ member.first_name }} {{ member.last_name }}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <small class="text-muted d-block mt-1">Click a member to add. Duplicates are prevented.</small>
+          </div>
+
+          <!-- Schedule -->
+          <div class="mb-3">
+            <label class="fw-semibold">Schedule</label>
+            <input type="text" name="schedule" value="{{ ministry.schedule }}" class="form-control" required>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- Profile Dropdown -->
+<div class="dropdown position-fixed top-0 end-0 p-2">
+  <img src="{{ url_for('static', filename='images/iu.jpg') }}" 
+       class="profile-icon dropdown-toggle rounded-circle" 
+       data-bs-toggle="dropdown" 
+       alt="User">
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><a class="dropdown-item" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+  </ul>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmDelete(url) {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "This will permanently delete the ministry and all assigned members.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: "Yes, delete it!"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = url;
+    }
+  });
+}
+</script>
+
+<script>
+function updateDateTime() {
+  const now = new Date();
+  const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+  document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+// DYNAMIC MODAL SCRIPT FOR ALL MINISTRIES
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.modal').forEach(modal => {
+    if (!modal.id.startsWith('editMinistryModal')) return;
+    const ministryId = modal.id.replace('editMinistryModal', '');
+
+    // Leader search
+    const leaderSearch = document.getElementById('searchLeader' + ministryId);
+    const leaderList = document.getElementById('leaderList' + ministryId);
+    const leaderItems = leaderList.querySelectorAll('.leader-item');
+    const leaderIdInput = document.getElementById('leaderId' + ministryId);
+
+    leaderSearch.addEventListener('input', function() {
+      const query = this.value.toLowerCase().trim();
+      let hasResults = false;
+      leaderItems.forEach(item => {
+        const name = item.getAttribute('data-name').toLowerCase();
+        item.style.display = name.includes(query) ? '' : 'none';
+        if (name.includes(query)) hasResults = true;
+      });
+      leaderList.style.display = hasResults ? 'block' : 'none';
+    });
+
+    leaderItems.forEach(item => {
+      item.addEventListener('click', function() {
+        leaderSearch.value = this.getAttribute('data-name');
+        leaderIdInput.value = this.getAttribute('data-id');
+        leaderList.style.display = 'none';
+      });
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!leaderSearch.contains(e.target) && !leaderList.contains(e.target)) {
+        leaderList.style.display = 'none';
+      }
+    });
+
+    // Member add/remove
+    const searchAddMembers = document.getElementById('searchAddMembers' + ministryId);
+    const addMembersList = document.getElementById('addMembersList' + ministryId);
+    const currentMembers = document.getElementById('currentMembers' + ministryId);
+    const memberIdsInput = document.getElementById('memberIds' + ministryId);
+
+    function updateMemberIds() {
+      const ids = Array.from(currentMembers.querySelectorAll('.member-entry')).map(el => el.dataset.memberId);
+      memberIdsInput.value = ids.join(',');
+    }
+
+    // Add member from search
+    searchAddMembers.addEventListener('input', function() {
+      const query = this.value.toLowerCase().trim();
+      addMembersList.querySelectorAll('.add-member-item').forEach(item => {
+        item.style.display = item.getAttribute('data-name').toLowerCase().includes(query) ? '' : 'none';
+      });
+      addMembersList.style.display = query ? 'block' : 'none';
+    });
+
+    addMembersList.querySelectorAll('.add-member-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const id = this.getAttribute('data-id');
+        const name = this.getAttribute('data-name');
+
+        if (!currentMembers.querySelector('[data-member-id="' + id + '"]')) {
+          const div = document.createElement('div');
+          div.className = 'd-flex justify-content-between align-items-center mb-1 member-entry';
+          div.dataset.memberId = id;
+          div.innerHTML = `<span>${name}</span>
+            <button type="button" class="btn btn-sm btn-danger remove-member" data-member-id="${id}">
+              <i class="fa-solid fa-times"></i>
+            </button>`;
+          currentMembers.appendChild(div);
+          updateMemberIds();
+
+          div.querySelector('.remove-member').addEventListener('click', function() {
+            div.remove();
+            updateMemberIds();
+          });
+        }
+        this.style.display = 'none';
+      });
+    });
+
+    // Remove existing members
+    currentMembers.querySelectorAll('.remove-member').forEach(btn => {
+      btn.addEventListener('click', function() {
+        btn.parentElement.remove();
+        updateMemberIds();
+      });
+    });
+
+    updateMemberIds();
+  });
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
