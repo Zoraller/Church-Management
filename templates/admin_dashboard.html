@@ -128,8 +128,10 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
     z-index: 1050;
     transition: transform 0.3s ease;
   }
-  .sidebar.show { transform: translateX(0); }
+  .sidebar.active { transform: translateX(0); }
+  
   .main-content { margin-left: 0; }
+
   .backdrop {
     position: fixed;
     top: 0;
@@ -142,7 +144,7 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
   }
-  .backdrop.show { opacity: 1; visibility: visible; }
+  .backdrop.active { opacity: 1; visibility: visible; }
 }
 
 </style>
@@ -522,6 +524,7 @@ backdrop.addEventListener('click', () => {
 
 </body>
 </html>
+
 
 
 
