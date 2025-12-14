@@ -318,7 +318,7 @@ body {
       <th>Actions</th>
     </tr>
   </thead>
-  <tbody>
+<tbody>
     {% for lg in lifegroups %}
     <tr>
       <td>
@@ -359,92 +359,117 @@ body {
 
         <div class="modal-body">
 
-          <!-- Life Group Name -->
-          <div class="mb-3">
-            <label class="fw-semibold">Life Group Name</label>
-            <input type="text" name="lifegroup_name" value="{{ lg.lifegroup_name }}" class="form-control" required>
-          </div>
+  <!-- Life Group Name -->
+  <div class="mb-3">
+    <label class="fw-semibold">Life Group Name</label>
+    <input type="text" name="lifegroup_name" value="{{ lg.lifegroup_name }}" class="form-control" required>
+  </div>
 
-          <!-- Description -->
-          <div class="mb-3">
-            <label class="form-label">Description</label>
-            <textarea name="description" class="form-control" rows="4">{{ lg.description }}</textarea>
-          </div>
+  <!-- Description -->
+  <div class="mb-3">
+    <label class="form-label">Description</label>
+    <textarea name="description" class="form-control" rows="4">{{ lg.description }}</textarea>
+  </div>
 
-          <!-- Leader Selection -->
-          <div class="mb-3 position-relative">
-            <label class="fw-semibold">Leader</label>
-            <input type="text" id="searchLeader{{ lg.lifegroup_id }}" class="form-control mb-2" placeholder="Search leader...">
-            <div id="leaderList{{ lg.lifegroup_id }}" class="border rounded p-2 position-absolute bg-white w-100"
-                 style="max-height: 150px; overflow-y:auto; z-index:1050; display:none;">
-              {% for member in members %}
-                <div class="leader-item p-1" data-id="{{ member.member_id }}" data-name="{{ member.first_name }} {{ member.last_name }}" style="cursor:pointer;">
-                  {{ member.first_name }} {{ member.last_name }}
-                </div>
-              {% endfor %}
-            </div>
+  <!-- 🟦 Current Leader Box -->
+  <div class="card mb-3">
+    <div class="card-body py-2">
+      {% if lg.leader_id %}
+        <p class="mb-0 text-muted">
+          Current Leader: <strong>{{ lg.leader_name }}</strong>
+        </p>
+      {% else %}
+        <p class="mb-0 text-muted">No leader assigned.</p>
+      {% endif %}
+    </div>
+  </div>
 
-            <input type="hidden" name="leader_id" id="leaderId{{ lg.lifegroup_id }}" value="{{ lg.leader_id }}">
-          </div>
-
-
-          <!-- 🟦 Current Members (FIXED: excludes the leader) -->
-          <div class="mb-3">
-            <label class="fw-semibold">Current Members</label>
-
-            <div id="currentMembers{{ lg.lifegroup_id }}" class="border rounded p-2" style="max-height:150px; overflow-y:auto;">
-
-              {% set current_members = lifegroup_member_ids[lg.lifegroup_id] | reject('equalto', lg.leader_id) | list %}
-
-              {% if current_members %}
-                {% for member_id in current_members %}
-                  {% set member = members | selectattr('member_id','equalto',member_id) | list | first %}
-                  {% if member %}
-                    <div class="d-flex justify-content-between align-items-center mb-1 member-entry"
-                        data-member-id="{{ member.member_id }}">
-                      <span>{{ member.first_name }} {{ member.last_name }}</span>
-                      <button type="button" class="btn btn-sm btn-danger remove-member" data-member-id="{{ member.member_id }}">
-                        <i class="fa-solid fa-times"></i>
-                      </button>
-                    </div>
-                  {% endif %}
-                {% endfor %}
-              {% else %}
-                <p class="text-muted mb-0">No members assigned.</p>
-              {% endif %}
-
-            </div>
-
-            <!-- 🟦 Hidden field (FIXED: stores only real members, not the leader) -->
-            <input type="hidden" name="member_ids" id="memberIds{{ lg.lifegroup_id }}"
-              value="{{ current_members | join(',') }}">
-          </div>
-
-
-         <!-- Add Members -->
-          <div class="mb-3">
-            <label class="fw-semibold">Add Members</label>
-            <input type="text" id="searchAddMembers{{ ministry.ministry_id }}" class="form-control mb-2" placeholder="Search members to add...">
-            <div id="addMembersList{{ ministry.ministry_id }}" class="border rounded p-2" style="max-height:150px; overflow-y:auto; display:none;">
-              {% set added_members = ministry_member_ids[ministry.ministry_id] | default([]) %}
-              {% for member in members %}
-                {% if member.member_id not in added_members and member.member_id != ministry.leader_id %}
-                  <div class="add-member-item p-1" data-id="{{ member.member_id }}" data-name="{{ member.first_name }} {{ member.last_name }}" style="cursor:pointer;">
-                    {{ member.first_name }} {{ member.last_name }}
-                  </div>
-                {% endif %}
-              {% endfor %}
-            </div>
-            <small class="text-muted d-block mt-1">Click a member to add. Duplicates are prevented.</small>
-          </div>
-
-          <!-- Schedule -->
-          <div class="mb-3">
-            <label class="fw-semibold">Schedule</label>
-            <input type="text" name="schedule" value="{{ lg.schedule }}" class="form-control" required>
-          </div>
-
+  <!-- Leader Selection -->
+  <div class="mb-3 position-relative">
+    <label class="fw-semibold">Leader</label>
+    <input type="text" id="searchLeader{{ lg.lifegroup_id }}" class="form-control mb-2" placeholder="Search leader...">
+    <div id="leaderList{{ lg.lifegroup_id }}" class="border rounded p-2 position-absolute bg-white w-100"
+         style="max-height: 150px; overflow-y:auto; z-index:1050; display:none;">
+      {% for member in members %}
+        <div class="leader-item p-1" data-id="{{ member.member_id }}" data-name="{{ member.first_name }} {{ member.last_name }}" style="cursor:pointer;">
+          {{ member.first_name }} {{ member.last_name }}
         </div>
+      {% endfor %}
+    </div>
+    <input type="hidden" name="leader_id" id="leaderId{{ lg.lifegroup_id }}" value="{{ lg.leader_id }}">
+  </div>
+
+  <!-- 🟦 Current Members (excludes leader) -->
+<div class="card mb-3">
+  <div class="card-header fw-semibold">Current Members</div>
+  <div class="card-body p-2"
+       id="currentMembers{{ lg.lifegroup_id }}" 
+       style="max-height:150px; overflow-y:auto;">
+
+    {% set current_members = lifegroup_member_ids[lg.lifegroup_id] | reject('equalto', lg.leader_id) | list %}
+
+    {% if current_members %}
+      {% for member_id in current_members %}
+        {% set member = members | selectattr('member_id','equalto',member_id) | list | first %}
+        {% if member %}
+          <div class="d-flex justify-content-between align-items-center mb-1 member-entry"
+               data-member-id="{{ member.member_id }}">
+            <span>{{ member.first_name }} {{ member.last_name }}</span>
+            <button type="button" class="btn btn-sm btn-danger remove-member" data-member-id="{{ member.member_id }}">
+              <i class="fa-solid fa-times"></i>
+            </button>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <p class="text-muted mb-0">No members assigned.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Hidden field (stores only real members, not the leader) -->
+<input type="hidden" name="member_ids" id="memberIds{{ lg.lifegroup_id }}"
+       value="{{ current_members | join(',') }}">
+
+  <!-- Hidden field (stores only real members, not the leader) -->
+  <input type="hidden" name="member_ids" id="memberIds{{ lg.lifegroup_id }}"
+    value="{{ current_members | join(',') }}">
+
+  <!-- 🟦 Add Members -->
+  <div class="mb-3">
+    <label class="fw-semibold">Add Members</label>
+    <input type="text" id="searchAddMembers{{ lg.lifegroup_id }}" class="form-control mb-2" placeholder="Search members to add...">
+    <div id="addMembersList{{ lg.lifegroup_id }}" class="border rounded p-2"
+         style="max-height:150px; overflow-y:auto; display:none;">
+
+      {% set available_members = members 
+          | rejectattr('member_id','in',current_members) 
+          | rejectattr('member_id','equalto',lg.leader_id) 
+          | list %}
+
+      {% if available_members %}
+        {% for member in available_members %}
+          <div class="add-member-item p-1"
+               data-id="{{ member.member_id }}"
+               data-name="{{ member.first_name }} {{ member.last_name }}"
+               style="cursor:pointer;">
+            {{ member.first_name }} {{ member.last_name }}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-muted mb-0">No members available to add.</p>
+      {% endif %}
+
+    </div>
+    <small class="text-muted d-block mt-1">Click a member to add. Duplicates are prevented.</small>
+  </div>
+
+  <!-- Schedule -->
+  <div class="mb-3">
+    <label class="fw-semibold">Schedule</label>
+    <input type="text" name="schedule" value="{{ lg.schedule }}" class="form-control" required>
+  </div>
+</div>
 
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -454,6 +479,8 @@ body {
     </div>
   </div>
 </div>
+ {% endfor %}
+</tbody>
 
 
 <!-- Profile Dropdown -->
@@ -468,39 +495,48 @@ body {
 <script>
 function updateDateTime() {
   const now = new Date();
-  const options = { month:'numeric', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
-  document.getElementById('datetime').innerText = now.toLocaleDateString('en-US', options);
+  const options = {
+    month:'numeric',
+    day:'numeric',
+    year:'numeric',
+    hour:'2-digit',
+    minute:'2-digit',
+    second:'2-digit'
+  };
+  document.getElementById('datetime').innerText =
+    now.toLocaleDateString('en-US', options);
 }
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
-// DYNAMIC MODAL SCRIPT FOR LIFE GROUPS
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.modal').forEach(modal => {
-    if (!modal.id.startsWith('editLGModal')) return;
+document.addEventListener('DOMContentLoaded', function () {
+
+  // Loop through all Life Group modals
+  document.querySelectorAll('[id^="editLGModal"]').forEach(modal => {
     const lgId = modal.id.replace('editLGModal', '');
 
-    // Leader search
-    const leaderSearch = document.getElementById('searchLeader' + lgId);
-    const leaderList = document.getElementById('leaderList' + lgId);
-    const leaderItems = leaderList.querySelectorAll('.leader-item');
-    const leaderIdInput = document.getElementById('leaderId' + lgId);
+    /* ---------------- LEADER SEARCH ---------------- */
+    const leaderSearch = modal.querySelector('#searchLeader' + lgId);
+    const leaderList = modal.querySelector('#leaderList' + lgId);
+    const leaderIdInput = modal.querySelector('#leaderId' + lgId);
 
-    leaderSearch.addEventListener('input', function() {
-      const query = this.value.toLowerCase().trim();
-      let hasResults = false;
-      leaderItems.forEach(item => {
-        const name = item.getAttribute('data-name').toLowerCase();
-        item.style.display = name.includes(query) ? '' : 'none';
-        if (name.includes(query)) hasResults = true;
+    leaderSearch.addEventListener('input', function () {
+      const q = this.value.toLowerCase();
+      let found = false;
+
+      leaderList.querySelectorAll('.leader-item').forEach(item => {
+        const name = item.dataset.name.toLowerCase();
+        item.style.display = name.includes(q) ? 'block' : 'none';
+        if (name.includes(q)) found = true;
       });
-      leaderList.style.display = hasResults ? 'block' : 'none';
+
+      leaderList.style.display = found ? 'block' : 'none';
     });
 
-    leaderItems.forEach(item => {
-      item.addEventListener('click', function() {
-        leaderSearch.value = this.getAttribute('data-name');
-        leaderIdInput.value = this.getAttribute('data-id');
+    leaderList.querySelectorAll('.leader-item').forEach(item => {
+      item.addEventListener('click', () => {
+        leaderSearch.value = item.dataset.name;
+        leaderIdInput.value = item.dataset.id;
         leaderList.style.display = 'none';
       });
     });
@@ -511,60 +547,77 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    // Member add/remove
-    const searchAddMembers = document.getElementById('searchAddMembers' + lgId);
-    const addMembersList = document.getElementById('addMembersList' + lgId);
-    const currentMembers = document.getElementById('currentMembers' + lgId);
-    const memberIdsInput = document.getElementById('memberIds' + lgId);
+    /* ---------------- MEMBERS ---------------- */
+    const membersContainer = modal.querySelector('#currentMembers' + lgId); // ✅ correct container
+    const memberIdsInput = modal.querySelector('#memberIds' + lgId);
+    const addMembersList = modal.querySelector('#addMembersList' + lgId);
+    const searchAddMembers = modal.querySelector('#searchAddMembers' + lgId);
 
     function updateMemberIds() {
-      const ids = Array.from(currentMembers.querySelectorAll('.member-entry')).map(el => el.dataset.memberId);
+      const ids = Array.from(
+        membersContainer.querySelectorAll('.member-entry')
+      ).map(el => el.dataset.memberId);
       memberIdsInput.value = ids.join(',');
     }
 
-    searchAddMembers.addEventListener('input', function() {
-      const query = this.value.toLowerCase().trim();
+    /* SEARCH AVAILABLE MEMBERS */
+    searchAddMembers.addEventListener('input', function () {
+      const q = this.value.toLowerCase();
+      addMembersList.style.display = q ? 'block' : 'none';
+
       addMembersList.querySelectorAll('.add-member-item').forEach(item => {
-        item.style.display = item.getAttribute('data-name').toLowerCase().includes(query) ? '' : 'none';
+        item.style.display =
+          item.dataset.name.toLowerCase().includes(q) ? 'block' : 'none';
       });
-      addMembersList.style.display = query ? 'block' : 'none';
     });
 
-   
-document.querySelectorAll('.add-member-item').forEach(item => {
-    item.addEventListener('click', function() {
-        const memberId = this.dataset.id;
-        const memberName = this.dataset.name;
+    /* ADD MEMBER */
+    addMembersList.querySelectorAll('.add-member-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const id = item.dataset.id;
+        const name = item.dataset.name;
 
-        // Add to assigned members list
-        const assignedList = document.getElementById('assignedMembersList{{ lg.lifegroup_id }}');
-        if (!assignedList.querySelector(`[data-id='${memberId}']`)) {
-            const newItem = document.createElement('div');
-            newItem.className = 'assigned-member-item p-1';
-            newItem.dataset.id = memberId;
-            newItem.textContent = memberName;
-            assignedList.appendChild(newItem);
+        // Prevent duplicates
+        if (membersContainer.querySelector(`.member-entry[data-member-id="${id}"]`)) return;
 
-            // Optionally hide from search list
-            this.style.display = 'none';
-        }
+        const row = document.createElement('div');
+        row.className = 'd-flex justify-content-between align-items-center mb-1 member-entry';
+        row.dataset.memberId = id;
+
+        row.innerHTML = `
+          <span>${name}</span>
+          <button type="button" class="btn btn-sm btn-danger remove-member">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        `;
+
+        membersContainer.appendChild(row);
+        updateMemberIds();
+
+        // Remove handler for this new entry
+        row.querySelector('.remove-member').addEventListener('click', () => {
+          row.remove();
+          updateMemberIds();
+        });
+
+        // Hide from add list
+        item.style.display = 'none';
+      });
     });
-});
 
-
-    currentMembers.querySelectorAll('.remove-member').forEach(btn => {
-      btn.addEventListener('click', function() {
-        btn.parentElement.remove();
+    /* REMOVE EXISTING MEMBERS */
+    membersContainer.querySelectorAll('.remove-member').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.member-entry').remove();
         updateMemberIds();
       });
     });
 
+    // Initialize hidden input
     updateMemberIds();
   });
 });
 </script>
-{% endfor %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

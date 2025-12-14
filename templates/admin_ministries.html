@@ -368,6 +368,18 @@ body {
   <textarea name="description" id="edit_description" class="form-control" rows="4" required>{{ ministry.description }}</textarea>
 </div>
 
+        <div class="mb-3">
+          <div class="border rounded p-2 bg-light">
+            {% if ministry.leader_id %}
+              <p class="mb-0 text-muted">
+                Current Leader: <strong>{{ ministry.leader_name }}</strong>
+              </p>
+            {% else %}
+              <p class="mb-0 text-muted">No leader assigned.</p>
+            {% endif %}
+          </div>
+        </div>
+
           <!-- Leader Selection -->
           <div class="mb-3 position-relative">
             <label class="fw-semibold">Leader</label>
