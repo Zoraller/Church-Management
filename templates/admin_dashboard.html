@@ -105,12 +105,27 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
     display: block; /* show on mobile */
   }
 }
+  /* Initially hide sidebar on mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -220px; /* hide offscreen */
+    transition: left 0.3s ease;
+  }
+  .sidebar.active {
+    left: 0; /* slide in when active */
+  }
+}
+
 
 </style>
 </head>
 <body>
 
-<div class="sidebar">
+    <div class="toggle-btn" id="toggleBtn">
+  <i class="fa-solid fa-bars"></i>
+  
+<div class="sidebar" id="navLinks">
 <div class="text-center">
 <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
 </div>
@@ -359,8 +374,6 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
     </div>
   </div>
 </div>
-    <div class="toggle-btn" id="toggleBtn">
-  <i class="fa-solid fa-bars"></i>
 </div>
 </div>
 
@@ -457,15 +470,16 @@ updateDateTime();
 </script>
   
   <script>
-  const toggleBtn = document.getElementById('toggleBtn');
-  const navLinks = document.getElementById('navLinks'); // your menu container
+ const toggleBtn = document.getElementById('toggleBtn');
+const navLinks = document.getElementById('navLinks');
 
-  toggleBtn.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-  });
+toggleBtn.addEventListener('click', () => {
+  navLinks.classList.toggle('active'); 
+});
 </script>
 
 </body>
 </html>
+
 
 
