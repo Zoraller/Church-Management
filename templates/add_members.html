@@ -80,11 +80,55 @@ img.preview {
   border-radius: 50%;
   border: 2px solid #ccc;
 }
+  /* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -220px; /* hidden offscreen */
+  width: 220px;
+  height: 100vh;
+  background: #4b4f53ff;
+  color: white;
+  transition: left 0.3s ease;
+  z-index: 1050;
+}
+
+/* When active */
+.sidebar.active {
+  left: 0;
+}
+
+/* Backdrop */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: none; /* hidden by default */
+  z-index: 1040;
+}
+
+/* Show backdrop when sidebar is active */
+.backdrop.active {
+  display: block;
+}
+
 </style>
 </head>
 <body>
+<div class="backdrop" id="backdrop"></div>
 
-<div class="sidebar">
+<!-- Mobile Hamburger -->
+<div class="d-md-none p-3">
+    <span class="hamburger" id="hamburger">
+        <i class="fa-solid fa-bars fa-lg"></i>
+    </span>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
   <div class="text-center">
     <img src="{{ url_for('static', filename='images/cross-background.jpg') }}" class="sidebar-logo">
   </div>
@@ -325,8 +369,24 @@ document.addEventListener('click', function(e) {
     bootstrap.Dropdown.getInstance(toggle)?.hide();
   }
 });
+  const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('backdrop');
+
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('active');
+  backdrop.classList.toggle('active');
+});
+
+// Close sidebar when clicking backdrop
+backdrop.addEventListener('click', () => {
+  sidebar.classList.remove('active');
+  backdrop.classList.remove('active');
+});
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
