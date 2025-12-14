@@ -94,9 +94,26 @@ body { background: #f8f9fa; font-family: Arial, sans-serif; }
   .text-success { color: #28a745 !important; }
   .text-danger { color: #dc3545 !important; }
 
+  .toggle-btn {
+  font-size: 24px;
+  cursor: pointer;
+  display: none; /* hidden on desktop */
+}
+
+@media (max-width: 768px) {
+  .toggle-btn {
+    display: block; /* show on mobile */
+  }
+}
+
 </style>
 </head>
 <body>
+  
+  <div class="toggle-btn" id="toggleBtn">
+  <i class="fa-solid fa-bars"></i>
+</div>
+
 
 <div class="sidebar">
 <div class="text-center">
@@ -440,5 +457,16 @@ function updateDateTime() {
 setInterval(updateDateTime, 1000);
 updateDateTime();
 </script>
+  
+  <script>
+  const toggleBtn = document.getElementById('toggleBtn');
+  const navLinks = document.getElementById('navLinks'); // your menu container
+
+  toggleBtn.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+  });
+</script>
+
 </body>
 </html>
+
