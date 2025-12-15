@@ -113,38 +113,58 @@ body {
 }
 .search-box input:focus { box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25); }
 
-/* Hamburger & Backdrop */
-.hamburger {
-  display: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: #343a40;
-}
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  z-index: 1040;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-.backdrop.show { opacity: 1; visibility: visible; }
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .hamburger { display: block; position: fixed; top: 15px; left: 15px; z-index: 1100; }
-  .sidebar { width: 220px; height: 100vh; position: fixed; top: 0; left: 0; }
-  .main-content { margin-left: 0; padding: 20px; }
-  .table-container { margin: 20px; padding: 15px; }
-  .time-card { top: 15px; left: 15px; }
-}
 @media (min-width: 769px) {
-  .sidebar { transform: translateX(0); }
-  .main-content { margin-left: 220px; }
+  .sidebar {
+    transform: translateX(0);
+    position: fixed;
+    width: 220px;
+  }
+  .main-content {
+    margin-left: 220px;
+  }
+  .hamburger { display: none; }
+  .backdrop { display: none; }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1100;
+    cursor: pointer;
+    font-size: 1.7rem;
+    color: #343a40;
+  }
+  .sidebar {
+    width: 250px;
+    height: 100vh;
+    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    transition: transform 0.3s ease;
+  }
+  .sidebar.active { transform: translateX(0); }
+  
+  .main-content { margin-left: 0; }
+
+  .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .backdrop.active { opacity: 1; visibility: visible; }
 }
 </style>
 </head>
@@ -339,6 +359,7 @@ document.querySelectorAll('.collapse').forEach(collapse => {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 
